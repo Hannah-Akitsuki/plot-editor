@@ -724,9 +724,12 @@ body.declutter .nrefbadge{opacity:.6;}
   <div class="tbtn" id="btnNew">新建</div>
   <div class="tbtn" id="btnSave">保存</div>
   <div class="tbtn" id="btnImport">导入</div>
+  <div class="tbtn" id="btnUndo" title="撤销（Ctrl+Z）">撤销</div>
+  <div class="tbtn" id="btnRedo" title="重做（Ctrl+Y）">重做</div>
   <div class="tbtn" id="btnSearch" title="全局搜索（Ctrl+F）">搜索</div>
   <div class="tbtn" id="btnAddNote">＋便签</div>
   <div class="tbtn" id="btnAddImg">＋图片</div>
+  <div class="tbtn" id="btnMarkTb" title="先在正文里选中一段文字，再点这里标记为可连线的文字块（快捷键 T）">标记</div>
   <div class="tbtn" id="btnMore" title="更多功能：导出 / 协同 / 统计 / 检查 / 工具 等">更多 ▾</div>
   <div class="tspace"></div>
   <div class="tbtn" id="btnHelp" title="使用说明：所有功能 / 快捷键 / 操作方法（F1）">? 帮助</div>
@@ -6689,6 +6692,9 @@ $('#btnSave').onclick=doSave;
 $('#btnExport').onclick=exportPlot;
 $('#btnExportMd').onclick=exportSetupMd;
 $('#btnImport').onclick=importPlot;
+$('#btnUndo').onclick=()=>undo();   // 平板无键盘：撤销/重做也提供按钮入口
+$('#btnRedo').onclick=()=>redo();
+$('#btnMarkTb').onclick=markTextBlock; // 平板无键盘：标记文字块的触屏入口
 /* ---------- 局域网协同 ---------- */
 let lanAppliedAt=0, lanOwnAt=0, lanTimer=null;
 function startLanPull(){
