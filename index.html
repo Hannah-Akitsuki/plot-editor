@@ -1158,7 +1158,7 @@ body.declutter .nrefbadge{opacity:.6;}
     </div>
   </div>
 </div>
-<input type="file" id="fileInput" accept=".plot,.json,.ocpkg" hidden>
+<input type="file" id="fileInput" hidden> <!-- 不限 accept：iPad Safari 对 .plot/.ocpkg 这类无标准 MIME 的扩展名会置灰导致无法导入，内容校验由 parseImportText 兜底 -->
 <input type="file" id="imgInput" accept="image/*" multiple hidden>
 <script>
 "use strict";
