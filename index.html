@@ -329,6 +329,8 @@ body.declutter .refline{display:none!important;}
 #syncBar{position:fixed; top:0; left:0; right:0; z-index:210; padding:calc(5px + env(safe-area-inset-top)) 14px 6px; font-size:12px; line-height:1.5; text-align:center; color:#fff; display:none; box-shadow:var(--shadow-m);}
 #syncBar.warn{display:block; background:#b06a2c;}
 #syncBar.err{display:block; background:#a33a34;}
+#syncBar .syncClose{float:right; margin-left:12px; padding:0 6px; cursor:pointer; font-size:16px; line-height:1; opacity:.8; pointer-events:auto;}
+#syncBar .syncClose:hover{opacity:1;}
 /* ---------- 触屏 / 窄屏适配（pointer:coarse 仅触屏设备生效，桌面不受影响） ---------- */
 @media (pointer:coarse){
   .tbtn{padding:10px 14px;}
@@ -1198,13 +1200,28 @@ const isGuest=()=>!bridge.py&&(location.protocol==='http:'||location.protocol===
    host=已连接主机（/api/db 正常）；local=静态部署（无主机端点，数据仅存本机浏览器）；
    off=曾连上主机但当前失联（电脑没开/断网）。 */
 let syncState='';
+let syncDismissed=false; // 用户点过 × 后本会话不再弹（否则下一轮 probeSync 又盖回工具栏上）
 function setSync(s,msg,cls){
+  if(syncDismissed)return;
   if(syncState===s)return;
   syncState=s;
   const b=$('#syncBar'); if(!b)return;
-  if(!s){ b.className=''; b.style.display='none'; return; }
-  b.textContent=msg; b.className=cls;
+  if(!s){ b.className=''; b.style.display='none'; syncPushPage(0); return; }
+  b.innerHTML=esc(msg)+'<span class="syncClose" data-act="syncClose">×</span>';
+  b.className=cls;
+  b.style.display='block';
+  syncPushPage(b.offsetHeight);
 }
+/* 提示条出现时把顶栏/页签往下推（此前 fixed 覆盖在 topbar 上，平板上整排工具被挡住）；关闭按钮同样生效 */
+function syncPushPage(h){
+  document.body.style.paddingTop=h?h+'px':'';
+}
+document.addEventListener('click',e=>{
+  const c=e.target&&e.target.closest&&e.target.closest('[data-act="syncClose"]');
+  if(!c)return;
+  const b=$('#syncBar'); if(b){ b.className=''; b.style.display='none'; }
+  syncState=''; syncDismissed=true; syncPushPage(0);
+});
 function probeSync(){
   if(!isGuest()){ setSync('','',''); return Promise.resolve(null); }
   return fetch('/api/db').then(r=>r.text()).then(t=>{
