@@ -5937,7 +5937,7 @@ function mindTextW(s,size,bold){
   mindTextCtx.font=(bold?'700 ':'')+size+'px '+MIND_FONT;
   return mindTextCtx.measureText(String(s)).width;
 }
-/* 按像素宽度折行（中文按字、西文按词），最多 12 行，末行加 … */
+/* 按像素宽度折行（中文按字、西文按词），节点高度随行数增长，不截断 */
 function mindWrap(text,size,bold,maxW){
   const out=[];
   const paras=String(text==null?'':text).replace(/\r/g,'').split('\n');
@@ -5960,7 +5960,6 @@ function mindWrap(text,size,bold,maxW){
     if(cur.trim())out.push(cur.trim());
   }
   if(!out.length)out.push('（空）');
-  if(out.length>12){ out.length=12; out[11]=out[11].replace(/…$/,'')+'…'; }
   return out;
 }
 function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
