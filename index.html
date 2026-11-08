@@ -683,8 +683,17 @@ body.declutter .nrefbadge{opacity:.6;}
 /* ---------- 思维导图 ---------- */
 #mindMask{position:fixed; inset:0; background:rgba(10,16,28,.42); backdrop-filter:blur(3px); z-index:100; display:flex; align-items:center; justify-content:center;}
 #mindMask.hidden{display:none;}
-#mindBox{width:min(1160px,95vw); height:80vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; display:flex; flex-direction:column; box-shadow:var(--shadow-l); overflow:hidden;}
-.mhead{display:flex; align-items:center; gap:6px; font-weight:400;}
+#mindBox{width:min(1440px,96vw); height:88vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; display:flex; flex-direction:column; box-shadow:var(--shadow-l); overflow:hidden;}
+.mhead{display:flex; align-items:center; gap:6px; font-weight:400; min-width:0;}
+.mindtools{display:flex; align-items:center; gap:5px; flex-wrap:wrap; justify-content:flex-end; min-width:0;}
+.mfont{display:inline-flex; align-items:center; gap:3px; border:1px solid var(--pline); border-radius:7px; padding:1px 6px; background:var(--panel); flex:none;}
+.mfont button{border:none; background:none; cursor:pointer; color:var(--sub); font-weight:700; width:17px; height:17px; line-height:1; border-radius:4px; padding:0; font-size:13px;}
+.mfont button:hover{color:var(--accent); background:var(--accent-soft);}
+#mindFontRange{width:72px; accent-color:var(--accent); cursor:pointer; margin:0;}
+.mfont .mval{min-width:20px; text-align:center; font-variant-numeric:tabular-nums; color:var(--text); font-weight:600; font-size:11px;}
+#mindSvg .mn:hover rect{filter:brightness(.96);}
+#mindSvg .mn text{pointer-events:none; user-select:none;}
+#mindSvg .mntog:hover circle{stroke-width:2.2;}
 .mhead .pbtn{padding:2px 9px; font-size:11px;}
 #mindClose{cursor:pointer; color:var(--sub); padding:0 4px; font-size:16px;}
 #mindClose:hover{color:var(--text);}
@@ -696,7 +705,10 @@ body.declutter .nrefbadge{opacity:.6;}
 .mpitem input{accent-color:var(--accent); cursor:pointer;}
 .mpitem span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .mpitem.child{padding-left:20px;}
-#mindStage{flex:1; position:relative; overflow:hidden; background:var(--bg); cursor:grab;}
+#mindStage{flex:1; position:relative; overflow:hidden; cursor:grab;
+  background-color:var(--bg); background-image:radial-gradient(var(--grid) 1px, transparent 1px); background-size:22px 22px;}
+#mindBox.mdark #mindStage{background-color:#151a20; background-image:radial-gradient(#2b333d 1px, transparent 1px);}
+#mindBox.mdark #mindTip{background:rgba(30,36,44,.92); border-color:#39424e; color:#9fb0c0;}
 #mindStage.dragging{cursor:grabbing;}
 .msel{padding:2px 5px; border:1px solid var(--pline); border-radius:6px; background:var(--panel); font-size:11.5px; color:var(--text);}
 .msel:focus{outline:1px solid var(--accent);}
@@ -871,7 +883,7 @@ body.declutter .nrefbadge{opacity:.6;}
       <div class="ptitle">快捷键（点击后按新组合键；Esc 取消，Delete 清除）</div>
       <div id="hkList"></div>
       <button class="pbtn" id="hkReset">恢复默认快捷键</button>
-      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点顶栏「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系。</div>
+      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（横向 / 左右分列两种布局，可调全局字号、折叠分支、缩放平移、一键适配，可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点顶栏「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系。</div>
     </div>
   </div>
 </div>
@@ -1039,7 +1051,7 @@ body.declutter .nrefbadge{opacity:.6;}
         </ul>
         <h3>生成与总览</h3>
         <ul>
-          <li><b>导图</b>（剧情模块，选中便签后顶栏出现）：把选中的剧情便签生成思维导图，可导出 SVG / OPML（OPML 可直接导入 XMind、幕布）。</li>
+          <li><b>导图</b>（剧情模块，选中便签后顶栏出现）：把选中的剧情便签生成思维导图。默认「横向」布局（根在左、逐级向右展开），可切「左右分列」（根居中、一级分支分向两侧）；一级分支各有一套色系，层级越深越淡。顶部字号控件统一缩放所有层级，节点尺寸 / 行距 / 层间距随之自适应；点节点右侧圆点折叠或展开分支，滚轮缩放、拖动平移、双击或「适配」一键看全图；长文本自动换行。可导出 SVG / OPML（OPML 可直接导入 XMind、幕布）。</li>
           <li><b>总览</b>：全项目内容一览，点击任意条目直达。</li>
           <li><b>设定集</b>：把世界观 / 角色 / 关系 / 名词 / 地点 / 时间线 / 剧情排版成可搜索的 HTML 文件。</li>
           <li><b>设定MD</b>：角色 / 世界观 / 时间线 / 设定库模块下，把当前模块导出为 Markdown。</li>
@@ -1212,31 +1224,43 @@ body.declutter .nrefbadge{opacity:.6;}
   <div id="mindBox">
     <div class="shead">剧情思维导图
       <span class="mhead">
-        <select class="msel" id="mindLayoutSel" title="布局样式">
-          <option value="right">布局 · 全部向右</option>
-          <option value="lr">布局 · 左右分布</option>
-          <option value="down">布局 · 树形向下</option>
-        </select>
-        <select class="msel" id="mindColorSel" title="配色样式">
-          <option value="theme">配色 · 跟随集合色</option>
-          <option value="mono">配色 · 单色蓝</option>
-          <option value="rainbow">配色 · 多彩分支</option>
-          <option value="warm">配色 · 暖阳</option>
-          <option value="ocean">配色 · 海洋</option>
-          <option value="dark">配色 · 暗色</option>
-        </select>
-        <button class="pbtn" id="mindAll">全选</button>
-        <button class="pbtn" id="mindNone">清空</button>
-        <button class="pbtn" id="mindSvgBtn">导出 SVG</button>
-        <button class="pbtn" id="mindOpmlBtn">导出 OPML</button>
-        <button class="pbtn" id="mindCopyBtn">复制大纲</button>
-        <span id="mindClose">×</span>
+        <span class="mindtools">
+          <select class="msel" id="mindLayoutSel" title="布局样式">
+            <option value="right">布局 · 横向（根在左，向右展开）</option>
+            <option value="lr">布局 · 左右分列（根居中）</option>
+            <option value="down">布局 · 树形向下</option>
+          </select>
+          <select class="msel" id="mindColorSel" title="配色样式">
+            <option value="soft">配色 · 柔和分支</option>
+            <option value="theme">配色 · 跟随集合色</option>
+            <option value="mono">配色 · 单色</option>
+            <option value="rainbow">配色 · 多彩</option>
+            <option value="warm">配色 · 暖阳</option>
+            <option value="ocean">配色 · 海洋</option>
+            <option value="dark">配色 · 暗色</option>
+          </select>
+          <span class="mfont" title="全局字号：所有层级一起缩放，节点尺寸、行距与层间距自适应">
+            <button id="mindFsDown" title="缩小字号">−</button>
+            <input type="range" id="mindFontRange" min="10" max="24" step="1">
+            <button id="mindFsUp" title="放大字号">+</button>
+            <span class="mval" id="mindFsVal">14</span>
+          </span>
+          <button class="pbtn" id="mindFit" title="一键适配整图（双击画布空白处同效）">适配</button>
+          <button class="pbtn" id="mindFoldAll" title="折叠到只显示一级分支">折叠</button>
+          <button class="pbtn" id="mindOpenAll" title="展开全部分支">展开</button>
+          <button class="pbtn" id="mindAll">全选</button>
+          <button class="pbtn" id="mindNone">清空</button>
+          <button class="pbtn" id="mindSvgBtn">导出 SVG</button>
+          <button class="pbtn" id="mindOpmlBtn">导出 OPML</button>
+          <button class="pbtn" id="mindCopyBtn">复制大纲</button>
+          <span id="mindClose">×</span>
+        </span>
       </span>
     </div>
     <div class="mindmain">
       <div id="mindPick"></div>
       <div id="mindStage"><svg id="mindSvg" xmlns="http://www.w3.org/2000/svg"></svg>
-        <div id="mindTip">滚轮缩放 · 拖动平移</div>
+        <div id="mindTip">滚轮缩放 · 拖动平移 · 双击适配 · 点节点改色 · 点圆点折叠</div>
       </div>
     </div>
   </div>
@@ -5871,12 +5895,36 @@ function openCharRef(id){
 
 /* ================= 剧情思维导图 ================= */
 const MIND_FONT="'Microsoft YaHei','PingFang SC',sans-serif";
-let mindSelIds=new Set(), mindFileId=null, mindCam={x:20,y:20,z:1}, mindDrag=null, mindTextCtx=null;
-/* 导图样式（记忆到 localStorage） */
+let mindSelIds=new Set(), mindFileId=null, mindCam={x:0,y:0,z:1}, mindDrag=null, mindTextCtx=null;
+let mindCollapsed=new Set(), mindExpanded=new Set(), mindBodyCks=[], mindLastTree=null;
+/* 导图样式（记忆到 localStorage；旧版存过的 rainbow/warm/ocean 仍可用） */
 const mindStyle={
   layout:localStorage.getItem('mind.layout')||'right',
-  color:localStorage.getItem('mind.color')||'theme'
+  color:localStorage.getItem('mind.color')||'soft',
+  fs:Math.min(24,Math.max(10,parseInt(localStorage.getItem('mind.fs'),10)||14))
 };
+/* 每个一级分支一套色系；soft 为默认的柔和低饱和配色 */
+const MIND_PAL={
+  soft:['#d9737a','#dd9a52','#c3a13c','#5aa86e','#4f93d6','#8a7ad4','#cf6f9d','#3fa8a2'],
+  rainbow:['#e05d6f','#e79a3c','#d9a23a','#5fae63','#4a90d9','#8a6fd9','#d9678f','#3aa6a6'],
+  warm:['#d9534f','#e78a3c','#d9a23a','#b8863b','#c96f4a','#e05d8f','#a0522d','#d4775c'],
+  ocean:['#2c6fbb','#3aa6a6','#3f8f7a','#5b8fd9','#2fa3b8','#4a7fa5','#6fb3c9','#39796b'],
+  dark:['#d9a441','#7fb2d9','#8fc99a','#d98f8f','#b79ae0','#e0b978','#79c4c4','#c9a0c9'],
+  mono:['#4a90d9']
+};
+function mindDark(){ return mindStyle.color==='dark'; }
+function mindRGB(hex){
+  let h=String(hex||'').replace('#','');
+  if(h.length===3)h=h.split('').map(c=>c+c).join('');
+  if(!/^[0-9a-fA-F]{6}$/.test(h))h='4a90d9';
+  const n=parseInt(h,16); return [n>>16&255,n>>8&255,n&255];
+}
+/* a 向 b 混合 t（0~1） */
+function mixHex(a,b,t){
+  const A=mindRGB(a), B=mindRGB(b), k=Math.max(0,Math.min(1,t));
+  const f=i=>Math.round(A[i]+(B[i]-A[i])*k).toString(16).padStart(2,'0');
+  return '#'+f(0)+f(1)+f(2);
+}
 function plainText(html){
   return String(html||'')
     .replace(/<br\s*\/?>/gi,'\n').replace(/<\/p>|<\/div>/gi,'\n')
@@ -5889,17 +5937,37 @@ function mindTextW(s,size,bold){
   mindTextCtx.font=(bold?'700 ':'')+size+'px '+MIND_FONT;
   return mindTextCtx.measureText(String(s)).width;
 }
-function fitMindText(t,size,bold,maxW){
-  let s=String(t||'').replace(/\s+/g,' ');
-  if(mindTextW(s,size,bold)<=maxW)return s;
-  while(s.length>1&&mindTextW(s+'…',size,bold)>maxW)s=s.slice(0,-1);
-  return s+'…';
+/* 按像素宽度折行（中文按字、西文按词），最多 12 行，末行加 … */
+function mindWrap(text,size,bold,maxW){
+  const out=[];
+  const paras=String(text==null?'':text).replace(/\r/g,'').split('\n');
+  for(const para of paras){
+    const tokens=para.match(/[A-Za-z0-9][A-Za-z0-9'’\-_.]*| +|[\s\S]/g)||[];
+    let cur='';
+    for(const tk of tokens){
+      if(/^ +$/.test(tk)){ if(cur)cur+=tk; continue; }
+      if(!cur||mindTextW(cur+tk,size,bold)<=maxW)cur+=tk;
+      else{ out.push(cur.trim()); cur=tk; }
+      if(cur&&mindTextW(cur,size,bold)>maxW){
+        let line='';
+        for(const ch of cur){
+          if(line&&mindTextW(line+ch,size,bold)>maxW){ out.push(line); line=ch; }
+          else line+=ch;
+        }
+        cur=line;
+      }
+    }
+    if(cur.trim())out.push(cur.trim());
+  }
+  if(!out.length)out.push('（空）');
+  if(out.length>12){ out.length=12; out[11]=out[11].replace(/…$/,'')+'…'; }
+  return out;
 }
 function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function openMind(){
   const f=F();
   if(!f.notes.length){ toast('当前剧情文件还没有便签，先在画布上加一些内容'); return; }
-  if(mindFileId!==f.id){ mindFileId=f.id; mindSelIds=new Set(f.notes.map(n=>n.id)); }
+  if(mindFileId!==f.id){ mindFileId=f.id; mindSelIds=new Set(f.notes.map(n=>n.id)); mindCollapsed.clear(); mindExpanded.clear(); }
   $('#mindMask').classList.remove('hidden');
   renderMindPick(); buildMind();
   setTimeout(fitMind,140);
@@ -5926,7 +5994,7 @@ function renderMindPick(){
   });
 }
 function mindNoteNode(n,color,depth){
-  const node={id:n.id,text:n.title||(n.img?'图片便签':'便签'),children:[],color:color,depth:depth};
+  const node={id:n.id,text:n.title||(n.img?'图片便签':'便签'),children:[],color:color,depth:depth,body:true};
   const lines=plainText(n.html).split('\n').map(s=>s.trim()).filter(Boolean).slice(0,12);
   for(const line of lines)node.children.push({text:line,children:[],color:color,depth:depth+1});
   return node;
@@ -5949,142 +6017,259 @@ function mindTree(){
   }
   return root;
 }
-function mindLayoutSingle(root){
-  const LH=27, VGAP=10, HGAP=46, PAD=42;
-  let maxDepth=0;
-  const measure=(n,d)=>{
-    n.depth=d; maxDepth=Math.max(maxDepth,d);
-    const fs=n.root?15:(d===1?13:12.5), bold=!!n.root||d===1;
-    n.label=fitMindText(n.text,fs,bold,n.root?220:(d===1?230:280));
-    n.w=mindTextW(n.label,fs,bold)+26;
-    n.h=LH;
-    n.children.forEach(c=>measure(c,d+1));
+/* 字号 → 节点尺寸 / 行距 / 层间距 全部联动，保证改字号后文字不溢出、节点不重叠 */
+function mindMetrics(){
+  const fs=mindStyle.fs;
+  return {
+    fs,
+    rootSize:fs+3,
+    d1Size:fs+0.5,
+    d2Size:Math.max(9.5,fs-0.5),
+    lineH:Math.round(fs*1.55),
+    padY:Math.round(fs*0.52),
+    padX:Math.round(fs*0.92),
+    vgap:Math.round(fs*0.68),
+    hgap:Math.round(fs*2.25),
+    minW:Math.round(fs*2.8),
+    maxText:d=>d===0?Math.round(fs*15):(d===1?Math.round(fs*13.5):Math.round(fs*14.5))
   };
-  measure(root,0);
-  let cursor=0;
-  const place=n=>{
-    if(n.children.length){ n.children.forEach(place); n.y=(n.children[0].y+n.children[n.children.length-1].y)/2; }
-    else{ n.y=cursor; cursor+=n.h+VGAP; }
+}
+/* 量：折行 → 节点宽高；同时把可见子树挂到 n.kids（折叠的分支不参与排版） */
+function mindMeasure(root,m){
+  mindBodyCks=[];
+  const walk=(n,d)=>{
+    n.depth=d;
+    n.size=d===0?m.rootSize:(d===1?m.d1Size:m.d2Size);
+    n.bold=d<=1;
+    n.lines=mindWrap(n.text,n.size,n.bold,m.maxText(d));
+    let tw=0;
+    for(const s of n.lines)tw=Math.max(tw,mindTextW(s,n.size,n.bold));
+    n.w=Math.max(m.minW,Math.round(tw+m.padX*(n.root?1.9:2)));
+    n.h=Math.round(n.lines.length*m.lineH+m.padY*2);
+    n.children.forEach((c,i)=>{ c.ck=n.ck+'.'+i; });
+    if(n.body)mindBodyCks.push(n.ck);
+    /* 便签正文（逐行子节点）默认收起，先看主干；点圆点或「展开」看正文 */
+    let hide=mindCollapsed.has(n.ck);
+    if(n.body&&!mindExpanded.has(n.ck))hide=true;
+    n.kids=hide?[]:n.children;
+    n.kids.forEach(c=>walk(c,d+1));
   };
-  place(root);
+  root.ck='r';
+  walk(root,0);
+}
+function mindBandH(n,m){
+  n.bandH=n.kids.length?Math.max(n.h,n.kids.reduce((s,k)=>s+mindBandH(k,m),0)+m.vgap*(n.kids.length-1)):n.h;
+  return n.bandH;
+}
+function mindPlaceH(n,top,m){
+  n.y=top+n.bandH/2;
+  if(!n.kids.length)return;
+  const total=n.kids.reduce((s,k)=>s+k.bandH,0)+m.vgap*(n.kids.length-1);
+  let y=top+(n.bandH-total)/2;
+  for(const k of n.kids){ mindPlaceH(k,y,m); y+=k.bandH+m.vgap; }
+}
+/* 横向：根在左、逐级向右；lr 模式根居中、一级分支分向左右 */
+function mindLayoutH(root,m){
+  root.ck=root.ck||'r';
+  root.side=0; root.depth=0;
+  if(mindStyle.layout==='lr'&&root.kids.length>=2){
+    const kids=root.kids.slice();
+    const heights=kids.map(k=>mindBandH(k,m));
+    const sum=heights.reduce((a,b)=>a+b,0)+m.vgap*(kids.length-1);
+    let acc=0, cut=1;
+    for(let i=0;i<kids.length-1;i++){
+      acc+=heights[i]+m.vgap;
+      cut=i+1;
+      if(acc>=sum/2)break;
+    }
+    cut=Math.max(1,Math.min(kids.length-1,cut));
+    const right=kids.slice(0,cut), left=kids.slice(cut);
+    const mark=(n,side,d)=>{ n.side=side; n.depth=d; n.kids.forEach(c=>mark(c,side,d+1)); };
+    right.forEach(k=>mark(k,1,1));
+    left.forEach(k=>mark(k,-1,1));
+    const maxWR=[], maxWL=[];
+    right.forEach(function sc(n){ maxWR[n.depth]=Math.max(maxWR[n.depth]||0,n.w); n.kids.forEach(sc); });
+    left.forEach(function sc(n){ maxWL[n.depth]=Math.max(maxWL[n.depth]||0,n.w); n.kids.forEach(sc); });
+    const XR=[0,root.w+m.hgap], XL=[0,root.w/2+m.hgap];
+    for(let d=2;d<=14;d++){
+      XR[d]=XR[d-1]+(maxWR[d-1]||0)+m.hgap;
+      XL[d]=XL[d-1]+(maxWL[d-1]||0)+m.hgap;
+    }
+    right.forEach(function sx(n){ n.x=XR[n.depth]; n.kids.forEach(sx); });
+    left.forEach(function sx(n){ n.x=-XL[n.depth]-n.w; n.kids.forEach(sx); });
+    const totR=right.reduce((s,k)=>s+k.bandH,0)+m.vgap*Math.max(0,right.length-1);
+    const totL=left.reduce((s,k)=>s+k.bandH,0)+m.vgap*Math.max(0,left.length-1);
+    let y=-totR/2; right.forEach(k=>{ mindPlaceH(k,y,m); y+=k.bandH+m.vgap; });
+    y=-totL/2; left.forEach(k=>{ mindPlaceH(k,y,m); y+=k.bandH+m.vgap; });
+    root.x=-root.w/2; root.y=0;
+    return;
+  }
+  const all=[];
+  const mark=(n,d)=>{ n.side=1; n.depth=d; all.push(n); n.kids.forEach(c=>mark(c,d+1)); };
+  mark(root,0);
   const maxW=[];
-  const scan=n=>{ maxW[n.depth]=Math.max(maxW[n.depth]||0,n.w); n.children.forEach(scan); };
-  scan(root);
-  const X=[PAD];
-  for(let d=1;d<=maxDepth;d++)X[d]=X[d-1]+(maxW[d-1]||0)+HGAP;
-  const setX=n=>{ n.x=X[n.depth]; n.children.forEach(setX); };
-  setX(root);
-  const shift=n=>{ n.y+=PAD; n.children.forEach(shift); };
-  shift(root);
-  return {W:X[maxDepth]+maxW[maxDepth]+PAD, H:cursor-VGAP+PAD*2};
+  all.forEach(n=>{ maxW[n.depth]=Math.max(maxW[n.depth]||0,n.w); });
+  const X=[0];
+  for(let d=1;d<maxW.length;d++)X[d]=X[d-1]+(maxW[d-1]||0)+m.hgap;
+  all.forEach(n=>{ n.x=X[n.depth]; });
+  mindBandH(root,m);
+  mindPlaceH(root,0,m);
 }
-/* 树形向下（组织结构图式）：根在上，子节点横向排列 */
-function mindLayoutDown(root){
-  const LH=27, VGAP=26, HGAP=14, PAD=42;
-  let maxDepth=0;
-  const measure=(n,d)=>{
-    n.depth=d; maxDepth=Math.max(maxDepth,d);
-    const fs=n.root?15:(d===1?13:12.5), bold=!!n.root||d===1;
-    n.label=fitMindText(n.text,fs,bold,n.root?220:(d===1?230:280));
-    n.w=mindTextW(n.label,fs,bold)+26; n.h=LH;
-    n.children.forEach(c=>measure(c,d+1));
+/* 树形向下（保留旧选项）：根在上、子横向排列 */
+function mindLayoutD(root,m){
+  const all=[];
+  const mark=(n,d)=>{ n.side=1; n.depth=d; all.push(n); n.kids.forEach(c=>mark(c,d+1)); };
+  mark(root,0);
+  const maxH=[];
+  all.forEach(n=>{ maxH[n.depth]=Math.max(maxH[n.depth]||0,n.h); });
+  const Y=[0];
+  for(let d=1;d<maxH.length;d++)Y[d]=Y[d-1]+maxH[d-1]+m.vgap;
+  const bandW=n=>{
+    n.bandW=n.kids.length?Math.max(n.w,n.kids.reduce((s,k)=>s+bandW(k),0)+m.hgap*(n.kids.length-1)):n.w;
+    return n.bandW;
   };
-  measure(root,0);
-  let cx=0;
-  const placeX=n=>{
-    if(n.children.length){ n.children.forEach(placeX); n.x=(n.children[0].x+n.children[n.children.length-1].x)/2; }
-    else{ n.x=cx; cx+=n.w+HGAP; }
+  bandW(root);
+  const place=(n,left)=>{
+    n.cx=left+n.bandW/2; n.x=n.cx-n.w/2; n.y=Y[n.depth]+n.h/2;
+    if(!n.kids.length)return;
+    const total=n.kids.reduce((s,k)=>s+k.bandW,0)+m.hgap*(n.kids.length-1);
+    let x=left+(n.bandW-total)/2;
+    for(const k of n.kids){ place(k,x); x+=k.bandW+m.hgap; }
   };
-  placeX(root);
-  const setY=n=>{ n.y=PAD+n.depth*(LH+VGAP); n.children.forEach(setY); };
-  setY(root);
-  return {W:cx-HGAP+PAD, H:PAD+maxDepth*(LH+VGAP)+PAD};
+  place(root,0);
 }
-/* 左右分布：把根的孩子分成两半，右半正常排、左半水平镜像后接到下方，根放中间 */
-function mindLayout(root){
-  if(mindStyle.layout==='down')return mindLayoutDown(root);
-  const base=mindLayoutSingle(root);
-  if(mindStyle.layout!=='lr'||root.children.length<2)return base;
-  const kids=root.children.slice();
-  const mid=Math.ceil(kids.length/2);
-  const mk=ch=>({text:root.text,children:ch,root:true,_ph:true,depth:0,color:root.color,
-    w:root.w,h:root.h,label:root.label,y:0,x:0});
-  const rt=mk(kids.slice(0,mid)), lt=mk(kids.slice(mid));
-  const L1=mindLayoutSingle(rt), L2=mindLayoutSingle(lt);
-  const offY=L1.H+36, W=Math.max(L1.W,L2.W), H=L1.H+L2.H+36;
-  const fix=n=>{ n.y+=offY; n.x=W-n.x-n.w; n.children.forEach(fix); };
-  lt.children.forEach(fix);
-  root.x=(W-root.w)/2; root.y=rt.y;
-  return {W,H};
+function setMindBranch(n,c){
+  n.bc=c;
+  n.children.forEach(x=>setMindBranch(x,c));
 }
 function buildMind(){
   $('#mindNodeMenu')&&$('#mindNodeMenu').remove();
   const svg=$('#mindSvg'), tree=mindTree();
-  if(!tree.children.length){ svg.innerHTML=''; svg.setAttribute('width',10); svg.setAttribute('height',10); return; }
-  /* 配色样式 */
-  const dark=mindStyle.color==='dark', f=F();
-  const PALMAP={
-    rainbow:['#e05d6f','#e79a3c','#d9a23a','#5fae63','#4a90d9','#8a6fd9','#d9678f','#3aa6a6'],
-    warm:['#d9534f','#e78a3c','#d9a23a','#b8863b','#c96f4a','#e05d8f','#a0522d','#d4775c'],
-    ocean:['#2c6fbb','#3aa6a6','#3f8f7a','#5b8fd9','#2fa3b8','#4a7fa5','#6fb3c9','#39796b']
-  };
-  if(PALMAP[mindStyle.color]){
-    const PAL=PALMAP[mindStyle.color];
-    const paint=(n,c)=>{ n.color=c; n.children.forEach(x=>paint(x,c)); };
-    tree.children.forEach((c,i)=>paint(c,PAL[i%PAL.length]));
-  }else if(mindStyle.color==='mono'){
-    const paint=n=>{ n.color='#4a90d9'; n.children.forEach(paint); };
-    paint(tree);
+  mindLastTree=tree;
+  if(!tree.children.length){
+    svg.innerHTML=''; svg.setAttribute('width',10); svg.setAttribute('height',10);
+    svg.setAttribute('viewBox','0 0 10 10'); return;
   }
-  /* 节点自定义颜色（幕布式，随文件保存） */
+  const dark=mindDark(), f=F();
+  $('#mindBox').classList.toggle('mdark',dark);
+  /* 配色：一级分支各一套色系，子级继承；节点菜单可单独覆盖 */
+  const PAL=MIND_PAL[mindStyle.color]||MIND_PAL.soft;
+  if(mindStyle.color==='theme'){
+    tree.bc='#4a90d9';
+    tree.children.forEach(c=>setMindBranch(c,c.color||'#7fc4e8'));
+  }else if(mindStyle.color==='mono'){
+    setMindBranch(tree,'#4a90d9');
+  }else{
+    tree.bc=PAL[0];
+    tree.children.forEach((c,i)=>setMindBranch(c,PAL[i%PAL.length]));
+  }
+  /* 节点自定义颜色 / 字色（旧数据，随文件保存） */
   const OV=f.mindOv||{};
   const applyOv=n=>{
     if(n.id&&OV[n.id]){
       const o=OV[n.id];
-      if(o.color){ n.color=o.color; (function pc(x){ x.children.forEach(c=>{ c.color=o.color; pc(c); }); })(n); }
+      if(o.color)setMindBranch(n,o.color);
       if(o.text)n._tc=o.text;
     }
     n.children.forEach(applyOv);
   };
   applyOv(tree);
-  const lay=mindLayout(tree);
-  const nodes=[], edges=[];
-  const down=mindStyle.layout==='down';
-  const walk=(n,parent)=>{
-    nodes.push(n);
-    if(parent){
-      let dpath;
-      if(down){
-        const x1=parent.x, y1=parent.y+parent.h/2, x2=n.x, y2=n.y-n.h/2, my=(y1+y2)/2;
-        dpath=`M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${x1.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+
+  const m=mindMetrics();
+  mindMeasure(tree,m);
+  const nodes=[];
+  const collect=n=>{ nodes.push(n); n.kids.forEach(collect); };
+  collect(tree);
+  if(mindStyle.layout==='down')mindLayoutD(tree,m); else mindLayoutH(tree,m);
+
+  const fmt=v=>v.toFixed(1);
+  const edgeEls=[];
+  const walk=(n,p)=>{
+    if(p){
+      let d;
+      if(mindStyle.layout==='down'){
+        const x1=p.cx,y1=p.y+p.h/2,x2=n.cx,y2=n.y-n.h/2,my=(y1+y2)/2;
+        d=`M ${fmt(x1)} ${fmt(y1)} C ${fmt(x1)} ${fmt(my)} ${fmt(x2)} ${fmt(my)} ${fmt(x2)} ${fmt(y2)}`;
       }else{
-        const x1=parent.x+parent.w, y1=parent.y, x2=n.x, y2=n.y, mx=(x1+x2)/2;
-        dpath=`M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${mx.toFixed(1)} ${y1.toFixed(1)} ${mx.toFixed(1)} ${y2.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+        const left=n.side<0;
+        const x1=left?p.x:p.x+p.w, y1=p.y, x2=left?n.x+n.w:n.x, y2=n.y, mx=(x1+x2)/2;
+        d=`M ${fmt(x1)} ${fmt(y1)} C ${fmt(mx)} ${fmt(y1)} ${fmt(mx)} ${fmt(y2)} ${fmt(x2)} ${fmt(y2)}`;
       }
-      edges.push(`<path d="${dpath}" fill="none" stroke="${hexA(n.color,.55)}" stroke-width="${parent.root?2.4:1.6}"/>`);
+      edgeEls.push(`<path d="${d}" fill="none" stroke="${hexA(n.bc||'#4a90d9',dark?.6:.5)}" stroke-width="${n.depth===1?1.7:1.3}" stroke-linecap="round"/>`);
     }
-    n.children.forEach(c=>walk(c,n));
+    n.kids.forEach(c=>walk(c,n));
   };
   walk(tree,null);
-  const parts=nodes.map((n,i)=>{
+
+  const nodeEls=[],badgeEls=[];
+  const innerPad=Math.round(m.fs*0.9);
+  nodes.forEach((n,i)=>{
+    const base=n.bc||'#4a90d9';
     const isRoot=!!n.root, d=n.depth;
-    const fs=isRoot?15:(d===1?13:12.5), bold=isRoot||d===1;
-    const fill=isRoot?(dark?'#d9a441':'#4a90d9'):(d===1?hexA(n.color,dark?.30:.16):(dark?'#262d38':'#ffffff'));
-    const stroke=isRoot?'none':(d===1?hexA(n.color,.72):hexA(n.color,dark?.5:.30));
-    const colorTxt=n._tc||(isRoot?(dark?'#1d222a':'#ffffff'):(dark?'#e7e2d4':'#333a42'));
-    return `<g class="mindnode" data-i="${i}" style="cursor:pointer"><rect x="${n.x.toFixed(1)}" y="${(n.y-n.h/2).toFixed(1)}" width="${n.w.toFixed(1)}" height="${n.h}" rx="${isRoot?9:7}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`
-      +`<text x="${(n.x+n.w/2).toFixed(1)}" y="${n.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="${MIND_FONT}" font-size="${fs}" font-weight="${bold?700:400}" fill="${colorTxt}">${esc(n.label)}</text></g>`;
-  }).join('');
-  svg.setAttribute('width',lay.W.toFixed(0));
-  svg.setAttribute('height',lay.H.toFixed(0));
-  svg.setAttribute('viewBox',`0 0 ${lay.W.toFixed(0)} ${lay.H.toFixed(0)}`);
-  svg.innerHTML=edges.join('')+parts;
+    let fill,stroke,txt;
+    if(isRoot){
+      fill=dark?'#d9a441':'#4a90d9';
+      stroke='none';
+      txt=dark?'#1d222a':'#ffffff';
+    }else{
+      fill=dark?mixHex('#1d222a',base,d===1?.26:(d===2?.17:.12))
+               :mixHex('#ffffff',base,d===1?.115:(d===2?.062:.036));
+      stroke=hexA(base,d===1?(dark?.55:.42):(d===2?(dark?.38:.24):(dark?.28:.16)));
+      txt=n._tc||(dark?'#e7e2d4':'#333a42');
+    }
+    const firstY=n.y-(n.lines.length-1)*m.lineH/2;
+    const tx=isRoot?(n.x+n.w/2):(n.x+innerPad);
+    const anchor=isRoot?'middle':'start';
+    const tspans=n.lines.map((s,k)=>`<tspan x="${fmt(tx)}" y="${fmt(firstY+k*m.lineH+n.size*0.35)}">${esc(s)}</tspan>`).join('');
+    nodeEls.push(`<g class="mn mindnode" data-i="${i}" style="cursor:pointer">`
+      +`<rect x="${fmt(n.x)}" y="${fmt(n.y-n.h/2)}" width="${fmt(n.w)}" height="${fmt(n.h)}" rx="${isRoot?11:7}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`
+      +`<text font-family="${MIND_FONT}" font-size="${n.size.toFixed(1)}" font-weight="${n.bold?700:400}" fill="${txt}" text-anchor="${anchor}">${tspans}</text></g>`);
+    if(!isRoot&&n.children.length){
+      const cl=n.body?!mindExpanded.has(n.ck):mindCollapsed.has(n.ck);
+      const r=cl?Math.max(7,Math.round(m.fs*0.58)):Math.max(4,Math.round(m.fs*0.3));
+      let bx,by;
+      if(mindStyle.layout==='down'){ bx=n.cx; by=n.y+n.h/2+r+2; }
+      else if(n.side<0){ bx=n.x-r-2; by=n.y; }
+      else{ bx=n.x+n.w+r+2; by=n.y; }
+      const label=cl?String(n.children.length):'';
+      badgeEls.push(`<g class="mntog" data-ck="${n.ck}" data-body="${n.body?1:0}" style="cursor:pointer">`
+        +`<circle cx="${fmt(bx)}" cy="${fmt(by)}" r="${r}" fill="${dark?'#1d222a':'#ffffff'}" stroke="${hexA(base,dark?.6:.5)}" stroke-width="${cl?1.2:1}"/>`
+        +(label?`<text x="${fmt(bx)}" y="${fmt(by+r*0.34)}" text-anchor="middle" font-family="${MIND_FONT}" font-size="${(r*0.95).toFixed(1)}" fill="${base}">${esc(label)}</text>`:'')
+        +`</g>`);
+    }
+  });
+
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  nodes.forEach(n=>{
+    minX=Math.min(minX,n.x); maxX=Math.max(maxX,n.x+n.w);
+    minY=Math.min(minY,n.y-n.h/2); maxY=Math.max(maxY,n.y+n.h/2);
+  });
+  const PAD=Math.round(m.fs*1.8);
+  const tx=-minX+PAD, ty=-minY+PAD;
+  const W=maxX-minX+PAD*2, H=maxY-minY+PAD*2;
+  svg.setAttribute('width',W.toFixed(0));
+  svg.setAttribute('height',H.toFixed(0));
+  svg.setAttribute('viewBox',`0 0 ${W.toFixed(0)} ${H.toFixed(0)}`);
+  svg.innerHTML=`<g transform="translate(${fmt(tx)},${fmt(ty)})">${edgeEls.join('')}${nodeEls.join('')}${badgeEls.join('')}</g>`;
   svg.querySelectorAll('.mindnode').forEach(el=>{
     el.addEventListener('click',ev=>{
       ev.stopPropagation();
       const n=nodes[+el.dataset.i];
       if(!n||!n.id)return;
       openMindNodeMenu(n.id,ev);
+    });
+  });
+  svg.querySelectorAll('.mntog').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const k=el.dataset.ck;
+      if(el.dataset.body==='1'){
+        if(mindExpanded.has(k))mindExpanded.delete(k); else mindExpanded.add(k);
+        mindCollapsed.delete(k);
+      }else{
+        if(mindCollapsed.has(k))mindCollapsed.delete(k); else mindCollapsed.add(k);
+      }
+      buildMind();
     });
   });
   applyMindCam();
@@ -6129,7 +6314,7 @@ function fitMind(){
   const stage=$('#mindStage'), svg=$('#mindSvg');
   const W=parseFloat(svg.getAttribute('width'))||1, H=parseFloat(svg.getAttribute('height'))||1;
   const sw=stage.clientWidth||800, sh=stage.clientHeight||500;
-  mindCam.z=Math.max(.32,Math.min(1,(sw-40)/W,(sh-30)/H));
+  mindCam.z=Math.max(.04,Math.min(1.5,(sw-40)/W,(sh-30)/H));
   mindCam.x=(sw-W*mindCam.z)/2;
   mindCam.y=(sh-H*mindCam.z)/2;
   applyMindCam();
@@ -6141,7 +6326,7 @@ function mindOutlineText(node,depth){
 function mindSVGString(){
   const svg=$('#mindSvg'), W=svg.getAttribute('width'), H=svg.getAttribute('height');
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`
-    +`<rect width="${W}" height="${H}" fill="${mindStyle.color==='dark'?'#1d222a':'#ffffff'}"/><g>${svg.innerHTML}</g></svg>`;
+    +`<rect width="${W}" height="${H}" fill="${mindDark()?'#151a20':'#ffffff'}"/>${svg.innerHTML}</svg>`;
 }
 function mindOPML(){
   const nodeXML=n=>n.children.length
@@ -6179,8 +6364,33 @@ $('#mindOpmlBtn').onclick=exportMindOPML;
 $('#mindCopyBtn').onclick=copyMindOutline;
 $('#mindLayoutSel').value=mindStyle.layout;
 $('#mindColorSel').value=mindStyle.color;
+$('#mindFontRange').value=mindStyle.fs;
+$('#mindFsVal').textContent=mindStyle.fs;
 $('#mindLayoutSel').onchange=e=>{ mindStyle.layout=e.target.value; localStorage.setItem('mind.layout',mindStyle.layout); buildMind(); setTimeout(fitMind,80); };
 $('#mindColorSel').onchange=e=>{ mindStyle.color=e.target.value; localStorage.setItem('mind.color',mindStyle.color); buildMind(); };
+const setMindFs=v=>{
+  const nv=Math.max(10,Math.min(24,Math.round(+v||14)));
+  $('#mindFontRange').value=nv; $('#mindFsVal').textContent=nv;
+  if(nv===mindStyle.fs)return;
+  mindStyle.fs=nv; localStorage.setItem('mind.fs',nv);
+  buildMind();
+};
+$('#mindFontRange').oninput=e=>setMindFs(e.target.value);
+$('#mindFsDown').onclick=()=>setMindFs(mindStyle.fs-1);
+$('#mindFsUp').onclick=()=>setMindFs(mindStyle.fs+1);
+$('#mindFit').onclick=fitMind;
+$('#mindFoldAll').onclick=()=>{
+  const t=mindLastTree; if(!t)return;
+  mindCollapsed=new Set(); mindExpanded=new Set();
+  t.children.forEach((c,i)=>mindCollapsed.add('r.'+i));
+  buildMind();
+};
+$('#mindOpenAll').onclick=()=>{
+  mindCollapsed.clear(); mindExpanded.clear();
+  buildMind();
+  mindExpanded=new Set(mindBodyCks);
+  buildMind();
+};
 $('#mindStage').addEventListener('dblclick',fitMind);
 $('#mindStage').addEventListener('mousedown',e=>{
   if(e.button!==0)return;
@@ -6198,12 +6408,43 @@ $('#mindStage').addEventListener('wheel',e=>{
   e.preventDefault();
   const r=$('#mindStage').getBoundingClientRect();
   const mx=e.clientX-r.left, my=e.clientY-r.top;
-  const z=Math.max(.25,Math.min(2.5,mindCam.z*(e.deltaY<0?1.12:1/1.12)));
+  const z=Math.max(.1,Math.min(2.5,mindCam.z*(e.deltaY<0?1.12:1/1.12)));
   const k=z/mindCam.z;
   mindCam.x=mx-(mx-mindCam.x)*k;
   mindCam.y=my-(my-mindCam.y)*k;
   mindCam.z=z; applyMindCam();
 },{passive:false});
+/* 触屏：单指平移、双指捏合缩放 */
+let mindTouch=null;
+$('#mindStage').addEventListener('touchstart',e=>{
+  if(e.touches.length===1){
+    mindTouch={mode:'pan',x:e.touches[0].clientX,y:e.touches[0].clientY,ox:mindCam.x,oy:mindCam.y};
+  }else if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    const r=$('#mindStage').getBoundingClientRect();
+    mindTouch={mode:'pinch',d:Math.hypot(dx,dy)||1,z:mindCam.z,
+      mx:(e.touches[0].clientX+e.touches[1].clientX)/2-r.left,
+      my:(e.touches[0].clientY+e.touches[1].clientY)/2-r.top,
+      ox:mindCam.x,oy:mindCam.y};
+  }
+},{passive:true});
+$('#mindStage').addEventListener('touchmove',e=>{
+  if(!mindTouch)return;
+  if(mindTouch.mode==='pan'&&e.touches.length===1){
+    mindCam.x=mindTouch.ox+e.touches[0].clientX-mindTouch.x;
+    mindCam.y=mindTouch.oy+e.touches[0].clientY-mindTouch.y;
+    applyMindCam(); e.preventDefault();
+  }else if(mindTouch.mode==='pinch'&&e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    const z=Math.max(.1,Math.min(2.5,mindTouch.z*(Math.hypot(dx,dy)/mindTouch.d)));
+    const k=z/mindTouch.z;
+    mindCam.x=mindTouch.mx-(mindTouch.mx-mindTouch.ox)*k;
+    mindCam.y=mindTouch.my-(mindTouch.my-mindTouch.oy)*k;
+    mindCam.z=z; applyMindCam(); e.preventDefault();
+  }
+},{passive:false});
+$('#mindStage').addEventListener('touchend',()=>{ mindTouch=null; });
+$('#mindStage').addEventListener('touchcancel',()=>{ mindTouch=null; });
 
 /* ================= 全局搜索 ================= */
 function openSearch(){ $('#searchMask').classList.remove('hidden'); setTimeout(()=>$('#searchInput').focus(),60); runSearch(); }
