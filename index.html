@@ -386,7 +386,21 @@ body.declutter .refline{display:none!important;}
 #wheel{display:block; margin:0 auto; cursor:crosshair;}
 .rgbarow{display:flex; justify-content:center; gap:8px; margin-top:2px; color:var(--sub); font:11px/1.6 Consolas,monospace; letter-spacing:1px;}
 #tabs{display:flex; gap:3px;}
-/* ---------- 大纲 ---------- */
+/* ---------- 大纲（图层树 + 搜索 + 拖拽排序） ---------- */
+#outSearchWrap{display:flex; align-items:center; gap:4px; margin:0 0 6px; position:sticky; top:-10px; background:var(--panel); padding:2px 0 5px; z-index:7;}
+#outSearchWrap.hidden{display:none;}
+#outSearch{flex:1; min-width:0; border:1px solid var(--pline); border-radius:6px; padding:4px 8px; background:var(--bg); outline:none; font-size:12px;}
+#outSearch:focus{border-color:var(--accent); background:var(--panel);}
+#outSearch::placeholder{color:var(--sub);}
+#outSearchClear{flex:none; width:20px; height:20px; line-height:18px; text-align:center; border-radius:50%; color:var(--sub); cursor:pointer; font-size:14px;}
+#outSearchClear:hover{background:var(--accent-soft); color:var(--accent);}
+#outline{position:relative;}
+#outline mark{background:rgba(255,196,0,.48); color:inherit; border-radius:2px; padding:0 1px;}
+#outline .odropline{position:absolute; left:2px; right:2px; height:2px; border-radius:2px; background:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); pointer-events:none; display:none; z-index:8;}
+#outline .odragsrc{opacity:.45;}
+#outline .oread{color:var(--sub);}
+#outline .osnip{font-size:11px;}
+#outline .ocount{margin-left:auto; color:var(--sub); font-size:10px;}
 .orow{padding:3px 8px; border:1px solid var(--pline); border-radius:6px; margin:3px 0; cursor:pointer; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; background:var(--panel); transition:border-color .12s,background .12s,color .12s;}
 .orow:hover{border-color:var(--accent);}
 .orow.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
@@ -464,6 +478,28 @@ body.picking, body.picking *{cursor:crosshair !important;}
 .chfilter{padding:2px 11px; border-radius:999px; border:1px solid var(--pline); background:var(--panel); color:var(--sub); font-size:11.5px; cursor:pointer; transition:all .12s;}
 .chfilter:hover{border-color:var(--accent); color:var(--accent);}
 .chfilter.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600;}
+/* ---------- 角色成长线 ---------- */
+.ctabs{display:flex; gap:6px; margin:2px 0 8px; border-bottom:1px solid var(--pline); padding-bottom:6px;}
+.ctab{padding:3px 12px; border-radius:8px; border:1px solid var(--pline); background:var(--panel); color:var(--sub); font-size:12px; cursor:pointer;}
+.ctab:hover{border-color:var(--accent); color:var(--accent);}
+.ctab.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600;}
+.arcgrp{margin-top:10px;}
+.arcgrpT{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--sub); margin-bottom:4px;}
+.arcgrpT b{color:var(--text); font-size:12px;}
+.arcrow{display:flex; align-items:flex-start; gap:6px; padding:6px 8px; border:1px solid var(--pline); border-radius:8px; background:var(--panel); margin-bottom:5px;}
+.arcrow:hover{border-color:var(--accent);}
+.arcidx{flex:none; width:18px; height:18px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-size:10.5px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:2px;}
+.arcmain{flex:1; min-width:0;}
+.arcev{font-size:12px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.arcTextInp{width:100%; border:none; background:transparent; color:var(--sub); font-size:11.5px; padding:1px 0; outline:none;}
+.arcTextInp:focus{color:var(--text); box-shadow:inset 0 -1px 0 var(--accent);}
+.arcmeta{display:flex; flex-wrap:wrap; gap:4px; margin-top:3px; align-items:center;}
+.arcchip{font-size:10px; border-radius:8px; padding:1px 7px; background:var(--accent-soft); color:var(--accent);}
+.arcchip.pair{background:var(--accent); color:#fff;}
+.arcgo,.arcx{flex:none; cursor:pointer; color:var(--sub); font-size:11px; padding:0 3px;}
+.arcgo:hover{color:var(--accent);} .arcx:hover{color:#d9534f;}
+.arcSel{width:100%;}
+.arcAddBox{border:1px solid var(--pline); border-radius:8px; padding:8px; background:var(--panel); margin-top:6px;}
 .avarow{display:flex; align-items:center; gap:12px;}
 .avaPrev{width:58px; height:58px; border-radius:50%; overflow:hidden; border:1px solid var(--pline); display:flex; align-items:center; justify-content:center; color:#fff; font-size:23px; font-weight:700; cursor:pointer; flex:none; box-shadow:inset 0 -8px 14px rgba(0,0,0,.12);}
 .avaPrev img{width:100%; height:100%; object-fit:cover; display:block;}
@@ -716,6 +752,20 @@ body.declutter .nrefbadge{opacity:.6;}
 .strow2 .stat{color:var(--sub); font-size:11px; flex:1;}
 .strow2 .stx{cursor:pointer; color:var(--sub); padding:0 3px;}
 .strow2 .stx:hover{color:#d9534f;}
+/* ---------- 数据自检（低频功能，弹窗形态，不占常驻界面） ---------- */
+#auditMask{position:fixed; inset:0; background:rgba(10,16,28,.42); backdrop-filter:blur(3px); z-index:100; display:flex; align-items:center; justify-content:center;}
+#auditMask.hidden{display:none;}
+#auditBox{width:min(660px,93vw); max-height:80vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; display:flex; flex-direction:column; box-shadow:var(--shadow-l);}
+#auditBox .shead span{cursor:pointer; color:var(--sub); padding:0 4px;}
+#auditBox .shead span:hover{color:var(--text);}
+#auditBody{padding:12px 16px; overflow-y:auto; overscroll-behavior:contain;}
+.auditbar{display:flex; align-items:center; gap:8px; padding:2px 0 10px; flex-wrap:wrap;}
+.auditbar .pbtn{font-size:11.5px; padding:3px 10px;}
+.asev{flex:none; font-size:10px; border-radius:8px; padding:1px 7px; white-space:nowrap;}
+.asev.bad{background:rgba(217,83,79,.14); color:#d9534f;}
+.asev.warn{background:var(--accent-soft); color:var(--accent);}
+.auditfix{margin-left:auto; font-size:11px; color:var(--accent); cursor:pointer;}
+.auditfix:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -737,11 +787,12 @@ body.declutter .nrefbadge{opacity:.6;}
 </div>
 <div id="moreMenu" class="hidden">
   <div class="tbtn" id="btnExport" title="把当前项目导出为文件">另存为</div>
-  <div class="tbtn" id="btnPackage" title="把整个项目打包为可分享的 .plotoc 文件">打包</div>
+  <div class="tbtn" id="btnPackage" title="把整个项目打包为可分享的 .ocpkg 文件">打包</div>
   <div class="tbtn" id="btnExportMd" style="display:none" title="把当前模块的设定整理导出为 Markdown 文本（角色 / 世界观 / 设定库 / 时间线）">设定MD</div>
   <div class="tbtn" id="btnLan" title="局域网协同：同一 WiFi 下，其他人用浏览器打开地址即可一起编辑">协同</div>
   <div class="tbtn" id="btnStats" title="写作统计：字数 / 便签数 / 完成度">统计</div>
   <div class="tbtn" id="btnCheck" title="剧情一致性检查：时间线倒流 / 已死角色出场 / 从未被提及的设定 / 失效关联">检查</div>
+  <div class="tbtn" id="btnAudit" title="数据自检：悬空引用 / 零长度线 / 便签重叠 / 孤儿合集 / 重复 id（Ctrl+Shift+J）">数据自检</div>
   <div class="tbtn" id="btnWiki" title="把世界观 / 角色 / 关系 / 名词 / 地点 / 时间线 / 剧情排版成可搜索的 HTML 设定集">设定集</div>
   <div class="tbtn" id="btnOv" title="总览板：全项目内容一览，点击任意条目直达">总览</div>
   <div class="tbtn" id="btnTools" title="伏笔清单 / 查找替换 / 回收站 / 备份快照">工具</div>
@@ -793,6 +844,7 @@ body.declutter .nrefbadge{opacity:.6;}
     <div class="psec" id="ctxSec"></div>
     <div class="psec grow">
       <div class="ptitle">大纲</div>
+      <div id="outSearchWrap" class="hidden"><input id="outSearch" type="text" placeholder="搜索便签 / 正文 / 合集 / 轴…" autocomplete="off"><span id="outSearchClear" title="清空搜索（Esc）">×</span></div>
       <div id="outline"></div>
     </div>
   </div>
@@ -886,13 +938,13 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>顶栏</b>：新建 / 保存 / 导入 / 搜索 / ＋便签 / ＋图片；右侧是「? 帮助」和「设置」。低频功能都收在「<b>更多 ▾</b>」里（见下）。</li>
           <li><b>文件标签栏</b>：当前打开的文件（剧情、角色库……），可多开，<kbd>Ctrl+Tab</kbd> 切换。<b>标签右键</b>可重命名、归档进文件夹、关闭；文件夹条可以整组打包导出。</li>
           <li><b>左侧模块栏</b>：剧情 / 角色 / 关系 / 世界观 / 时间线 / 地图 / 设定，点击即进入对应模块。</li>
-          <li><b>右侧面板</b>：上部是画笔色轮与吸管（画布类模块），中间是选中对象的属性，下方是<b>大纲</b>（全文件内容的树状列表，可拖动排序、拖进 / 拖出集合、双击或 <kbd>F2</kbd> 改名）。<kbd>Tab</kbd> 或面板右缘的 <b>▶ / ◀</b> 小把手可显示 / 隐藏面板。</li>
+          <li><b>右侧面板</b>：上部是画笔色轮与吸管（画布类模块），中间是选中对象的属性，下方是<b>大纲图层面板</b>（合集=可折叠图层组、便签=叶子；可拖动排序、拖进 / 拖出集合、触屏长按拖动；顶部搜索框可筛便签标题 / 正文 / 合集名 / 轴名 / 轴点名，双击或 <kbd>F2</kbd> 改名）。<kbd>Tab</kbd> 或面板右缘的 <b>▶ / ◀</b> 小把手可显示 / 隐藏面板。</li>
           <li><b>右下角工具栏</b>（剧情画布内）：选择 / 涂鸦笔 / 橡皮 / 连线模式 / 轴模式 / 线色 / 只看剧情。</li>
         </ul>
         <h3>「更多 ▾」菜单</h3>
         <ul>
-          <li><b>另存为</b>：导出当前项目为 .plot 文件；<b>打包</b>：整个项目（含图片、涂鸦、文件夹）合成一个 <b>.plotoc</b> 包分享。</li>
-          <li><b>协同</b>：局域网多人同编；<b>统计</b>：字数与完成度；<b>检查</b>：剧情一致性体检；<b>设定集</b>：导出可搜索的 HTML；<b>总览</b>：全项目一览直达。</li>
+          <li><b>另存为</b>：导出当前项目为 .plot 文件；<b>打包</b>：整个项目（含图片、涂鸦、文件夹）合成一个 <b>.ocpkg</b> 包分享。</li>
+          <li><b>协同</b>：局域网多人同编；<b>统计</b>：字数与完成度；<b>检查</b>：剧情一致性体检；<b>数据自检</b>：悬空引用 / 重叠便签 / 重复 id 体检（也可 <kbd>Ctrl+Shift+J</kbd>）；<b>设定集</b>：导出可搜索的 HTML；<b>总览</b>：全项目一览直达。</li>
           <li><b>工具</b>子菜单：伏笔清单 / 查找替换 / 回收站 / 备份快照。</li>
           <li>按模块变化的按钮：<b>导图</b>（剧情模块，选中便签后出现）、<b>设定MD</b>（角色 / 世界观 / 时间线 / 设定库）、<b>＋添加角色</b>（关系图）。</li>
         </ul>
@@ -913,6 +965,7 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>颜色</b>：选中便签 → 右侧面板色轮改标题底色 / 正文底色 / 文字颜色；色轮旁吸管可从任意同类对象取色。</li>
           <li><b>缩放</b>：拖便签右下角把手；图片便签等比缩放。</li>
           <li><b>多选</b>：空白处拖框选，或 <kbd>Shift</kbd>+点击追加，<kbd>Ctrl+A</kbd> 全选。</li>
+          <li><b>对齐 / 等距</b>：选中 ≥3 张便签后右键 →「对齐与分布」，可选左 / 水平居中 / 右、上 / 垂直居中 / 下，以及水平 / 垂直等距；<b>轴上的便签不参与</b>（位置由轴排版推导），操作可 <kbd>Ctrl+Z</kbd> 撤销。</li>
           <li><b>删除</b>：<kbd>Delete</kbd>。删除的东西进<b>回收站</b>（最多 40 条），「更多 → 工具 → 回收站」可恢复。</li>
         </ul>
         <h3>集合（编组）</h3>
@@ -922,6 +975,23 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>脱离集合</b>：桌面按住 <kbd>Alt</kbd>+点击便签，一键脱离所有集合；也可以右键便签 →「移出集合」，或在右栏大纲里把便签拖出集合。</li>
           <li><b>嵌套</b>：一个集合的全部成员落在另一个集合范围内时，自动成为其子合集（最多 5 层）；把子合集拖出父框即自动解除嵌套。</li>
           <li><b>整组关联</b>：选中集合后右侧面板可把整组关联到某个角色 / 地点等内容。</li>
+        </ul>
+        <h3>大纲图层面板</h3>
+        <ul>
+          <li><b>层级</b>：合集是可折叠的图层组，合集套合集最多 5 层；便签是组里的叶子。没有加入任何合集的便签集中在虚拟「未分组」区（只影响显示，不写进文件）。轴在下方单独列出其挂载便签与点名，只读。</li>
+          <li><b>折叠</b>：点合集 / 未分组 / 轴行首的箭头收起或展开。</li>
+          <li><b>拖动排序</b>：桌面鼠标直接拖；触屏按住约 0.5 秒再拖（短按仍是定位，滑动仍是滚动）。蓝色横线是插入位置。拖到合集标题 = 加入该组；拖到「未分组」或组外空白 = 移出合集；同级拖动只调整顺序。只改大纲顺序与合集归属，<b>不改画布坐标</b>。</li>
+          <li><b>搜索</b>：顶部搜索框实时过滤便签标题 / 正文、合集名、轴名、轴点名，命中高亮，包含命中的组自动展开；回车飞到第一个命中，<kbd>Esc</kbd> 清空。快捷键 <kbd>Ctrl+Shift+F</kbd>（<kbd>Ctrl+F</kbd> 是原有全局搜索）。</li>
+          <li><b>改名 / 定位</b>：双击名称或 <kbd>F2</kbd> 改名；单击行仍会飞到画布对应对象（轴行飞到整条轴，轴点行飞到该点）。</li>
+        </ul>
+        <h3>人物成长线</h3>
+        <ul>
+          <li><b>在哪</b>：角色模块选中角色 → 右侧面板切到「成长线」页签（页签上有节点计数）。</li>
+          <li><b>加节点</b>：在「事件」下拉里选画布上的便签或轴点（只引用不复制正文），可填该角色视角的一句话与关系标记（如：主导 / 目击者，均可留空），点「加入成长线」。重复添加同一事件会被拦下。</li>
+          <li><b>排序</b>：按章节顺序自动排列——章节取轴 / 合集在文件里的顺序（轴在前、合集次之、都没进线的放「其他 / 未入线」）；同一章内轴上事件按轴点 / 挂载位置排序，其余按加入时间。</li>
+          <li><b>联动加节点</b>：添加时把「同时记到」选成另一个角色，对方成长线会生成指向同一事件的节点（视角各自填）；<b>不选则完全不联动</b>，只写进当前角色。</li>
+          <li><b>角色关联</b>：在「角色关联」区选角色和类型（羁绊 / 对手 / 师承 / 血亲 / 背叛）点「建立」，两端互相可见；点任一端的 × 解除，<b>另一端自动同时清除</b>。删角色、删被引用的便签或轴点时，相关条目也会自动清理，不留断头。</li>
+          <li><b>跳转 / 移除</b>：节点行的 → 飞到画布对应便签或轴点；× 只把这一条从成长线移除，<b>不影响画布内容</b>。视角一句话直接在行内改（失焦即保存），<kbd>Ctrl+Z</kbd> 可撤销。</li>
         </ul>
         <h3>跨模块关联（剧情 ↔ 角色 / 地点 / 名词 / 事件 / 文件）</h3>
         <ul>
@@ -951,7 +1021,7 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>整体操作</b>（选择模式）：轴是一个整体——点轴梁或成员即选中整条轴、<b>拖动轴梁</b>整体移动、<kbd>Delete</kbd> 删除轴及轴内全部便签（可在回收站恢复）。右侧面板可选「<b>解散轴</b>」：只删轴和点，便签原地保留。</li>
           <li><b>挂载 / 卸载</b>：把便签拖到轴上 = 挂载，拖离 = 卸载；<b>直接拖动轴上的便签即可调整位置</b>（选择模式、轴模式都行，不必切换）。同轴便签叠在一起时会<b>自动往下挤开</b>；文字行数变多时下方的便签也会自动往下推移。</li>
           <li><b>打点</b>：双击轴上任意位置添加一个「点」并命名（选择模式下双击轴梁也可以）。</li>
-          <li><b>点的关联与跳转</b>：选中点后在右侧面板可关联到角色 / 地点 / 便签等内容，之后点击即可跳转过去。</li>
+          <li><b>点的关联与跳转</b>：选中点后在右侧面板可关联到其他<b>便签</b>，之后点击即可跳转过去。</li>
         </ul>
         <div class="hnote">轴模式下 <kbd>Esc</kbd> 退出。轴线会和普通连线一样随便签移动实时跟随。</div>
       </div>
@@ -996,7 +1066,7 @@ body.declutter .nrefbadge{opacity:.6;}
           <tr><td><kbd>Alt</kbd>+点击便签</td><td>把便签从所在集合脱离</td><td>画布</td></tr>
           <tr><td><kbd>F</kbd></td><td>关联聚焦 开 / 关</td><td>画布</td></tr>
           <tr><td><kbd>G</kbd> / <kbd>Shift+G</kbd>（<kbd>Ctrl+G</kbd> / <kbd>Ctrl+Shift+G</kbd>）</td><td>编组 / 解散集合</td><td>画布</td></tr>
-          <tr><td><kbd>Ctrl+A</kbd></td><td>全选便签与集合（不含轴上便签）</td><td>画布</td></tr>
+          <tr><td><kbd>Ctrl+A</kbd></td><td>全选便签与集合（含轴上便签）</td><td>画布</td></tr>
           <tr><td><kbd>Ctrl+D</kbd></td><td>取消选择</td><td>全局</td></tr>
           <tr><td><kbd>T</kbd></td><td>把选中正文文字标记为文本块；编辑中无选区时按 T 仅输入字符</td><td>画布 / 编辑文字时</td></tr>
           <tr><td><kbd>I</kbd></td><td>给刚点中的文字块吸色：再点任意带颜色的对象（角色 / 便签 / 线条 / 集合）取色</td><td>画布</td></tr>
@@ -1005,7 +1075,9 @@ body.declutter .nrefbadge{opacity:.6;}
           <tr><td>方向键（<kbd>Shift</kbd>+方向键）</td><td>微移选中对象 1px（10px）</td><td>画布</td></tr>
           <tr><td><kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd>（<kbd>Ctrl+Shift+Z</kbd>）</td><td>撤销 / 重做</td><td>全局</td></tr>
           <tr><td><kbd>Ctrl+S</kbd> / <kbd>Ctrl+O</kbd></td><td>保存 / 导入</td><td>全局</td></tr>
+          <tr><td><kbd>Ctrl+Shift+J</kbd></td><td>数据自检（悬空引用 / 零长度线 / 重叠便签 / 孤儿合集 / 重复 id）</td><td>全局</td></tr>
           <tr><td><kbd>Ctrl+F</kbd></td><td>全局搜索</td><td>全局</td></tr>
+          <tr><td><kbd>Ctrl+Shift+F</kbd></td><td>聚焦大纲搜索框（搜便签 / 正文 / 合集 / 轴 / 轴点）</td><td>全局</td></tr>
           <tr><td><kbd>Ctrl+C</kbd> / <kbd>Ctrl+X</kbd> / <kbd>Ctrl+V</kbd></td><td>复制 / 剪切 / 粘贴（支持跨程序与图片）</td><td>全局</td></tr>
           <tr><td><kbd>Ctrl+Tab</kbd> / <kbd>Ctrl+Shift+Tab</kbd></td><td>下一个 / 上一个文件标签</td><td>全局</td></tr>
           <tr><td><kbd>Ctrl+=</kbd> / <kbd>Ctrl+-</kbd> / <kbd>Ctrl+0</kbd></td><td>放大 / 缩小 / 复位缩放</td><td>画布</td></tr>
@@ -1027,7 +1099,7 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>单指拖空白</b>：平移画布；<b>单指拖便签</b>：移动便签（拖到轴上即挂载、拖进集合框即移入）。</li>
           <li><b>双指捏合</b>：缩放画布，双指拖动同时平移。</li>
           <li><b>双击空白</b>：新建便签；<b>双击便签</b>：编辑文字；<b>点按</b>：选中。</li>
-          <li><b>长按</b>：弹出右键菜单（便签 / 集合标题 / 连线通用）；<b>长按空白</b> = 画布菜单：在此新建便签、粘贴、<b>回到内容</b>；也可以直接点画布右下角工具条上的「回到内容」按钮，画布拖丢了用它一键找回。</li>
+          <li><b>长按</b>：画布上弹出右键菜单（便签 / 集合标题 / 连线通用）；<b>大纲行</b>上是拖动排序（约 0.5 秒）；<b>长按空白</b> = 画布菜单：在此新建便签、粘贴、<b>回到内容</b>；也可以直接点画布右下角工具条上的「回到内容」按钮，画布拖丢了用它一键找回。</li>
           <li>框选是鼠标专属，触屏请用集合来整组移动。</li>
         </ul>
         <h3>其它模块手势</h3>
@@ -1048,8 +1120,9 @@ body.declutter .nrefbadge{opacity:.6;}
         <ul>
           <li>桌面版（exe）：所有改动自动保存到本机，顶部「保存」或 <kbd>Ctrl+S</kbd> 立即写盘；「另存为」导出单个剧情文件（<b>.plot</b>）。</li>
           <li><b>导入</b>：「导入」按钮或把 <b>.plot / .json / .ocpkg</b> 文件直接拖进窗口；旧版文件也能兼容打开。</li>
-          <li><b>打包</b>：「更多 → 打包」把整个项目（含文件夹结构、图片、涂鸦）合成一个 <b>.plotoc</b> 包分享给别人，对方导入后原样还原；也可按文件夹整包导出。</li>
+          <li><b>打包</b>：「更多 → 打包」把整个项目（含文件夹结构、图片、涂鸦）合成一个 <b>.ocpkg</b> 包分享给别人，对方导入后原样还原；也可按文件夹整包导出。</li>
           <li><b>备份快照</b>：每 12 小时自动存一份（最多 5 份），「更多 → 工具 → 备份快照」可手动查看 / 恢复。</li>
+          <li><b>保存备份（仅桌面版）</b>：每次 <kbd>Ctrl+S</kbd> 覆盖前，会把旧文件滚存到<b>同目录「备份」文件夹</b>（命名 <code>原名.20261106-153000.扩展名</code>），只保留最近 5 份；备份失败不影响保存，只在本次运行提示一次。</li>
           <li><b>回收站</b>：删除的内容先进回收站（最多 40 条），可恢复；「关闭文件」也是可恢复删除。</li>
         </ul>
         <h3>局域网协同</h3>
@@ -1059,6 +1132,7 @@ body.declutter .nrefbadge{opacity:.6;}
           <li><b>搜索</b>（顶栏 / <kbd>Ctrl+F</kbd>）：跨全部模块搜剧情、角色、设定、事件。</li>
           <li><b>统计</b>：字数、便签数、完成度（可设每日字数目标）。</li>
           <li><b>检查</b>：剧情一致性体检——时间线倒流、已死角色出场、从未被提及的设定、失效关联、未回收伏笔。</li>
+          <li><b>数据自检</b>（<kbd>Ctrl+Shift+J</kbd>）：数据健康体检——连线端点悬空、便签关联 / 文字块关联 / 轴点关联失效、集合成员或父合集悬空、零长度线、便签重叠、孤儿合集、重复 id；点条目定位，「一键修复」只删明确的坏引用（修前自动存快照，可撤销）。</li>
           <li><b>工具</b>：伏笔清单 / 跨文件查找替换 / 回收站 / 备份快照。</li>
           <li><b>设置</b>：10 款主题换色、每日字数目标、快捷键自定义（点条目后按新组合键）。</li>
         </ul>
@@ -1078,6 +1152,12 @@ body.declutter .nrefbadge{opacity:.6;}
   <div id="chkBox">
     <div class="shead">一致性检查<span id="chkClose">×</span></div>
     <div id="chkBody"></div>
+  </div>
+</div>
+<div id="auditMask" class="hidden">
+  <div id="auditBox">
+    <div class="shead">数据自检<span id="auditClose">×</span></div>
+    <div id="auditBody"></div>
   </div>
 </div>
 <div id="ovMask" class="hidden">
@@ -1312,8 +1392,8 @@ const bridge={
 
 /* ================= 数据 ================= */
 const LS_KEY='plotcanvas.db.v1';
-const DEFAULT_HK={toolSelect:'KeyV',toolDraw:'KeyB',toolErase:'KeyE',toolLink:'KeyL',toolAxis:'KeyA',newNote:'KeyN',markTb:'KeyT',pickTbColor:'KeyI',group:'KeyG',ungroup:'Shift+KeyG',toggleOutline:'Tab',undo:'Ctrl+KeyZ',redo:'Ctrl+KeyY',save:'Ctrl+KeyS',importFile:'Ctrl+KeyO',selectAll:'Ctrl+KeyA',deselect:'Ctrl+KeyD',groupWin:'Ctrl+KeyG',ungroupWin:'Ctrl+Shift+KeyG',nextTab:'Ctrl+Tab',prevTab:'Ctrl+Shift+Tab',brushUp:'BracketRight',brushDown:'BracketLeft',hkHelp:'Shift+Slash'};
-const HK_NAMES={toolSelect:'选择工具',toolDraw:'涂鸦笔',toolErase:'橡皮',toolLink:'连线模式',toolAxis:'轴模式',newNote:'新建便签',markTb:'标记文本块',pickTbColor:'文字块吸色',group:'成组（集合）',ungroup:'解散集合',toggleOutline:'显示/隐藏大纲',undo:'撤销',redo:'重做',save:'保存工作区',importFile:'导入文件',selectAll:'全选',deselect:'取消选择',groupWin:'成组（集合）',ungroupWin:'解散集合',nextTab:'下一个页签',prevTab:'上一个页签',brushUp:'笔刷加大',brushDown:'笔刷减小',hkHelp:'快捷键速查'};
+const DEFAULT_HK={toolSelect:'KeyV',toolDraw:'KeyB',toolErase:'KeyE',toolLink:'KeyL',toolAxis:'KeyA',newNote:'KeyN',markTb:'KeyT',pickTbColor:'KeyI',group:'KeyG',ungroup:'Shift+KeyG',toggleOutline:'Tab',undo:'Ctrl+KeyZ',redo:'Ctrl+KeyY',save:'Ctrl+KeyS',importFile:'Ctrl+KeyO',selectAll:'Ctrl+KeyA',deselect:'Ctrl+KeyD',groupWin:'Ctrl+KeyG',ungroupWin:'Ctrl+Shift+KeyG',nextTab:'Ctrl+Tab',prevTab:'Ctrl+Shift+Tab',brushUp:'BracketRight',brushDown:'BracketLeft',hkHelp:'Shift+Slash',dataAudit:'Ctrl+Shift+KeyJ',outlineSearch:'Ctrl+Shift+KeyF'};
+const HK_NAMES={toolSelect:'选择工具',toolDraw:'涂鸦笔',toolErase:'橡皮',toolLink:'连线模式',toolAxis:'轴模式',newNote:'新建便签',markTb:'标记文本块',pickTbColor:'文字块吸色',group:'成组（集合）',ungroup:'解散集合',toggleOutline:'显示/隐藏大纲',undo:'撤销',redo:'重做',save:'保存工作区',importFile:'导入文件',selectAll:'全选',deselect:'取消选择',groupWin:'成组（集合）',ungroupWin:'解散集合',nextTab:'下一个页签',prevTab:'上一个页签',brushUp:'笔刷加大',brushDown:'笔刷减小',hkHelp:'快捷键速查',dataAudit:'数据自检',outlineSearch:'聚焦大纲搜索框'};
 let DB=null;
 let noteEls=new Map();      // noteId -> element
 let sel=new Set();          // 'note:id' / 'col:id' / 'stroke:id'
@@ -1325,6 +1405,7 @@ let drag=null, rstate=null, spaceHeld=false, curStroke=null, pendingLink=null;
 let tbFocus=null; // 当前点中的文字块 {note:'便签id',tb:'文字块id'}：I 键吸色 / 色板改色的目标
 let clip=null;
 let selChar=null, selEvent=null, selTerm=null;   // 角色设定 / 时间线 / 设定库视图的选中项
+let charTab='basic';                             // 角色右侧面板页签：basic=设定，arc=成长线
 /* 线性 SVG 图标库（跟随文字颜色） */
 const _SVGP=(d)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const ICO={
@@ -1357,6 +1438,8 @@ function normFile(f){
   if(!f.camera)f.camera={x:0,y:0,z:1};
   if(typeof f.folder!=='string')f.folder='';
   if(!Array.isArray(f.notes))f.notes=[];
+  // 大纲图层顺序字段 oidx：旧存档缺该字段时按现有数组顺序回填（只用于右侧大纲排序，不改画布坐标）
+  f.notes.forEach((n,i)=>{ if(n&&typeof n==='object'&&!isFinite(n.oidx))n.oidx=(i+1)*10; });
   if(!Array.isArray(f.lines))f.lines=[];
   if(!Array.isArray(f.cols))f.cols=[];
   // 合集嵌套字段兼容：旧存档没有 parent 字段 → 视为顶层，随后按范围自动判定
@@ -1367,6 +1450,7 @@ function normFile(f){
     return c;
   });
   { const cids=new Set(f.cols.map(c=>c.id)); f.cols.forEach(c=>{ if(c.parent&&!cids.has(c.parent))c.parent=null; }); }
+  f.cols.forEach((c,i)=>{ if(!isFinite(c.oidx))c.oidx=(i+1)*10; });
   if(!Array.isArray(f.strokes))f.strokes=[];
   if(!Array.isArray(f.axes))f.axes=[];
   // 轴对象兼容清洗：旧文件没有 axes 字段时默认为空数组，不影响加载
@@ -1389,6 +1473,9 @@ function normFile(f){
       ref:(p.ref&&p.ref.type&&p.ref.id)?{type:p.ref.type,id:p.ref.id}:null}));
   });
   if(!Array.isArray(f.chars))f.chars=[];
+  // 成长线：旧包没有 arc 字段时补空数组，不改任何既有字段语义
+  f.chars.forEach(c=>{ if(c&&typeof c==='object'&&!Array.isArray(c.arc))c.arc=[]; });
+  pruneArcRefs(f); // 导入旧包 / 历史数据兜底：清掉指向已删便签、轴点、角色的成长线引用
   if(!Array.isArray(f.events))f.events=[];
   if(!Array.isArray(f.terms))f.terms=[];
   if(!Array.isArray(f.places))f.places=[];
@@ -1473,8 +1560,9 @@ function touch(noDirty){ // noDirty=true：纯浏览动作（平移/缩放/切�
      ② Ctrl+S 回写当前文档成功
      ③ 导入文件成功（导入即得一份已落盘副本） */
 function markClean(){ clearTimeout(_dirtyH); bridge.setDirty(false); }
-function rememberDoc(path,kind,fid){ // 记录「当前文档」：Ctrl+S 静默回写目标
-  try{ DB.settings.docPath=path; DB.settings.docKind=kind; DB.settings.docFileId=fid||''; }catch(e){}
+function rememberDoc(path,kind,fid,filter,folderId){ // 记录「当前文档」：Ctrl+S 静默回写目标
+  try{ DB.settings.docPath=path; DB.settings.docKind=kind; DB.settings.docFileId=fid||'';
+    DB.settings.docFilter=filter||''; DB.settings.docFolder=folderId||''; }catch(e){}
   markClean();
 }
 function _applyDB(d){
@@ -1486,6 +1574,7 @@ function _applyDB(d){
   applyDeclutter();
   if(!DB.files.length){const nf=seedFile('文件1');DB.files.push(nf);}
   DB.files.forEach(normFile);
+  pruneArcAll(); // 全文件齐了再兜底清一次成长线悬空引用（旧包 / 撤销重做 / 导入都走这里）
   if(!DB.active||!DB.files.find(f=>f.id===DB.active))DB.active=DB.files[0].id;
   pendingSnap=null; switchTab(DB.active);
   if(typeof _statsReady!=='undefined'&&_statsReady)_lastTotal=totalWords(); // 撤销/恢复后重置基线，避免误记字数
@@ -1781,6 +1870,7 @@ function createNote(x,y,opt){
   beginChange();
   const n=Object.assign({id:uid(),x:Math.round(x),y:Math.round(y),w:200,title:'新便签',html:'',
     titleBg:'#d7e6f7',bg:'#ffffff',color:'#333a42',img:null},opt||{});
+  if(!isFinite(n.oidx))n.oidx=(F().notes.length+1)*10;
   F().notes.push(n); createNoteEl(n);
   /* 新建即归集合：落点在某个集合框内时自动加入该集合，免去去大纲里拖 */
   const hitc=topmostColAt(x+(n.w||200)/2,y+30);
@@ -1884,7 +1974,12 @@ function markTextBlock(){
   try{ range.surroundContents(span); }
   catch(err){ span.appendChild(range.extractContents()); range.insertNode(span); }
   s.removeAllRanges();
-  n.html=body.innerHTML; touch(); renderLines(); renderOutline(); applyTbRefs(n);
+  n.html=body.innerHTML; touch(); renderLines(); renderOutline();
+  // 标记完立刻退出编辑态：正文仍处于 contentEditable 时，文本块的 mousedown 会被
+  // 编辑态提前 return 掉，导致「刚标记完却拖不出关联虚线」。
+  body.classList.remove('editing'); body.contentEditable='false'; body.blur();
+  if(editingNoteId===n.id)editingNoteId=null;
+  applyTbRefs(n);
   toast('已标记文本块：可直接拖出连线；点它可改色 / 按 I 吸色');
 }
 /* ---- 文本块级关联 / 取消 / 扩充为便签 ---- */
@@ -2294,7 +2389,7 @@ function groupSelected(){
   const ids=selNotes().map(n=>n.id);
   if(!ids.length){ toast('请先选中便签'); return; }
   const palette=['#7fc4e8','#8fd3b6','#f2c67f','#e79aa0','#c3a6e8'];
-  const c={id:uid(),name:'集合'+(F().cols.length+1),color:palette[F().cols.length%palette.length],members:ids,open:true,parent:null};
+  const c={id:uid(),name:'集合'+(F().cols.length+1),color:palette[F().cols.length%palette.length],members:ids,open:true,parent:null,oidx:(F().cols.length+1)*10};
   F().cols.push(c); recomputeColNest();
   if(c.parent){ const p=F().cols.find(x=>x.id===c.parent); if(p)c.name='集合'+F().cols.indexOf(p)+'-'+(F().cols.filter(x=>x.parent===p.id).length); }
   if(colDepth(c)>=COL_MAX_DEPTH-1)toast('合集最多支持 '+COL_MAX_DEPTH+' 层嵌套，更深层已不再自动嵌套');
@@ -2338,7 +2433,6 @@ function dropNotesIntoCol(d,e){
   if(d.fromCol)return;
   const ids=[...d.starts.keys()].filter(id=>!hit.members.includes(id));
   if(!ids.length)return;
-  beginChange();
   F().cols.forEach(c=>{ if(c!==hit)c.members=c.members.filter(m=>!ids.includes(m)); });
   hit.members.push(...ids);
   recomputeColNest();
@@ -2381,6 +2475,9 @@ function lineEnds(l){
   const rcB=B.noteId?noteRect(noteById(B.noteId)):null;
   const p1=rcA?exitPoint(rcA,A.x,A.y,B.x,B.y):{x:A.x,y:A.y};
   const p2=rcB?exitPoint(rcB,B.x,B.y,A.x,A.y):{x:B.x,y:B.y};
+  // 自环线（两端同一锚点）或两端重合：exitPoint 在方向为零时没有候选边，会退化成中心点，
+  // 画出来只剩一个圆点、线是零长度（悬空“断头”观感的来源）。这类线没有视觉意义，直接不画、不参与命中。
+  if(Math.abs(p1.x-p2.x)<0.5&&Math.abs(p1.y-p2.y)<0.5)return null;
   return {p1,p2,A,B};
 }
 function renderLines(){
@@ -2833,9 +2930,17 @@ function deleteAxisWhole(ax){ // 整体删除：轴 + 点 + 轴内全部便签�
   beginChange();
   const ids=axisMemberIds(ax);
   for(const id of ids){ const n=f.notes.find(x=>x.id===id); if(n)pushTrash('note',f.id,f.name,n.img?'图片':(n.title||'便签'),n); }
-  f.lines=f.lines.filter(l=>!((l.from.t==='note'&&ids.includes(l.from.id))||(l.to.t==='note'&&ids.includes(l.to.id))));
+  const tbIds=new Set();
+  for(const id of ids){ const el=noteEls.get(id); el&&el.querySelectorAll('.tb').forEach(t=>tbIds.add(t.dataset.tb)); }
+  f.lines=f.lines.filter(l=>{
+    return !((l.from.t==='note'&&ids.includes(l.from.id))||(l.to.t==='note'&&ids.includes(l.to.id))||
+             (l.from.t==='tb'&&tbIds.has(l.from.id))||(l.to.t==='tb'&&tbIds.has(l.to.id)));
+  });
   for(const id of ids){ const el=noteEls.get(id); el&&el.remove(); noteEls.delete(id); }
   f.notes=f.notes.filter(n=>!ids.includes(n.id));
+  const touched=pruneNoteRefs(ids);
+  pruneArcAll(); // 便签/轴点被删 → 成长线引用一并清除
+  for(const n of touched){ const el=noteEls.get(n.id); applyTbRefs(n,el); applyNoteRef(n,el); }
   f.axes=f.axes.filter(a=>a.id!==ax.id);
   dropAxisPtAnchors((ax.points||[]).map(p=>p.id));
   selAxis=null; selAxisPt=null;
@@ -2851,6 +2956,24 @@ function cleanupAxes(f){
     return true;
   });
   if(selAxis&&!f.axes.some(a=>a.id===selAxis)){selAxis=null;selAxisPt=null;}
+}
+/* 删除便签后清掉指向它们的悬空引用：关联 chips、文字块关联、轴点 ref。
+   否则会留下点不开的「关联已失效」角标和坏数据（导入导出往返也一直在）。 */
+function pruneNoteRefs(ids){
+  const gone=new Set(ids), f=F(), touched=[];
+  for(const n of f.notes){
+    let ch=false;
+    if(Array.isArray(n.refs)){
+      const keep=n.refs.filter(r=>!(r&&r.type==='note'&&gone.has(r.id)));
+      if(keep.length!==n.refs.length){ n.refs=keep; n.ref=n.refs[0]||null; ch=true; }
+    }
+    if(n.tbrefs&&typeof n.tbrefs==='object'){
+      for(const k of Object.keys(n.tbrefs)){ const r=n.tbrefs[k]; if(r&&r.type==='note'&&gone.has(r.id)){ delete n.tbrefs[k]; ch=true; } }
+    }
+    if(ch)touched.push(n);
+  }
+  for(const ax of f.axes||[])for(const p of ax.points||[]) if(p.ref&&p.ref.type==='note'&&gone.has(p.ref.id))p.ref=null;
+  return touched;
 }
 function mountNote(ax,noteId,t,dy){
   beginChange();
@@ -2978,6 +3101,7 @@ function renderAxisContext(box){
     beginChange();
     const oldH=axisZoneH(ax);
     ax.points=ax.points.filter(x=>x.id!==p.id);
+    pruneArcAll(); // 轴点被删 → 成长线引用一并清除
     dropAxisPtAnchors([p.id]);
     pushObjectsBelowAxis(ax,oldH,axisZoneH(ax)); // 少一行文字 → 下方对象整体上移
     if(selAxisPt===p.id)selAxisPt=null;
@@ -3075,9 +3199,11 @@ function boxSelect(r,additive){
   if(!additive)sel.clear();
   selLine=null; selAxis=null; selAxisPt=null;
   for(const n of F().notes){
-    if(axisOfNote(n.id))continue; // 轴成员不可被框选单选，整条轴走整体逻辑
     const rc=noteRect(n);
-    if(rc.x>=r.x&&rc.y>=r.y&&rc.x+rc.w<=r.x+r.w&&rc.y+rc.h<=r.y+r.h)sel.add('note:'+n.id);
+    // 相交即选中（不要求整张便签都在框里）：框选语义是「碰到就选」。
+    // 轴内便签同样可被框选 —— 否则轴密集的画布上框选永远选不到东西（按 G 成组会失败）。
+    // 轴成员的位置由挂载推导，拖动时在 startNotesDrag 里跳过，不会破坏轴布局。
+    if(rc.x<r.x+r.w&&rc.x+rc.w>r.x&&rc.y<r.y+r.h&&rc.y+rc.h>r.y)sel.add('note:'+n.id);
   }
   for(const s of F().strokes){
     if(s.pts.every(p=>p[0]>=r.x&&p[0]<=r.x+r.w&&p[1]>=r.y&&p[1]<=r.y+r.h))sel.add('stroke:'+s.id);
@@ -3086,7 +3212,9 @@ function boxSelect(r,additive){
 }
 function startNotesDrag(e){
   const starts=new Map(), strokes=new Map();
-  for(const n of selNotes())starts.set(n.id,{x:n.x,y:n.y});
+  // 轴内便签位置由「梁 + t/dy」推导，直接改 x/y 会被 updateAxisLayout 覆盖回去；
+  // 它们可以参与选中与成组，但不参与整体平移。
+  for(const n of selNotes()){ if(axisOfNote(n.id))continue; starts.set(n.id,{x:n.x,y:n.y}); }
   for(const s of selStrokes())strokes.set(s.id,s.pts.map(p=>[p[0],p[1]]));
   drag={type:'notes',sx:e.clientX,sy:e.clientY,moved:false,starts,strokes};
 }
@@ -3134,6 +3262,9 @@ function deleteSelection(){
       el.classList.add('despawn'); noteEls.delete(id); setTimeout(()=>el.remove(),170);
     } }
     f.notes=f.notes.filter(n=>!noteIds.includes(n.id));
+    const touched=pruneNoteRefs(noteIds);
+    pruneArcAll(); // 便签被删 → 成长线引用一并清除
+    for(const n of touched){ const el=noteEls.get(n.id); applyTbRefs(n,el); applyNoteRef(n,el); }
     cleanupAxes(f); // 头/尾被删的轴自动解散，失效挂载自动清除
   }
   const strokeIds=[...sel].filter(s=>s.startsWith('stroke:')).map(s=>s.slice(7));
@@ -3190,7 +3321,8 @@ function doPaste(data){
     return nn;
   });
   for(const oid of data.tbIds||[])tMap.set(oid,uid());
-  for(const nn of newNotes){ if(nn.html)nn.html=remapTbHtml(nn.html,tMap); f.notes.push(nn); createNoteEl(nn); }
+  let _poi=Math.max(0,...f.notes.map(x=>+x.oidx||0));
+  for(const nn of newNotes){ nn.oidx=(_poi+=10); if(nn.html)nn.html=remapTbHtml(nn.html,tMap); f.notes.push(nn); createNoteEl(nn); }
   for(const l of data.lines||[]){
     const m=a=>a.t==='note'?{t:'note',id:nMap.get(a.id)||a.id}:{t:'tb',id:tMap.get(a.id)||a.id};
     const fa=m(l.from),fb=m(l.to);
@@ -3206,9 +3338,127 @@ function doPaste(data){
   toast('已粘贴');
 }
 
-/* ================= 大纲 ================= */
+/* ================= 大纲（图层树 / 搜索 / 拖拽排序） ================= */
+let OUT_Q='';                     // 大纲搜索词（小写）
+let outLooseOpen=true;            // 虚拟「未分组」区的展开状态（不写入数据）
+const outAxisOpen={};             // 轴分组展开状态（仅内存）
+let outHitTargets=[];             // 当前搜索命中的可跳转目标（按渲染顺序）
+let outTxtCache=null;
+const OUT_LONG_PRESS=460, OUT_DRAG_TOL=7;
+
+function outNum(v,d){ const n=+v; return isFinite(n)?n:d; }
+function outOrigIdx(){ const f=F(), m=new Map(); f.notes.forEach((n,i)=>m.set(n.id,i)); f.cols.forEach((c,i)=>m.set(c.id,i)); return m; }
+function outSortItems(arr,orig){
+  return [...arr].sort((a,b)=>(outNum(a.oidx,0)-outNum(b.oidx,0))||((orig.get(a.id)||0)-(orig.get(b.id)||0)));
+}
+function outColKids(c){ return outSortItems(F().cols.filter(x=>x.parent===c.id),outOrigIdx()); }
+function outRootCols(){ return outSortItems(F().cols.filter(x=>!x.parent),outOrigIdx()); }
+/* 子合集里已有的便签：父组只显示自己的直属便签，避免同一叶子出现两次 */
+function outDescNotes(c){
+  const s=new Set();
+  for(const cid of colChildIds(c)){ const ch=F().cols.find(x=>x.id===cid); if(ch)colAllNoteIds(ch,new Set([c.id])).forEach(id=>s.add(id)); }
+  return s;
+}
+function outDirectNotes(c){ const f=F(), kids=outDescNotes(c); return f.notes.filter(n=>c.members.includes(n.id)&&!kids.has(n.id)); }
+function outAllInCols(){ const s=new Set(); F().cols.forEach(c=>colAllNoteIds(c).forEach(id=>s.add(id))); return s; }
+function outLooseNotes(){ const inCols=outAllInCols(); return F().notes.filter(n=>!inCols.has(n.id)); }
+function outNoteText(n){
+  if(!outTxtCache)outTxtCache=new Map();
+  let t=outTxtCache.get(n.id);
+  if(t===undefined){ t=((n.title||'便签')+' '+plainTextOf(n.html||'')).toLowerCase(); outTxtCache.set(n.id,t); }
+  return t;
+}
+function outTest(s){ return !!OUT_Q && String(s??'').toLowerCase().includes(OUT_Q); }
+function outHitNote(n){ return !!OUT_Q && outNoteText(n).includes(OUT_Q); }
+function outHL(s){
+  s=String(s??''); if(!OUT_Q)return esc(s);
+  const i=s.toLowerCase().indexOf(OUT_Q); if(i<0)return esc(s);
+  return esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+OUT_Q.length))+'</mark>'+esc(s.slice(i+OUT_Q.length));
+}
+function outSnippet(n,dep,ro){
+  const body=plainTextOf(n.html||'').replace(/\s+/g,' ').trim();
+  const i=body.toLowerCase().indexOf(OUT_Q); if(i<0)return '';
+  const a=Math.max(0,i-8), b=Math.min(body.length,i+OUT_Q.length+18);
+  const txt=(a?'…':'')+body.slice(a,b)+(b<body.length?'…':'');
+  return `<div class="orow child2 osnip${ro?' oread':''}" data-t="osnip" data-id="${n.id}" ${ro?'data-ro="1"':''} style="margin-left:${(dep+1)*14}px"><span class="oarr"></span><span class="oicon">¶</span><span class="oname">${outHL(txt)}</span></div>`;
+}
+function outColHasHit(c,memo){
+  if(!OUT_Q)return true;
+  if(memo.has(c.id))return memo.get(c.id);
+  let hit=outTest(c.name);
+  if(!hit){ for(const n of outDirectNotes(c)){ if(outHitNote(n)){hit=true;break;} } }
+  if(!hit){ for(const k of outColKids(c)){ if(outColHasHit(k,memo)){hit=true;break;} } }
+  memo.set(c.id,hit); return hit;
+}
+function outPushTarget(t,id,axis){ outHitTargets.push({t,id,axis}); }
+function outColHtml(c,dep,orig,memo){
+  if(OUT_Q&&!outColHasHit(c,memo))return '';
+  const active=sel.has('col:'+c.id)?' active':'';
+  const open=OUT_Q?true:(c.open!==false); // 搜索时自动展开包含命中的组
+  let s=`<div class="orow${active}" data-t="col" data-id="${c.id}" data-depth="${dep}" style="margin-left:${dep*14}px"><span class="oarr">${open?'▾':'▸'}</span><span class="oicon">▦</span><span class="oname">${outHL(c.name||'集合')}</span></div>`;
+  if(OUT_Q&&outTest(c.name))outPushTarget('col',c.id);
+  if(open){
+    for(const k of outColKids(c))s+=outColHtml(k,dep+1,orig,memo);
+    for(const n of outSortItems(outDirectNotes(c),orig))s+=outNoteRow(n,dep+1,false,c.id,false);
+  }
+  return s;
+}
+function outNoteRow(n,depth,ro,cont,force){
+  if(OUT_Q&&!force&&!outHitNote(n))return '';
+  const dep=isFinite(depth)?depth:0;
+  if(OUT_Q&&outHitNote(n))outPushTarget('note',n.id);
+  const active=sel.has('note:'+n.id)?' active':'';
+  const icon=n.img?ICO.img:ICO.note;
+  const name=n.img?'图片':(n.title||'便签');
+  let s=`<div class="orow${active}${ro?' oread':''}" data-t="note" data-id="${n.id}" data-depth="${dep}" data-col="${cont||''}" ${ro?'data-ro="1"':''} style="margin-left:${dep*14}px"><span class="oarr"></span><span class="oicon">${icon}</span><span class="oname">${outHL(name)}</span></div>`;
+  if(!n.img){
+    const el=noteEls.get(n.id);
+    if(el)el.querySelectorAll('.tb').forEach(t=>{
+      const txt=(t.textContent||'').slice(0,14)||'文本块';
+      s+=`<div class="orow child2" data-t="tb" data-id="${t.dataset.tb}" data-note="${n.id}" style="margin-left:${(dep+1)*14}px"><span class="oarr"></span><span class="oicon">¶</span><span class="oname">${esc(txt)}</span></div>`;
+    });
+  }
+  if(OUT_Q&&!outTest(name))s+=outSnippet(n,dep,ro);
+  return s;
+}
+function outAxesHtml(){
+  const f=F();
+  let s='';
+  for(const ax of f.axes){
+    const head=noteById(ax.head), tail=noteById(ax.tail);
+    if(!head||!tail)continue;
+    const name=head.title||'轴';
+    const pts=(ax.points||[]).filter(p=>String(p.name||'').trim());
+    const nameHit=outTest(name);
+    const ptHit=!!OUT_Q&&pts.some(p=>outTest(p.name));
+    if(OUT_Q&&!nameHit&&!ptHit)continue;
+    const open=OUT_Q?true:(outAxisOpen[ax.id]!==false);
+    s+=`<div class="orow oaxhead" data-t="axis" data-id="${ax.id}" data-ro="1"><span class="oarr">${open?'▾':'▸'}</span><span class="oicon" style="color:${ax.color||'var(--accent)'}">—</span><span class="oname">${outHL(name)}</span></div>`;
+    if(OUT_Q&&nameHit)outPushTarget('axis',ax.id);
+    if(!open)continue;
+    const entries=[], seen=new Set();
+    const addNote=(id,t)=>{ if(!id||seen.has(id))return; seen.add(id); const n=noteById(id); if(n)entries.push({kind:'note',t:isFinite(t)?+t:0,n}); };
+    addNote(ax.head,0);
+    for(const m of ax.mounts||[])addNote(m.note,isFinite(m.t)?+m.t:0);
+    addNote(ax.tail,1);
+    for(const p of pts)entries.push({kind:'pt',t:isFinite(p.t)?+p.t:0,p});
+    entries.sort((a,b)=>a.t-b.t||(a.kind==='note'?0:1)-(b.kind==='note'?0:1));
+    for(const en of entries){
+      if(en.kind==='note'){
+        if(OUT_Q&&!nameHit&&!outHitNote(en.n))continue;
+        s+=outNoteRow(en.n,1,true,'',nameHit);
+      }else{
+        if(OUT_Q&&!nameHit&&!outTest(en.p.name))continue;
+        s+=`<div class="orow child2 oaxpt" data-t="axpt" data-id="${en.p.id}" data-axis="${ax.id}" data-ro="1" style="margin-left:28px"><span class="oarr">•</span><span class="oname">${outHL(en.p.name)}</span></div>`;
+        if(OUT_Q&&outTest(en.p.name))outPushTarget('axpt',en.p.id,ax.id);
+      }
+    }
+  }
+  return s;
+}
 function renderOutline(){
   const f=F(), out=$('#outline');
+  $('#outSearchWrap').classList.toggle('hidden',f.type!=='story');
   if(f.type==='chars'){
     out.innerHTML=f.chars.length?f.chars.map(c=>`
       <div class="orow${selChar===c.id?' active':''}" data-t="char" data-id="${c.id}"><span class="oarr"></span><span class="oicon">${c.img?`<span class="oava"><img src="${c.img}" alt=""></span>`:ICO.chars}</span><span class="oname">${esc(c.name||'未命名')}</span></div>`).join('')
@@ -3254,49 +3504,71 @@ function renderOutline(){
     out.innerHTML=html;
     return;
   }
-  const inCol=new Set(f.cols.flatMap(c=>c.members));
+  // 剧情画布：合集 = 可折叠图层组，便签 = 叶子；未归属便签放虚拟「未分组」；轴单独列出（只读）
+  outTxtCache=null; outHitTargets=[];
+  const orig=outOrigIdx(), memo=new Map();
   let html='';
-  for(const c of f.cols){
-    const active=sel.has('col:'+c.id)?' active':'';
-    html+=`<div class="orow${active}" data-t="col" data-id="${c.id}"><span class="oarr">${c.open===false?'▸':'▾'}</span><span class="oicon">▦</span><span class="oname">${esc(c.name)}</span></div>`;
-    if(c.open!==false)for(const id of c.members){
-      const n=noteById(id); if(!n)continue;
-      html+=noteRow(n,true);
+  for(const c of outRootCols())html+=outColHtml(c,0,orig,memo);
+  const loose=outSortItems(outLooseNotes(),orig);
+  if(loose.length){
+    const hits=OUT_Q?loose.filter(outHitNote):loose;
+    if(!OUT_Q||hits.length){
+      const open=OUT_Q?true:outLooseOpen;
+      html+=`<div class="orow" data-t="loose"><span class="oarr">${open?'▾':'▸'}</span><span class="oicon">▤</span><span class="oname">未分组</span><span class="ocount">${hits.length}</span></div>`;
+      if(open)for(const n of hits)html+=outNoteRow(n,1,false,'',false);
     }
   }
-  const loose=f.notes.filter(n=>!inCol.has(n.id));
-  if(loose.length){
-    html+=`<div class="orow" data-t="loose" style="color:var(--sub)"><span class="oarr"></span><span class="oname">未分组</span></div>`;
-    for(const n of loose)html+=noteRow(n,false);
+  if(f.axes&&f.axes.length){
+    const axHtml=outAxesHtml();
+    if(axHtml)html+='<div class="oaxes" style="margin-top:8px">'+axHtml+'</div>';
   }
-  out.innerHTML=html;
+  out.innerHTML=(html||('<div class="phint">'+(OUT_Q?'没有匹配内容':'暂无内容')+'</div>'))+'<div id="outDropLine" class="odropline"></div>';
 }
-function noteRow(n,child){
-  const active=sel.has('note:'+n.id)?' active':'';
-  const cls=`orow${child?' child':''}${active}`;
-  const icon=n.img?ICO.img:ICO.note;
-  const name=n.img?'图片':(n.title||'便签');
-  let s=`<div class="${cls}" data-t="note" data-id="${n.id}" draggable="true"><span class="oarr"></span><span class="oicon">${icon}</span><span class="oname">${esc(name)}</span></div>`;
-  if(!n.img){
-    const el=noteEls.get(n.id);
-    if(el)el.querySelectorAll('.tb').forEach(t=>{
-      const txt=(t.textContent||'').slice(0,14)||'文本块';
-      s+=`<div class="orow child2" data-t="tb" data-id="${t.dataset.tb}" data-note="${n.id}"><span class="oarr"></span><span class="oicon">¶</span><span class="oname">${esc(txt)}</span></div>`;
-    });
-  }
-  return s;
+/* 搜索框：实时过滤 / 回车跳第一个命中 / Esc 清空 */
+$('#outSearch').addEventListener('input',e=>{ OUT_Q=(e.target.value||'').trim().toLowerCase(); renderOutline(); });
+$('#outSearch').addEventListener('keydown',e=>{
+  e.stopPropagation(); // 编辑中不触发全局快捷键
+  if(e.key==='Enter'){ e.preventDefault(); outJumpFirst(); }
+  else if(e.key==='Escape'){ e.preventDefault(); $('#outSearch').value=''; OUT_Q=''; renderOutline(); $('#outSearch').blur(); }
+});
+$('#outSearchClear').onclick=()=>{ $('#outSearch').value=''; OUT_Q=''; renderOutline(); $('#outSearch').focus(); };
+function outJumpFirst(){
+  if(!OUT_Q)return;
+  const hit=outHitTargets[0];
+  if(!hit){ toast('没有匹配的内容'); return; }
+  const row=$('#outline').querySelector(`.orow[data-t="${hit.t}"][data-id="${CSS.escape(hit.id)}"]`);
+  if(row)row.scrollIntoView({block:'nearest'});
+  if(hit.t==='note')focusObject('note',hit.id);
+  else if(hit.t==='col')focusObject('col',hit.id);
+  else if(hit.t==='axis')focusObject('axis',hit.id);
+  else if(hit.t==='axpt')focusObject('axpt',hit.id,hit.axis);
+}
+function focusOutlineSearch(){
+  if(F().type!=='story'){ toast('大纲搜索只在剧情画布可用'); return; }
+  const panel=$('#panel');
+  if(panel.style.display==='none')panel.style.display='flex';
+  panel.classList.remove('hiddenP');
+  $('#outSearchWrap').classList.remove('hidden');
+  const inp=$('#outSearch');
+  if(inp){ inp.scrollIntoView({block:'nearest'}); inp.focus(); inp.select(); }
 }
 let _lastOutIdx=-1;
 $('#outline').addEventListener('click',e=>{
+  if(_outDragEnded&&Date.now()-_outDragEnded<350){ _outDragEnded=0; return; } // 刚拖拽过，不触发定位
   const row=e.target.closest('.orow'); if(!row||!row.dataset.t)return;
   if(e.target.isContentEditable)return; // 正在改名时不触发定位
-  // 点击集合行首的箭头：折叠 / 展开该集合（只收起大纲列表，不影响画布）
-  if(row.dataset.t==='col'&&e.target.classList.contains('oarr')){
-    const c=F().cols.find(x=>x.id===row.dataset.id); if(!c)return;
-    c.open=(c.open===false); // 未定义视为展开，切换后收起
-    touch(); renderOutline();
-    return;
+  // 点击箭头：折叠 / 展开图层组、未分组或轴分组（只收起大纲列表，不影响画布）
+  if(e.target.classList.contains('oarr')){
+    if(row.dataset.t==='col'){
+      const c=F().cols.find(x=>x.id===row.dataset.id); if(!c)return;
+      c.open=(c.open===false); // 未定义视为展开，切换后收起
+      touch(); renderOutline();
+      return;
+    }
+    if(row.dataset.t==='loose'){ outLooseOpen=!outLooseOpen; renderOutline(); return; }
+    if(row.dataset.t==='axis'){ const id=row.dataset.id; outAxisOpen[id]=outAxisOpen[id]===false; renderOutline(); return; }
   }
+  if(row.dataset.t==='osnip'){ focusObject('note',row.dataset.id); return; }
   // Ctrl/Shift 多选（便签与集合）：Ctrl=逐个加减，Shift=范围连选
   if((e.ctrlKey||e.shiftKey)&&(row.dataset.t==='note'||row.dataset.t==='col')){
     e.preventDefault();
@@ -3315,10 +3587,11 @@ $('#outline').addEventListener('click',e=>{
     return;
   }
   _lastOutIdx=-1;
-  focusObject(row.dataset.t,row.dataset.id);
+  focusObject(row.dataset.t,row.dataset.id,row.dataset.axis);
 });
 /* 大纲右键：删除便签/集合、文本块取消或扩充 */
 $('#outline').addEventListener('contextmenu',e=>{
+  if(odb&&(odb.active||odb.timer)){ e.preventDefault(); return; } // 触屏长按拖拽中不弹菜单
   const row=e.target.closest('.orow'); if(!row||!row.dataset.t)return;
   e.preventDefault();
   const t=row.dataset.t,id=row.dataset.id;
@@ -3403,37 +3676,269 @@ function beginRenameInOutline(t,id){
     }
   });
 }
-/* 大纲拖拽：把便签拖进集合 / 拖回未分组 */
+/* 大纲拖拽：鼠标直接拖，触屏长按约 0.46s 进入拖拽；同级排序 / 拖到组标题加入 / 拖到空白移出。
+   只改 oidx 与合集成员关系，不改任何画布坐标。 */
+let odb=null, _outDragEnded=0;
 const outEl=$('#outline');
-outEl.addEventListener('dragstart',e=>{
-  const r=e.target.closest('.orow[data-t="note"]'); if(!r)return;
-  e.dataTransfer.setData('text/plain','outline-note:'+r.dataset.id);
-  e.dataTransfer.effectAllowed='move';
-});
-outEl.addEventListener('dragover',e=>{
-  const r=e.target.closest('.orow[data-t="col"],.orow[data-t="loose"]');
-  if(r){ e.preventDefault(); e.dataTransfer.dropEffect='move'; r.classList.add('dropTarget'); }
-});
-outEl.addEventListener('dragleave',()=>{ $$('#outline .dropTarget').forEach(x=>x.classList.remove('dropTarget')); });
-outEl.addEventListener('drop',e=>{
+function outPointerBefore(row,y){ const r=row.getBoundingClientRect(); return y<r.top+r.height/2; }
+function outNotesOfContainer(cont){
+  const f=F(), orig=outOrigIdx();
+  let list;
+  if(cont){
+    const c=f.cols.find(x=>x.id===cont); if(!c)return [];
+    list=outDirectNotes(c);
+  }else list=outLooseNotes();
+  return outSortItems(list,orig);
+}
+function outColsOfParent(pid){
+  const f=F(), orig=outOrigIdx();
+  return outSortItems(f.cols.filter(x=>(x.parent||'')===(pid||'')),orig);
+}
+function outRenumberNotes(list){ list.forEach((n,i)=>{ n.oidx=(i+1)*10; }); }
+function outRenumberCols(list){ list.forEach((c,i)=>{ c.oidx=(i+1)*10; }); }
+function outSourceFromRow(row){
+  if(!row||row.dataset.ro==='1')return null;
+  if(row.dataset.t==='note')return {kind:'note',id:row.dataset.id,cont:row.dataset.col||'',row};
+  if(row.dataset.t==='col')return {kind:'col',id:row.dataset.id,row};
+  return null;
+}
+function outComputeDrop(x,y,src){
+  const el=document.elementFromPoint(x,y);
+  if(!el)return null;
+  if(el.closest('.oaxes'))return null; // 轴分组只读，不接受拖放
+  const row=el.closest('#outline .orow');
+  if(!row){
+    if(!el.closest('#outline'))return null;
+    return src.kind==='note'?{mode:'cont',cont:'',index:1e6}:{mode:'rootcol',index:1e6};
+  }
+  const t=row.dataset.t;
+  if(row.dataset.ro==='1')return null;
+  if(t==='col'){
+    const c=F().cols.find(x=>x.id===row.dataset.id); if(!c)return null;
+    if(src.kind==='col'){
+      const s=F().cols.find(x=>x.id===src.id); if(!s)return null;
+      if((s.parent||'')===(c.parent||'')){ // 同级：插入到目标前/后
+        const list=outColsOfParent(s.parent||'');
+        const i=list.findIndex(v=>v.id===c.id); if(i<0)return null;
+        const before=outPointerBefore(row,y);
+        return {mode:'cols',parent:s.parent||'',index:i+(before?0:1),targetRow:row,before};
+      }
+      return {mode:'nestcol',parent:c.id,targetRow:row}; // 跨级：加入该组
+    }
+    return {mode:'join',col:c.id,targetRow:row}; // 便签拖到组标题 = 加入该组
+  }
+  if(t==='loose'){
+    if(src.kind==='note')return {mode:'cont',cont:'',index:1e6,targetRow:row};
+    return {mode:'rootcol',index:1e6,targetRow:row};
+  }
+  if(t==='note'){
+    if(row.dataset.ro==='1')return null;
+    const cont=row.dataset.col||'';
+    if(src.kind==='note'){
+      const list=outNotesOfContainer(cont);
+      const i=list.findIndex(n=>n.id===row.dataset.id); if(i<0)return null;
+      const before=outPointerBefore(row,y);
+      return {mode:'cont',cont,index:i+(before?0:1),targetRow:row,before};
+    }
+    return cont?{mode:'nestcol',parent:cont,targetRow:row}:{mode:'rootcol',index:1e6,targetRow:row};
+  }
+  return null;
+}
+function outShowDrop(dt){
+  const out=$('#outline'), line=$('#outDropLine');
   $$('#outline .dropTarget').forEach(x=>x.classList.remove('dropTarget'));
-  const r=e.target.closest('.orow[data-t="col"],.orow[data-t="loose"]'); if(!r)return;
-  const id=(e.dataTransfer.getData('text/plain')||'').replace('outline-note:','');
-  if(!noteById(id))return;
+  if(!line)return;
+  if(!dt){ line.style.display='none'; return; }
+  if(dt.mode==='join'||dt.mode==='nestcol'){ // 加入组：高亮组标题
+    line.style.display='none';
+    if(dt.targetRow)dt.targetRow.classList.add('dropTarget');
+    return;
+  }
+  const orr=out.getBoundingClientRect();
+  let top=0;
+  const isEnd=!isFinite(dt.index)||dt.index>=1e5;
+  if(dt.mode==='rootcol'){ // 拖到顶层末尾：定位到最后一条顶层合集
+    const rows=[...out.querySelectorAll('.orow[data-t="col"][data-depth="0"]')];
+    top=rows.length?rows[rows.length-1].getBoundingClientRect().bottom-orr.top:0;
+  }else if(isEnd&&dt.mode==='cont'){ // 拖到容器末尾：定位到该容器最后一条便签
+    const sel=dt.cont?`.orow[data-t="note"][data-col="${CSS.escape(dt.cont)}"]`:'#outline .orow[data-t="note"][data-col=""]';
+    const rows=[...out.querySelectorAll(sel)].filter(r=>!r.closest('.oaxes')&&r.dataset.ro!=='1');
+    top=rows.length?rows[rows.length-1].getBoundingClientRect().bottom-orr.top:(dt.targetRow?dt.targetRow.getBoundingClientRect().bottom-orr.top:0);
+  }else if(dt.targetRow){
+    const rr=dt.targetRow.getBoundingClientRect();
+    top=rr.top-orr.top+(dt.before?0:rr.height);
+  }else{
+    const rows=[...out.querySelectorAll('.orow')];
+    if(rows.length){ const rr=rows[rows.length-1].getBoundingClientRect(); top=rr.bottom-orr.top; }
+  }
+  line.style.top=Math.max(0,top-1)+'px';
+  line.style.display='block';
+}
+function outApplyDrop(dt,src){
   const f=F();
   beginChange();
-  f.cols.forEach(c=>c.members=c.members.filter(m=>m!==id));
-  if(r.dataset.t==='col'){ const c=f.cols.find(x=>x.id===r.dataset.id); if(c){c.members.push(id); c.open=true;} }
-  touch(); renderOutline(); renderCols();
-  toast(r.dataset.t==='col'?'已移入集合':'已移出集合');
+  if(src.kind==='note'){
+    const n=noteById(src.id);
+    if(!n){ pendingSnap=null; return; }
+    f.cols.forEach(c=>{ c.members=(c.members||[]).filter(m=>m!==src.id); });
+    let cont='';
+    if(dt.mode==='join'&&dt.col)cont=dt.col;
+    else if(dt.mode==='cont')cont=dt.cont||'';
+    const targetCol=cont?f.cols.find(x=>x.id===cont):null;
+    if(targetCol){ targetCol.members.push(src.id); targetCol.open=true; }
+    const all=outNotesOfContainer(cont);
+    let idx=isFinite(dt.index)?dt.index:all.length;
+    const oldPos=all.findIndex(x=>x.id===src.id); // 源在同容器时先扣掉自身占位
+    if(oldPos>=0&&idx>oldPos)idx--;
+    const list=all.filter(x=>x.id!==src.id);
+    idx=Math.max(0,Math.min(idx,list.length));
+    list.splice(idx,0,n);
+    outRenumberNotes(list);
+    if(src.cont!==cont){
+      const srcList=outNotesOfContainer(src.cont);
+      outRenumberNotes(srcList);
+    }
+    recomputeColNest();
+    touch(); renderOutline(); renderCols();
+    toast(dt.mode==='join'?'已加入「'+(targetCol?targetCol.name:'合集')+'」':(cont?'已移入合集':'已移出到未分组'));
+    return;
+  }
+  const c=f.cols.find(x=>x.id===src.id);
+  if(!c){ pendingSnap=null; return; }
+  if(dt.mode==='cols'){ // 同级排序
+    const list=outColsOfParent(dt.parent);
+    const rest=list.filter(x=>x.id!==c.id);
+    let idx=isFinite(dt.index)?dt.index:rest.length;
+    const oldPos=list.findIndex(x=>x.id===c.id);
+    if(oldPos>=0&&idx>oldPos)idx--;
+    idx=Math.max(0,Math.min(idx,rest.length));
+    rest.splice(idx,0,c);
+    outRenumberCols(rest);
+    touch(); renderCols(); renderOutline();
+    return;
+  }
+  pendingSnap=null; // 以下为改变父级：先校验，失败则不动数据（撤销快照丢弃）
+  if(dt.mode==='nestcol'){
+    const p=f.cols.find(x=>x.id===dt.parent);
+    if(!p)return;
+    if(p.id===c.id||colIsDescendant(p,c)){ toast('不能把合集拖进它自己的子合集'); return; }
+    if(colDepth(p)>=COL_MAX_DEPTH-1){ toast('合集层级已到上限 '+COL_MAX_DEPTH+' 层'); return; }
+    const pb=colOwnRect(p);
+    const ids=[...colAllNoteIds(c)].filter(id=>noteById(id));
+    if(!pb||!ids.length||!colNotesInFrame(ids,pb,6)){
+      toast('该合集的便签不在「'+(p.name||'合集')+'」的直接范围内，按自动认父规则不能加入');
+      return;
+    }
+    const fr=colBBox(p);      // 先取范围（含子合集），再摘除重复成员
+    colDetachFrom(p,c);
+    c.parent=p.id; setColPref(c,fr,p);
+    recomputeColNest();
+    touch(); renderCols(); renderOutline();
+    toast(c.parent===p.id?'已加入「'+(p.name||'合集')+'」':'已按自动认父规则处理');
+    return;
+  }
+  // rootcol：移出组
+  if(!c.parent){ toast('已在顶层'); return; }
+  const oldName=f.cols.find(x=>x.id===c.parent)?.name||'合集';
+  c.parent=null; c.pref=null;
+  recomputeColNest();
+  touch(); renderCols(); renderOutline();
+  if(c.parent){
+    const p=f.cols.find(x=>x.id===c.parent);
+    toast('范围仍在「'+(p?p.name:'合集')+'」内，按自动认父规则保持嵌套');
+  }else toast('已移出「'+oldName+'」');
+}
+function outStartDrag(){
+  if(!odb)return;
+  odb.active=true;
+  odb.row.classList.add('odragsrc');
+  try{ if(navigator.vibrate)navigator.vibrate(15); }catch(_){}
+}
+function outCleanDrag(e){
+  if(!odb)return;
+  const od=odb; odb=null;
+  if(od.timer){ clearTimeout(od.timer); od.timer=0; }
+  try{ outEl.releasePointerCapture(e.pointerId); }catch(_){}
+  od.row.classList.remove('odragsrc');
+  outShowDrop(null);
+}
+outEl.addEventListener('pointerdown',e=>{
+  if(e.button!==0||e.isPrimary===false)return;
+  if(e.target.isContentEditable||e.target.closest('input,textarea,select'))return;
+  if(e.target.classList.contains('oarr'))return; // 点箭头是折叠，不拖
+  const row=e.target.closest('.orow'); if(!row||!row.dataset.t)return;
+  const src=outSourceFromRow(row); if(!src)return;
+  const touch=e.pointerType==='touch';
+  odb={src,row,startX:e.clientX,startY:e.clientY,active:false,touch,timer:0,moved:false,drop:null};
+  try{ outEl.setPointerCapture(e.pointerId); }catch(_){}
+  if(touch){ // 触屏：先等长按，避免抢走点击/滚动
+    odb.timer=setTimeout(()=>{ if(odb&&!odb.active){ outStartDrag(); } },OUT_LONG_PRESS);
+  }
 });
-function focusObject(t,id){
+outEl.addEventListener('pointermove',e=>{
+  if(!odb)return;
+  const dx=e.clientX-odb.startX, dy=e.clientY-odb.startY;
+  const dist=Math.hypot(dx,dy);
+  if(!odb.active){
+    if(odb.touch){ // 长按前移动 = 用户想滚动，放弃拖拽
+      if(dist>OUT_DRAG_TOL){ if(odb.timer){clearTimeout(odb.timer);odb.timer=0;} odb=null; outShowDrop(null); }
+      return;
+    }
+    if(dist<=5)return; // 鼠标：超过阈值才算拖，轻点仍是定位
+    outStartDrag();
+  }
+  if(!odb.active)return;
+  if(e.cancelable)e.preventDefault();
+  odb.moved=true;
+  const dt=outComputeDrop(e.clientX,e.clientY,odb.src);
+  odb.drop=dt;
+  outShowDrop(dt);
+},{passive:false});
+outEl.addEventListener('pointerup',e=>{
+  if(!odb)return;
+  const od=odb; odb=null;
+  if(od.timer){ clearTimeout(od.timer); od.timer=0; }
+  try{ outEl.releasePointerCapture(e.pointerId); }catch(_){}
+  od.row.classList.remove('odragsrc');
+  outShowDrop(null);
+  if(!od.active)return; // 未进入拖拽，交给 click 定位
+  _outDragEnded=Date.now();
+  if(od.drop)outApplyDrop(od.drop,od.src);
+});
+outEl.addEventListener('pointercancel',e=>{
+  if(!odb)return;
+  _outDragEnded=Date.now();
+  outCleanDrag(e);
+});
+/* 触屏长按拖拽期间阻止页面滚动（只在拖拽态生效） */
+document.addEventListener('touchmove',e=>{ if(odb&&odb.active&&e.cancelable)e.preventDefault(); },{passive:false});
+function focusObject(t,id,axisId){
   if(t==='col'){
     const c=F().cols.find(x=>x.id===id); if(!c)return;
     const b=colBBox(c); if(b)centerOnRect(b);
     selectOnly('col:'+id);
     const el=colsLayer.querySelector(`.colbox[data-id="${id}"]`);
     if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1200);}
+    return;
+  }
+  if(t==='axis'){
+    const ax=(F().axes||[]).find(a=>a.id===id); if(!ax)return;
+    selectAxis(ax.id);
+    let bb=null;
+    const union=r=>{ if(!r)return; bb=bb?{x:Math.min(bb.x,r.x),y:Math.min(bb.y,r.y),
+      w:Math.max(bb.x+bb.w,r.x+r.w)-Math.min(bb.x,r.x),h:Math.max(bb.y+bb.h,r.y+r.h)-Math.min(bb.y,r.y)}:{x:r.x,y:r.y,w:r.w,h:r.h}; };
+    union(noteById(ax.head)&&noteRect(noteById(ax.head)));
+    union(noteById(ax.tail)&&noteRect(noteById(ax.tail)));
+    if(bb)centerOnRect(bb);
+    return;
+  }
+  if(t==='axpt'){
+    const ax=(F().axes||[]).find(a=>a.id===axisId)||(F().axes||[]).find(a=>(a.points||[]).some(p=>p.id===id));
+    if(!ax)return;
+    const p=(ax.points||[]).find(x=>x.id===id); if(!p)return;
+    selectAxis(ax.id); selAxisPt=p.id; afterSelChange();
+    const pos=axisPtPos(ax,p.t);
+    if(pos)centerOnRect({x:pos.x-60,y:pos.y-50,w:120,h:100});
     return;
   }
   if(t==='note'){
@@ -4136,6 +4641,7 @@ function deleteChar(id){
   beginChange(); const f=F();
   const c=f.chars.find(x=>x.id===id); if(c)pushTrash('char',f.id,f.name,c.name||'未命名角色',c);
   f.chars=f.chars.filter(c=>c.id!==id);
+  pruneArcAll(); // 角色被删 → 其他角色成长线里指向它的 bond 自动清除
   if(selChar===id)selChar=null;
   // 同步清理关系图中的引用与关系边
   const rel=f.rels||(f.rels={chars:[],edges:[]});
@@ -4152,7 +4658,22 @@ function deleteChar(id){
 function renderCharEditor(box){
   const c=charById(selChar);
   if(!c){ box.innerHTML='<div class="phint">在卡片或大纲中选择一个角色，即可在这里编辑设定</div>'; return; }
-  box.innerHTML=`
+  const arcN=Array.isArray(c.arc)?c.arc.length:0;
+  const tabs=`<div class="ctabs">
+    <span class="ctab${charTab==='basic'?' on':''}" data-ctab="basic">设定</span>
+    <span class="ctab${charTab==='arc'?' on':''}" data-ctab="arc">成长线${arcN?' ('+arcN+')':''}</span>
+  </div>`;
+  const bindTabs=()=>box.querySelectorAll('.ctab').forEach(el=>el.onclick=()=>{
+    if(charTab===el.dataset.ctab)return;
+    charTab=el.dataset.ctab; renderCharEditor(box);
+  });
+  if(charTab==='arc'){
+    box.innerHTML=tabs+renderCharArc(c);
+    bindTabs();
+    bindCharArc(box,c);
+    return;
+  }
+  box.innerHTML=tabs+`
     <div class="ptitle">角色设定</div>
     <div class="prow"><label>头像</label></div>
     <div class="avarow">
@@ -4223,6 +4744,212 @@ function renderCharEditor(box){
       if(it){ e.preventDefault(); applyCharImg(cc,it.getAsFile(),()=>renderCharEditor(box)); }
     });
   }
+  bindTabs();
+}
+/* ================= 人物成长线 =================
+   数据全部落在角色的 arc 新字段，不改任何既有字段语义：
+   节点 {id,t:'node',ev:{type:'note'|'axpt',id},text,rel,ct}   —— 引用画布事件，不复制正文
+   关联 {id,t:'bond',other:charId,kind}                        —— 两端各存一条、共用同一 id
+   注意：角色在 chars 文件里，便签 / 轴在 story 文件里，查找与清理都跨 DB.files 进行 */
+const ARC_KINDS=['羁绊','对手','师承','血亲','背叛'];
+function arcNotePlain(n){ return String(n&&n.html||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); }
+function arcFindNote(id){ for(const fl of DB.files){ const n=(fl.notes||[]).find(x=>x.id===id); if(n)return {n,fl}; } return null; }
+function arcFindPt(id){ for(const fl of DB.files) for(const ax of fl.axes||[]){ const p=(ax.points||[]).find(x=>x.id===id); if(p)return {p,ax,fl}; } return null; }
+function arcEvInfo(ev){
+  if(!ev||!ev.id)return {label:'（未指定事件）',sub:'',alive:false};
+  if(ev.type==='note'){ const r=arcFindNote(ev.id);
+    if(r)return {label:r.n.title||'未命名便签',sub:arcNotePlain(r.n).slice(0,40),alive:true};
+    return {label:'关联已失效',sub:'',alive:false}; }
+  if(ev.type==='axpt'){ const r=arcFindPt(ev.id);
+    if(r)return {label:r.p.name||'轴点',sub:r.ax.name||'剧情轴',alive:true};
+    return {label:'关联已失效',sub:'',alive:false}; }
+  return {label:'关联已失效',sub:'',alive:false};
+}
+/* 悬空清理（全量）：与 pruneNoteRefs 同一严谨度。
+   便签/轴点被删 → 各角色 arc 里的节点移除；角色被删 → 对方 bond 移除。
+   在 _applyDB（启动 / 撤销重做 / 导入旧包）、删便签、删轴、删轴点、删角色后都会跑一遍。 */
+function pruneArcAll(){
+  const noteIds=new Set(), ptIds=new Set(), charIds=new Set();
+  for(const fl of DB.files){
+    for(const n of fl.notes||[])noteIds.add(n.id);
+    for(const ax of fl.axes||[]) for(const p of ax.points||[])ptIds.add(p.id);
+    for(const c of fl.chars||[])charIds.add(c.id);
+  }
+  for(const fl of DB.files) for(const c of fl.chars||[]){
+    if(!Array.isArray(c.arc))continue;
+    const keep=c.arc.filter(e=>{
+      if(!e||typeof e!=='object')return false;
+      if(e.t==='bond')return charIds.has(e.other);
+      if(e.t==='node'){ const ev=e.ev||{};
+        if(ev.type==='note')return noteIds.has(ev.id);
+        if(ev.type==='axpt')return ptIds.has(ev.id);
+        return false; }
+      return false;
+    });
+    if(keep.length!==c.arc.length)c.arc=keep;
+  }
+}
+/* normFile 里的轻量版：只清本文件 chars 内指向本文件已删角色的 bond；
+   节点引用跨文件，交给 _applyDB 之后的 pruneArcAll 全量兜底，这里不做（避免旧包单文件加载时误删）。 */
+function pruneArcRefs(f){
+  if(!Array.isArray(f.chars))return;
+  const charIds=new Set(f.chars.map(c=>c.id));
+  for(const c of f.chars){
+    if(!Array.isArray(c.arc))continue;
+    const keep=c.arc.filter(e=>!(e&&e.t==='bond'&&!charIds.has(e.other)));
+    if(keep.length!==c.arc.length)c.arc=keep;
+  }
+}
+/* 分组：章节 = 轴（按文件内 axes 顺序）在前，合集（按 oidx 顺序）次之，都没进线的放「其他 / 未入线」；
+   多文件时先按文件顺序再按文件内顺序。章内：轴上事件按 t（轴点 t / 挂载 t）排序，无 t 的按创建时间排在后面。 */
+function arcGroups(c){
+  const multi=DB.files.filter(fl=>(fl.notes||[]).length||(fl.axes||[]).length).length>1;
+  const colSortedByFile=DB.files.map(fl=>(fl.cols||[]).slice().sort((a,b)=>(+a.oidx||0)-(+b.oidx||0)));
+  const chaps=new Map();
+  const loose={rank:Infinity,title:'其他 / 未入线',items:[]};
+  for(const e of (c.arc||[])){
+    if(!e||e.t!=='node')continue;
+    const ev=e.ev||{}; let key=null,title='',rank=0,t=null;
+    // 每个节点独立跨文件找章节：轴（文件序 → 轴序）在前，合集（oidx 序，与大纲一致）次之
+    for(let fi=0;fi<DB.files.length&&key==null;fi++){
+      const fl=DB.files[fi], base=fi*1e7;
+      const fname=multi?(fl.name||'未命名文件')+' · ':'';
+      if(ev.type==='axpt'){
+        const ax=(fl.axes||[]).find(a=>(a.points||[]).some(p=>p.id===ev.id));
+        if(ax){ key=fl.id+':ax:'+ax.id; title=fname+(ax.name||'剧情轴')+'（轴）'; rank=base+(fl.axes||[]).indexOf(ax); t=ax.points.find(p=>p.id===ev.id).t; }
+      }else if(ev.type==='note'){
+        const ax=(fl.axes||[]).find(a=>(a.mounts||[]).some(m=>m.note===ev.id));
+        if(ax){ key=fl.id+':ax:'+ax.id; title=fname+(ax.name||'剧情轴')+'（轴）'; rank=base+(fl.axes||[]).indexOf(ax); t=ax.mounts.find(m=>m.note===ev.id).t; }
+        else { const sorted=colSortedByFile[fi];
+          const ci=sorted.findIndex(cc=>(cc.members||[]).includes(ev.id));
+          if(ci>=0){ const cl=sorted[ci]; key=fl.id+':col:'+cl.id; title=fname+(cl.name||'合集')+'（合集）'; rank=base+1e6+ci; } }
+      }
+    }
+    const info=arcEvInfo(e.ev);
+    const it={e,label:info.label,sub:info.sub,alive:info.alive,t,ct:+e.ct||0};
+    if(key!=null){ let g=chaps.get(key); if(!g){ g={rank,title,items:[]}; chaps.set(key,g); } g.items.push(it); }
+    else loose.items.push(it);
+  }
+  const gs=[...chaps.values()].sort((a,b)=>a.rank-b.rank);
+  for(const g of gs)g.items.sort((a,b)=>{
+    const ta=a.t==null?1:0,tb=b.t==null?1:0;
+    if(ta!==tb)return ta-tb;
+    if(a.t!=null&&b.t!=null&&a.t!==b.t)return a.t-b.t;
+    return a.ct-b.ct;
+  });
+  loose.items.sort((a,b)=>a.ct-b.ct);
+  if(loose.items.length)gs.push(loose);
+  return gs;
+}
+function renderCharArc(c){
+  const bonds=(c.arc||[]).filter(e=>e&&e.t==='bond');
+  const gs=arcGroups(c);
+  const evOptGroups=DB.files.filter(fl=>(fl.notes||[]).length||(fl.axes||[]).length).map(fl=>{
+    const no=(fl.notes||[]).map(n=>`<option value="note:${n.id}">${esc(n.title||'未命名便签')}</option>`).join('');
+    const po=[];
+    for(const ax of fl.axes||[]) for(const p of ax.points||[])
+      po.push(`<option value="axpt:${p.id}">${esc((ax.name||'剧情轴')+' · '+(p.name||'轴点'))}</option>`);
+    if(!no&&!po)return '';
+    return `<optgroup label="${esc(fl.name||'文件')}">${no}${po}</optgroup>`;
+  }).join('');
+  const otherOpts=allCharsList().filter(x=>x.id!==c.id).map(x=>`<option value="${x.id}">${esc(x.name||'未命名角色')}</option>`).join('');
+  let h=`<div class="ptitle">成长线</div>
+  <div class="phint">引用画布上的便签或轴点，按章节（轴 / 合集）顺序排列；只记引用不复制正文。</div>
+  <div class="arcAddBox">
+    <div class="prow"><label>事件</label><select id="arcEvSel" class="arcSel"><option value="">选择便签或轴点…</option>${evOptGroups}</select></div>
+    <div class="prow"><label>视角</label><input id="arcTextInp" type="text" placeholder="该角色在此事件中的视角一句话（可留空）"></div>
+    <div class="prow"><label>关系</label><input id="arcRelInp" type="text" placeholder="可选，如：主导 / 目击者"><label style="width:auto;flex:none">同时记到</label><select id="arcAlsoSel" class="arcSel"><option value="">不联动（仅本角色）</option>${otherOpts}</select></div>
+    <div class="prow"><label></label><button class="pbtn" id="arcAddBtn">加入成长线</button><span class="phint">「同时记到」选了角色才会写入对方成长线；不选则完全不联动。</span></div>
+  </div>
+  <div class="ptitle" style="margin-top:12px">角色关联</div>
+  <div class="phint">建立后两端互相可见；解除任意一端，另一端自动清除。</div>
+  <div class="arcAddBox">
+    <div class="prow"><label>对象</label><select id="arcBondSel" class="arcSel"><option value="">选择另一个角色…</option>${otherOpts}</select><select id="arcKindSel" style="width:auto;flex:none">${ARC_KINDS.map(k=>`<option>${k}</option>`).join('')}</select><button class="pbtn" id="arcBondBtn">建立</button></div>
+  </div>`;
+  if(bonds.length)h+=`<div class="arcgrp"><div class="arcgrpT"><b>角色关联</b></div>${bonds.map(b=>{
+    const o=allCharsList().find(x=>x.id===b.other);
+    return `<div class="arcrow"><span class="arcchip pair">${esc(b.kind||'关联')}</span><div class="arcmain"><div class="arcev">${esc(o?(o.name||'未命名角色'):'已删除角色')}</div></div><span class="arcx" data-bondx="${b.id}" title="解除关联（两端同时移除）">×</span></div>`;
+  }).join('')}</div>`;
+  for(const g of gs)h+=`<div class="arcgrp"><div class="arcgrpT"><b>${esc(g.title)}</b><span>${g.items.length} 事</span></div>${g.items.map((it,i)=>`
+    <div class="arcrow${it.alive?'':' oread'}"><span class="arcidx">${i+1}</span><div class="arcmain">
+      <div class="arcev">${esc(it.label)}${it.sub?`<span style="color:var(--sub);font-weight:400"> · ${esc(it.sub)}</span>`:''}</div>
+      <input class="arcTextInp" data-arctext="${it.e.id}" value="${esc(it.e.text||'')}" placeholder="视角一句话（可留空）">
+      ${it.e.rel?`<div class="arcmeta"><span class="arcchip">${esc(it.e.rel)}</span></div>`:''}
+    </div><span class="arcgo" data-arcgo="${it.e.id}" title="定位到画布">→</span><span class="arcx" data-arcx="${it.e.id}" title="从此成长线移除（不动画布）">×</span></div>`).join('')}</div>`;
+  if(!gs.length&&!bonds.length)h+='<div class="phint" style="margin-top:10px">还没有成长节点。从上方选择一个便签或轴点加入。</div>';
+  return h;
+}
+function bindCharArc(box,c){
+  const evSel=box.querySelector('#arcEvSel');
+  const addBtn=box.querySelector('#arcAddBtn');
+  if(addBtn)addBtn.onclick=()=>{
+    const v=evSel?evSel.value:'';
+    if(!v){ toast('请先选择一个便签或轴点'); return; }
+    const i=v.indexOf(':'), type=v.slice(0,i), id=v.slice(i+1);
+    if(!Array.isArray(c.arc))c.arc=[];
+    if(c.arc.some(e=>e&&e.t==='node'&&e.ev&&e.ev.type===type&&e.ev.id===id)){ toast('该事件已在此成长线中'); return; }
+    const also=box.querySelector('#arcAlsoSel').value;
+    beginChange();
+    c.arc.push({id:uid(),t:'node',ev:{type,id},text:box.querySelector('#arcTextInp').value.trim(),rel:box.querySelector('#arcRelInp').value.trim(),ct:Date.now()});
+    if(also){ // 勾选才联动：对方生成指向同一事件的节点（视角各自填）
+      const oc=allCharsList().find(x=>x.id===also);
+      if(oc){
+        if(!Array.isArray(oc.arc))oc.arc=[];
+        if(!oc.arc.some(e=>e&&e.t==='node'&&e.ev&&e.ev.type===type&&e.ev.id===id))
+          oc.arc.push({id:uid(),t:'node',ev:{type,id},text:'',rel:'',ct:Date.now()});
+      }
+    }
+    touch(); renderCharEditor(box);
+    toast(also?'已加入双方成长线（视角各自填写）':'已加入成长线');
+  };
+  const bondSel=box.querySelector('#arcBondSel');
+  const bondBtn=box.querySelector('#arcBondBtn');
+  if(bondBtn)bondBtn.onclick=()=>{
+    const other=bondSel?bondSel.value:'';
+    if(!other){ toast('请选择要关联的角色'); return; }
+    if(!Array.isArray(c.arc))c.arc=[];
+    if(c.arc.some(e=>e&&e.t==='bond'&&e.other===other)){ toast('与该角色的关联已存在'); return; }
+    const oc=allCharsList().find(x=>x.id===other);
+    if(!oc){ toast('角色不存在'); return; }
+    beginChange();
+    const bid=uid(), kind=box.querySelector('#arcKindSel').value;
+    if(!Array.isArray(oc.arc))oc.arc=[];
+    c.arc.push({id:bid,t:'bond',other,kind});
+    oc.arc.push({id:bid,t:'bond',other:c.id,kind}); // 两端互指，共用同一 id
+    touch(); renderCharEditor(box);
+    toast('已建立「'+kind+'」关联（双向）');
+  };
+  box.querySelectorAll('[data-arctext]').forEach(inp=>{
+    inp.onchange=()=>{ const e=(c.arc||[]).find(x=>x&&x.id===inp.dataset.arctext); if(!e)return;
+      beginChange(); e.text=inp.value.trim(); touch(); };
+  });
+  box.querySelectorAll('[data-arcgo]').forEach(b=>b.onclick=()=>{
+    const e=(c.arc||[]).find(x=>x&&x.id===b.dataset.arcgo); if(!e)return;
+    const ev=e.ev||{};
+    if(ev.type==='note'){ gotoRef({type:'note',id:ev.id}); return; }
+    if(ev.type==='axpt'){
+      const r=arcFindPt(ev.id);
+      if(r){ switchTab(r.fl.id); focusObject('axpt',ev.id,r.ax.id); return; }
+      toast('轴点已不存在'); return;
+    }
+  });
+  box.querySelectorAll('[data-arcx]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.arcx;
+    beginChange();
+    c.arc=(c.arc||[]).filter(e=>e&&e.id!==id);
+    touch(); renderCharEditor(box);
+    toast('已从成长线移除（不影响画布内容）');
+  });
+  box.querySelectorAll('[data-bondx]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.bondx;
+    const e=(c.arc||[]).find(x=>x&&x.id===id); if(!e)return;
+    beginChange();
+    c.arc=(c.arc||[]).filter(x=>x&&x.id!==id);
+    const oc=allCharsList().find(x=>x.id===e.other); // 删一头 → 另一头自动清除
+    if(oc&&Array.isArray(oc.arc))oc.arc=oc.arc.filter(x=>x&&x.id!==id);
+    touch(); renderCharEditor(box);
+    toast('已解除关联（两端同时移除）');
+  });
 }
 /* 头像图片：压缩为不超过 256px 的 dataURL 存进角色数据 */
 function shrinkImg(src,max,cb){
@@ -4713,14 +5440,49 @@ function openTlAnchorPick(n){
   menu.style.top=Math.min(lastMenuPos.y,window.innerHeight-330)+'px';
   menu.classList.remove('hidden');
 }
+const ALIGN_LABELS={left:'左对齐',hcenter:'水平居中',right:'右对齐',top:'顶部对齐',vcenter:'垂直居中',bottom:'底部对齐',hdist:'水平等距',vdist:'垂直等距'};
+function alignSelected(mode){
+  if(!ALIGN_LABELS[mode])return;
+  const all=[...sel].filter(k=>k.startsWith('note:'));
+  const picked=all.map(k=>noteById(k.slice(5))).filter(n=>n&&!axisOfNote(n.id));
+  const skip=all.length-picked.length;
+  if(picked.length<3){ toast('先框选至少 3 张便签（轴上的便签由轴排版，不参与对齐）'); return; }
+  const items=picked.map(n=>({n,rc:noteRect(n)}));
+  beginChange();
+  if(mode==='left'||mode==='hcenter'||mode==='right'){
+    const minX=Math.min(...items.map(i=>i.rc.x)), maxR=Math.max(...items.map(i=>i.rc.x+i.rc.w));
+    items.forEach(i=>{ i.n.x=Math.round(mode==='left'?minX:mode==='right'?maxR-i.rc.w:(minX+maxR)/2-i.rc.w/2); });
+  } else if(mode==='top'||mode==='vcenter'||mode==='bottom'){
+    const minY=Math.min(...items.map(i=>i.rc.y)), maxB=Math.max(...items.map(i=>i.rc.y+i.rc.h));
+    items.forEach(i=>{ i.n.y=Math.round(mode==='top'?minY:mode==='bottom'?maxB-i.rc.h:(minY+maxB)/2-i.rc.h/2); });
+  } else {
+    const horiz=mode==='hdist';
+    items.sort((a,b)=>horiz?a.rc.x-b.rc.x:a.rc.y-b.rc.y);
+    const first=items[0], last=items[items.length-1];
+    const span=horiz?(last.rc.x+last.rc.w)-first.rc.x:(last.rc.y+last.rc.h)-first.rc.y;
+    const sum=items.reduce((s,i)=>s+(horiz?i.rc.w:i.rc.h),0);
+    const gap=(span-sum)/(items.length-1);
+    let cur=horiz?first.rc.x:first.rc.y;
+    items.forEach(i=>{ if(horiz)i.n.x=Math.round(cur); else i.n.y=Math.round(cur); cur+=(horiz?i.rc.w:i.rc.h)+gap; });
+  }
+  items.forEach(({n})=>{ const el=noteEls.get(n.id); if(el){ el.style.left=n.x+'px'; el.style.top=n.y+'px'; } });
+  touch(); renderLines(); renderCols(); renderContext();
+  toast('已'+ALIGN_LABELS[mode]+' '+items.length+' 张'+(skip?'（跳过轴上的 '+skip+' 张）':'')+'，Ctrl+Z 可还原');
+}
 function openNoteMenu(n,e){
   // 轴成员不可单独操作：整体走轴的选择/删除逻辑
   if(axisOfNote(n.id)){ toast('「'+(n.title||'便签')+'」在轴上：直接拖动可调整位置；点轴梁选中整条轴可整体拖动/删除'); return; }
   lastMenuPos={x:e.clientX,y:e.clientY};
   const menu=$('#noteMenu');
   const refs=noteRefs(n);
+  const selNotes=[...sel].filter(k=>k.startsWith('note:'));
   let html='<div class="mpgroup">跨模块关联（点已关联项 = 移除）</div>';
   ['note','char','place','term','event','file'].forEach(k=>{ html+=`<div class="mitem" data-ref="${k}"><span class="mico">${ICO[REF_ICOS[k]]}</span>＋ 关联到${REF_KINDS[k]}…</div>`; });
+  if(selNotes.length>=3){
+    html+='<div class="mpgroup">对齐与分布（'+selNotes.length+' 张选中，轴上的不参与）</div>'
+      +[['left','⇤','左对齐'],['hcenter','↔','水平居中'],['right','⇥','右对齐'],['top','⇡','顶部对齐'],['vcenter','↕','垂直居中'],['bottom','⇣','底部对齐'],['hdist','⇹','水平等距'],['vdist','⇺','垂直等距']]
+        .map(([k,ic,lb])=>`<div class="mitem" data-align="${k}"><span class="mico">${ic}</span>${lb}</div>`).join('');
+  }
   html+='<div class="mpgroup">降噪分层</div>'
     +(n.deck==='ref'
       ?'<div class="mitem" data-deck="plot"><span class="mico">'+ICO.note+'</span>恢复为剧情便签（常显、置顶）</div>'
@@ -4749,7 +5511,8 @@ function openNoteMenu(n,e){
   menu.classList.remove('hidden');
   $$('#noteMenu .mitem').forEach(m=>m.onclick=()=>{
     menu.classList.add('hidden');
-    if(m.dataset.ref)openRefPicker(m.dataset.ref,ref=>addNoteRef(n,ref));
+    if(m.dataset.align)alignSelected(m.dataset.align);
+    else if(m.dataset.ref)openRefPicker(m.dataset.ref,ref=>addNoteRef(n,ref));
     else if(m.dataset.deck){
       beginChange();
       if(m.dataset.deck==='ref')n.deck='ref'; else delete n.deck;
@@ -5602,6 +6365,199 @@ function runConsistency(){
   box.querySelectorAll('.chkrow').forEach(el=>el.addEventListener('click',()=>{ const it=issues[+el.dataset.i]; $('#chkMask').classList.add('hidden'); try{it.jump();}catch(e){} }));
   $('#chkMask').classList.remove('hidden');
 }
+
+/* ================= 数据自检（只读扫描；只自动修「明确的坏引用」） =================
+   检查项：连线端点悬空 / 便签 refs·tbrefs 悬空 / 轴点 ref 悬空 / 集合成员·父合集悬空 /
+   零长度线 / 便签矩形重叠 / 孤儿合集 / 重复 id。
+   只改坏引用（删指向不存在对象的引用、移除不可渲染的坏连线），重叠等只报告不自动改。
+   修复前自动存一份快照，并走现有撤销栈。 */
+let _auditIssues=[];
+function auditAnchorAlive(f,a){
+  if(!a||!a.t)return false;
+  if(a.t==='note')return (f.notes||[]).some(n=>n.id===a.id);
+  if(a.t==='tb')return !!auditTbInFile(f,a.id);
+  if(a.t==='axpt')return (f.axes||[]).some(ax=>(ax.points||[]).some(p=>p.id===a.id));
+  return false;
+}
+function auditTbInFile(f,tbId){
+  for(const n of (f.notes||[])){
+    if((n.tbrefs&&n.tbrefs[tbId])||(n.html&&n.html.indexOf('data-tb="'+tbId+'"')>=0))return true;
+  }
+  return false;
+}
+function auditRefAlive(ref){ return !!(ref&&ref.type&&ref.id&&findRef(ref)); }
+function auditScanAll(){
+  const out=[], f0=F();
+  const add=o=>out.push(o);
+  /* 1. 项目级重复 id（跨文件重复会让跳转/关联只认第一个） */
+  const dup={};
+  for(const f of DB.files){
+    [['便签','note',f.notes],['集合','col',f.cols],['轴','axis',f.axes],['连线','line',f.lines]].forEach(([label,kind,arr])=>{
+      for(const o of (arr||[])){
+        const k=kind+':'+o.id; (dup[k]=dup[k]||{label,kind,id:o.id,files:[]}).files.push(f);
+      }
+    });
+  }
+  Object.keys(dup).forEach(k=>{
+    const d=dup[k], fs=[...new Set(d.files.map(f=>f.id))];
+    if(d.files.length>1){
+      add({sev:'warn',t:'重复 id',file:fs[0],msg:`${d.label} id「${d.id}」出现 ${d.files.length} 次${fs.length>1?'（跨 '+fs.length+' 个文件）':''}，跳转/关联会只认第一个`,
+        jump:()=>auditGo(fs[0],()=>auditFocusKind(d.kind,d.id))});
+    }
+  });
+  for(const f of DB.files){
+    const tag=esc(f.name||'未命名');
+    /* 2. 连线端点悬空（不可渲染，等于断头线） */
+    for(const l of (f.lines||[])){
+      const bad=[];
+      if(!auditAnchorAlive(f,l.from))bad.push('起点');
+      if(!auditAnchorAlive(f,l.to))bad.push('终点');
+      if(bad.length)add({sev:'bad',t:'连线悬空',file:f.id,msg:`「${tag}」有连线${bad.join('与')}指向已不存在的对象（不会渲染）`,
+        jump:()=>auditGo(f.id,()=>auditFocusLine(l)),
+        fix:true,doFix:()=>{ f.lines=f.lines.filter(x=>x.id!==l.id); if(selLine===l.id)selLine=null; }});
+    }
+    /* 3. 便签 refs / 4. 文字块 tbrefs 悬空 */
+    for(const n of (f.notes||[])){
+      const all=noteRefs(n), keep=all.filter(auditRefAlive);
+      if(keep.length!==all.length)add({sev:'bad',t:'关联悬空',file:f.id,msg:`「${tag}」便签「${esc(n.title||'未命名便签')}」有 ${all.length-keep.length} 个关联指向已删除的内容`,
+        jump:()=>jumpToNote(n.id),
+        fix:true,doFix:()=>{ n.refs=keep; n.ref=keep[0]||null; }});
+      const tbKeys=Object.keys(n.tbrefs||{});
+      for(const tbId of tbKeys){
+        const ref=n.tbrefs[tbId];
+        const tbGone=!(n.html&&n.html.indexOf('data-tb="'+tbId+'"')>=0);
+        if(tbGone||!auditRefAlive(ref)){
+          const nm=(n.title||'未命名便签');
+          add({sev:'bad',t:tbGone?'文字块已丢失':'文字块关联悬空',file:f.id,msg:`「${tag}」便签「${esc(nm)}」${tbGone?'有一个文字块已被删改，关联记录仍残留':'的文字块关联指向已删除的内容'}`,
+            jump:()=>jumpToNote(n.id),
+            fix:true,doFix:()=>{ delete n.tbrefs[tbId]; }});
+        }
+      }
+    }
+    /* 5. 轴点 ref 悬空 */
+    for(const ax of (f.axes||[]))for(const p of (ax.points||[])){
+      if(p.ref&&!auditRefAlive(p.ref)){
+        const h=(f.notes||[]).find(x=>x.id===ax.head);
+        add({sev:'bad',t:'轴点关联悬空',file:f.id,msg:`「${tag}」轴「${esc((h&&h.title)||'未命名轴')}」的点「${esc(p.name||'未命名点')}」关联目标已不存在`,
+          jump:()=>auditGo(f.id,()=>auditFocusAxis(ax)),
+          fix:true,doFix:()=>{ p.ref=null; }});
+      }
+    }
+    /* 6. 集合成员 / 父合集悬空 */
+    for(const c of (f.cols||[])){
+      const gone=(c.members||[]).filter(id=>!auditNoteExistsIn(f,id));
+      if(gone.length)add({sev:'bad',t:'集合成员悬空',file:f.id,msg:`「${tag}」集合「${esc(c.name||'未命名集合')}」有 ${gone.length} 个成员指向已删除的便签`,
+        jump:()=>auditGo(f.id,()=>auditFocusCol(c)),
+        fix:true,doFix:()=>{ c.members=c.members.filter(id=>!gone.includes(id)); }});
+      if(c.parent&&!(f.cols||[]).some(x=>x.id===c.parent))add({sev:'bad',t:'父合集悬空',file:f.id,msg:`「${tag}」集合「${esc(c.name||'未命名集合')}」的父合集已不存在`,
+        jump:()=>auditGo(f.id,()=>auditFocusCol(c)),
+        fix:true,doFix:()=>{ c.parent=null; }});
+    }
+    /* 7. 孤儿合集（无成员、无子合集） */
+    for(const c of (f.cols||[])){
+      const kids=(f.cols||[]).filter(x=>x.parent===c.id).length;
+      if((c.members||[]).length===0&&kids===0)add({sev:'warn',t:'孤儿合集',file:f.id,msg:`「${tag}」集合「${esc(c.name||'未命名集合')}」没有任何成员和子合集`,
+        jump:()=>auditGo(f.id,()=>auditFocusCol(c))});
+    }
+  }
+  /* 8/9. 零长度线、便签重叠：依赖 DOM 实测尺寸，只检查当前画布 */
+  if(f0){
+    for(const l of (f0.lines||[])){
+      if(!auditAnchorAlive(f0,l.from)||!auditAnchorAlive(f0,l.to))continue;
+      const A=anchorCenter(l.from),B=anchorCenter(l.to);
+      if(A&&B&&Math.hypot(A.x-B.x,A.y-B.y)<0.5)add({sev:'warn',t:'零长度线',file:f0.id,msg:`「${esc(f0.name)}」有一条线两端完全重合（画出来只剩一个点）`,
+        jump:()=>auditFocusLine(l)});
+    }
+    const ns=(f0.notes||[]).filter(n=>noteEls.has(n.id)&&!axisOfNote(n.id)&&!isRefNote(n));
+    const hits=[];
+    for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){
+      const a=noteRect(ns[i]),b=noteRect(ns[j]);
+      const ix=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const iy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ix>4&&iy>4&&ix*iy>60)hits.push([ns[i],ns[j],Math.round(ix),Math.round(iy)]);
+    }
+    hits.slice(0,60).forEach(([a,b,ix,iy])=>{
+      add({sev:'warn',t:'便签重叠',file:f0.id,msg:`「${esc(f0.name)}」的便签「${esc(a.title||'未命名')}」与「${esc(b.title||'未命名')}」重叠 ${ix}×${iy}px`,
+        jump:()=>jumpToNote(a.id)});
+    });
+  }
+  return out;
+}
+function auditNoteExistsIn(f,id){ return (f.notes||[]).some(n=>n.id===id); }
+function auditGo(fileId,fn){
+  if(fileId&&fileId!==DB.active)switchTab(fileId);
+  setTimeout(()=>{ try{fn();}catch(e){} },80);
+}
+function auditFocusCol(c){
+  selectOnly('col:'+c.id);
+  const b=colBBox(c); if(b)centerOnRect(b);
+}
+function auditFocusAxis(ax){
+  const g=axisGeom(ax); if(!g)return;
+  selectAxis(ax.id); selAxisPt=null;
+  centerOnRect({x:Math.min(g.x1,g.x2)-100,y:Math.min(g.y1,g.y2)-80,w:Math.abs(g.x2-g.x1)+200,h:Math.abs(g.y2-g.y1)+160});
+  afterSelChange();
+}
+function auditFocusLine(l){
+  const e=lineEnds(l);
+  if(e)centerOnRect({x:Math.min(e.p1.x,e.p2.x)-60,y:Math.min(e.p1.y,e.p2.y)-60,w:Math.abs(e.p2.x-e.p1.x)+120,h:Math.abs(e.p2.y-e.p1.y)+120});
+  else{ const A=anchorCenter(l.from)||anchorCenter(l.to); if(A)centerOnRect({x:A.x-80,y:A.y-80,w:160,h:160}); }
+  selectLine(l.id);
+}
+function auditFocusKind(kind,id){
+  if(kind==='note')jumpToNote(id);
+  else if(kind==='col'){ const c=F().cols.find(x=>x.id===id); if(c)auditFocusCol(c); }
+  else if(kind==='axis'){ const a=(F().axes||[]).find(x=>x.id===id); if(a)auditFocusAxis(a); }
+  else if(kind==='line'){ const l=F().lines.find(x=>x.id===id); if(l)auditFocusLine(l); }
+}
+function openAudit(){
+  _auditIssues=auditScanAll();
+  renderAudit();
+  $('#auditMask').classList.remove('hidden');
+}
+function renderAudit(){
+  const box=$('#auditBody');
+  const bad=_auditIssues.filter(i=>i.sev==='bad').length;
+  const warn=_auditIssues.length-bad;
+  if(!_auditIssues.length){
+    box.innerHTML='<div style="padding:26px 0;text-align:center;font-size:13px;line-height:1.9">✓ 未发现问题<br><span style="color:var(--sub);font-size:11.5px">连线 / 关联 / 轴点 / 集合成员都指向存在的对象；无重复 id、零长度线、重叠便签与孤儿合集</span></div>'
+      +'<div class="phint" style="text-align:center;padding:10px 0 2px">检查范围：全部文件的引用完整性 + 当前画布的几何项（重叠 / 零长度线）</div>';
+    return;
+  }
+  box.innerHTML='<div class="auditbar">'
+    +'<span style="font-size:12.5px">共 <b>'+_auditIssues.length+'</b> 项'+(bad?' · <b style="color:#d9534f">'+bad+' 项坏引用</b>':'')+(warn?' · '+warn+' 项需人工确认':'')+'</span>'
+    +'<span class="auditfix" id="auditFixAll" style="'+(bad?'':'display:none')+'">一键修复坏引用（'+bad+'）</span>'
+    +'<button class="pbtn" id="auditRescan" style="margin-left:auto">重新扫描</button></div>'
+    +_auditIssues.map((it,i)=>'<div class="chkrow" data-i="'+i+'">'
+      +'<span class="asev '+(it.sev==='bad'?'bad':'warn')+'">'+(it.sev==='bad'?'坏引用':'需确认')+'</span>'
+      +'<b>'+it.t+'</b><span>'+esc(it.msg)+'</span></div>').join('')
+    +'<div class="phint" style="padding:10px 2px 2px;line-height:1.7">点条目 = 定位并高亮；「一键修复」只删指向不存在对象的引用（重叠 / 零长度 / 孤儿合集 / 重复 id 只报告，不自动改）。本版本没有「允许重叠」白名单，重叠请人工判断。修复前会自动存一份快照，修复可用 Ctrl+Z 撤销。</div>';
+  box.querySelectorAll('.chkrow').forEach(el=>el.addEventListener('click',()=>{
+    const it=_auditIssues[+el.dataset.i]; if(!it)return;
+    $('#auditMask').classList.add('hidden');
+    (it.jump||(()=>{}))();
+  }));
+  const res=$('#auditRescan'); if(res)res.onclick=()=>{ _auditIssues=auditScanAll(); renderAudit(); };
+  const fix=$('#auditFixAll'); if(fix)fix.onclick=auditRepairRefs;
+}
+function auditRepairRefs(){
+  const list=_auditIssues.filter(i=>i.fix);
+  if(!list.length){ toast('没有可自动修复的坏引用'); return; }
+  takeSnap(true); // 修前快照
+  beginChange();
+  let n=0;
+  for(const it of list){ try{ it.doFix(); n++; }catch(e){} }
+  touch();
+  const f=F();
+  (f.notes||[]).forEach(x=>{ try{ applyNoteRef(x); applyTbRefs(x); }catch(e){} });
+  renderLines(); renderCols(); renderOutline(); renderContext();
+  _auditIssues=auditScanAll();
+  renderAudit();
+  toast(`已修复 ${n} 处坏引用（已自动存快照，可 Ctrl+Z 撤销）`);
+}
+$('#btnAudit').onclick=openAudit;
+$('#auditClose').onclick=()=>$('#auditMask').classList.add('hidden');
+$('#auditMask').addEventListener('mousedown',e=>{ if(e.target.id==='auditMask')$('#auditMask').classList.add('hidden'); });
 function exportWiki(){
   const esc2=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const para=s=>String(s||'').split(/\n+/).filter(Boolean).map(x=>'<p>'+esc2(x)+'</p>').join('');
@@ -5836,7 +6792,7 @@ async function exportPackage(filter,folderId){
   if(!files.length){ toast('没有可打包的文件'); return; }
   const fname=folderId?(((folderById(folderId)||{}).name||'文件夹')+'.ocpkg'):'项目包.ocpkg';
   const p=await bridge.saveFileAs(fname,buildPackage(filter,folderId));
-  if(p)rememberDoc(p,'ocpkg',''); // 整个项目为一份文档
+  if(p)rememberDoc(p,'ocpkg','',filter,folderId); // 记住路径；Ctrl+S 仍按同样的筛选/文件夹回写
 }
 /* 导出设定 Markdown：把当前模块的设定整理成一份 .md 文本，方便分享或投喂给 AI */
 function buildSetupMd(){
@@ -5938,6 +6894,7 @@ function importText(txt, fallbackName, srcPath){
         else{ nf.name=uniqueFileName(nf.name); if(!nf.id)nf.id=uid(); DB.files.push(nf); added++; if(!firstId)firstId=nf.id; }
       });
       touch(); renderTabs(); switchTab(firstId||DB.active);
+      if(srcPath)rememberDoc(srcPath,'ocpkg','',null,null); // 导入的项目包即当前文档，Ctrl+S 回写它
       toast(`导入完成：新增 ${added} 个${replaced?'、覆盖 '+replaced+' 个':''}文件`);
     }else{
       const d=JSON.parse(JSON.stringify(r.data));
@@ -6131,15 +7088,17 @@ wrap.addEventListener('mousedown',e=>{
       if(ax){ selectAxis(ax.id); startAxisTotalDrag(e,ax); e.preventDefault(); return; }
     }
   }
-  // 选择模式：点击线条可选中（右键之外的便捷入口）
+  // 选择模式：点击线条可选中（右键之外的便捷入口）。
+  // 线条不再在按下时拦截框选：按下时只记下命中的线，照常启动框选；
+  // 松手时若几乎没拖动（=点击）才选中该线。否则线条密集的画布上框选会被到处拦截。
   if(e.target.closest('.note')||e.target.closest('.colhead'))return;
+  let lineHit=null;
   {
     const wl=s2w(e.clientX,e.clientY);
-    const lh=hitLine(wl.x,wl.y);
-    if(lh){ selectLine(lh); e.preventDefault(); return; }
+    lineHit=hitLine(wl.x,wl.y);
   }
   if(!e.shiftKey){ sel.clear(); selLine=null; afterSelChange(); }
-  drag={type:'band',sx:e.clientX,sy:e.clientY,additive:e.shiftKey};
+  drag={type:'band',sx:e.clientX,sy:e.clientY,additive:e.shiftKey,lineHit};
   selBox.style.display='block';
   selBox.style.left=(e.clientX-wrapRect().left)+'px'; selBox.style.top=(e.clientY-wrapRect().top)+'px';
   selBox.style.width='0px'; selBox.style.height='0px';
@@ -6165,10 +7124,10 @@ document.addEventListener('mousemove',e=>{
   }
   if(!drag)return;
   const dx=e.clientX-drag.sx, dy=e.clientY-drag.sy;
-  if(!drag.moved&&Math.hypot(dx,dy)>3)drag.moved=true;
   const w=s2w(e.clientX,e.clientY);
   const wdx=dx/cam.z, wdy=dy/cam.z;
   if(drag.type==='notes'){
+    if(!drag.moved&&Math.hypot(dx,dy)>3){drag.moved=true;beginChange();} // 拖动可撤销
     for(const [id,s] of drag.starts){ const n=noteById(id); if(!n)continue;
       n.x=Math.round(s.x+wdx); n.y=Math.round(s.y+wdy);
       const el=noteEls.get(id); if(el){el.style.left=n.x+'px';el.style.top=n.y+'px';} }
@@ -6177,14 +7136,14 @@ document.addEventListener('mousemove',e=>{
     requestRenderLines(); if(!drag.fromCol)renderCols(); requestDraw(); updateCoords();
   }
   else if(drag.type==='axistotal'){ // 轴整体拖动：所有成员一起平移，相对位置不变
-    if(!drag.moved&&Math.hypot(dx,dy)>3)drag.moved=true;
+    if(!drag.moved&&Math.hypot(dx,dy)>3){drag.moved=true;beginChange();}
     for(const [id,s] of drag.starts){ const n=noteById(id); if(!n)continue;
       n.x=Math.round(s.x+wdx); n.y=Math.round(s.y+wdy);
       const el=noteEls.get(id); if(el){el.style.left=n.x+'px';el.style.top=n.y+'px';} }
     requestRenderLines(); updateCoords();
   }
   else if(drag.type==='axismember'){ // 轴模式：单个便签自由拖动
-    if(!drag.moved&&Math.hypot(dx,dy)>3)drag.moved=true;
+    if(!drag.moved&&Math.hypot(dx,dy)>3){drag.moved=true;beginChange();}
     const n=noteById(drag.noteId); if(!n)return;
     n.x=Math.round(drag.ox+wdx); n.y=Math.round(drag.oy+wdy);
     const el=noteEls.get(n.id); if(el){el.style.left=n.x+'px';el.style.top=n.y+'px';}
@@ -6195,6 +7154,7 @@ document.addEventListener('mousemove',e=>{
     }else if(ax){ requestRenderLines(); }
   }
   else if(drag.type==='resize'){
+    if(!drag.moved&&Math.hypot(dx,dy)>3){drag.moved=true;beginChange();}
     const n=noteById(drag.id); if(!n)return;
     const el=noteEls.get(drag.id); if(!el)return;
     if(drag.dir==='s'&&n.img){
@@ -6299,6 +7259,7 @@ document.addEventListener('mouseup',e=>{
     const p1=s2w(d.sx,d.sy), p2=s2w(e.clientX,e.clientY);
     const r={x:Math.min(p1.x,p2.x),y:Math.min(p1.y,p2.y),w:Math.abs(p2.x-p1.x),h:Math.abs(p2.y-p1.y)};
     if(r.w>4&&r.h>4)boxSelect(r,d.additive);
+    else if(d.lineHit){ selectLine(d.lineHit); } // 几乎没拖动 = 点击语义：选中命中的线条
     else if(!d.additive){ afterSelChange(); }
   }
   else if(d.type==='link'){
@@ -6470,6 +7431,8 @@ document.addEventListener('keydown',e=>{
     startPick('any','',hex=>setTbColor(n,t.tb,hex));
     return;
   }
+  // 大纲搜索（Ctrl+Shift+F，避开已有的 Ctrl+F 全局搜索）
+  if(combo===hkMap().outlineSearch){ focusOutlineSearch(); e.preventDefault(); return; }
   // 固定键
   if(e.ctrlKey&&e.code==='KeyF'){ openSearch(); e.preventDefault(); return; }
   if(e.ctrlKey&&e.code==='KeyC'){ doCopy(false); e.preventDefault(); return; }
@@ -6535,6 +7498,7 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Home'){ homeView(); return; }
   const hk=hkMap();
   if(combo===hk.toggleOutline){ e.preventDefault(); $('#panel').style.display=$('#panel').style.display==='none'?'flex':'none'; return; }
+  if(combo===hk.dataAudit){ e.preventDefault(); openAudit(); return; } // 数据自检：任何视图可用
   if(!isCanvas(F()))return; // 角色设定 / 时间线视图不响应画布类快捷键
   if(combo===hk.toolSelect){setTool('select');return;}
   if(combo===hk.toolDraw){setTool('draw');return;}
@@ -6546,7 +7510,8 @@ document.addEventListener('keydown',e=>{
   if(combo===hk.group){ groupSelected(); return; }
   if(combo===hk.ungroup){ ungroupSelected(); return; }
   // ---- 绘画软件风格补充（画布类） ----
-  if(combo===hk.selectAll){ sel.clear(); F().notes.forEach(n=>{ if(!axisOfNote(n.id))sel.add('note:'+n.id); }); F().cols.forEach(c=>sel.add('col:'+c.id)); afterSelChange(); e.preventDefault(); return; }
+  // 全选包含轴内便签（与框选保持一致），否则「全选 + G」在轴密集画布上也会落空
+  if(combo===hk.selectAll){ sel.clear(); F().notes.forEach(n=>sel.add('note:'+n.id)); F().cols.forEach(c=>sel.add('col:'+c.id)); afterSelChange(); e.preventDefault(); return; }
   if(combo===hk.groupWin){ groupSelected(); e.preventDefault(); return; }
   if(combo===hk.ungroupWin){ ungroupSelected(); e.preventDefault(); return; }
   if(combo===hk.brushUp){ adjustBrush(1); e.preventDefault(); return; }
@@ -6558,7 +7523,7 @@ document.addEventListener('keydown',e=>{
     if((dx||dy)&&sel.size){
       beginChange();
       [...sel].forEach(k=>{
-        if(k.startsWith('note:')){ const n=F().notes.find(x=>x.id===k.slice(5)); if(n){ n.x+=dx; n.y+=dy; const el=noteEls.get(n.id); if(el){ el.style.left=n.x+'px'; el.style.top=n.y+'px'; } } }
+        if(k.startsWith('note:')){ const n=F().notes.find(x=>x.id===k.slice(5)); if(n&&!axisOfNote(n.id)){ n.x+=dx; n.y+=dy; const el=noteEls.get(n.id); if(el){ el.style.left=n.x+'px'; el.style.top=n.y+'px'; } } }
         else if(k.startsWith('col:')){ const c=F().cols.find(x=>x.id===k.slice(4)); if(c){ c.x+=dx; c.y+=dy; } }
       });
       touch(); renderLines(); renderCols();
@@ -6665,6 +7630,16 @@ $('#btnPackage').onclick=()=>{
   });
   openMenu(menu,$('#btnPackage'));
 };
+let _backupWarned=false;
+function toastSavedResult(r,path){ // 备份失败只在本次运行提示一次，绝不影响「已保存」的事实
+  if(r&&r.startsWith('WARN')){
+    if(_backupWarned)return;
+    _backupWarned=true;
+    toast('已保存到 '+path+' · 旧版本备份失败：'+r.slice(5)+'（本次运行只提示一次）');
+    return;
+  }
+  toast('已保存到 '+path);
+}
 async function doSave(){
   /* 保存：内部自动保存（崩溃恢复）总是执行；若已关联「当前文档」，再静默回写那份文件。
      与「另存为/打包」的区别：另存为让你选新位置，保存写回原位置，不再让人猜。 */
@@ -6673,17 +7648,23 @@ async function doSave(){
   try{localStorage.setItem(LS_KEY,snap);}catch(e){}
   bridge.autosave(snap);
   const docPath=DB.settings.docPath;
+  // 浏览器/访客模式没有真实写盘能力：保存 = 重新下载一份，不能谎报「已保存到路径」
+  if(docPath&&!bridge.py){
+    if(DB.settings.docKind==='ocpkg')await exportPackage(DB.settings.docFilter||null,DB.settings.docFolder||null);
+    else await exportPlot();
+    return;
+  }
   if(docPath){
     if(DB.settings.docKind==='ocpkg'){
-      const r=await bridge.saveToPath(docPath,buildPackage());
+      const r=await bridge.saveToPath(docPath,buildPackage(DB.settings.docFilter||null,DB.settings.docFolder||null));
       if(r&&r.startsWith('ERROR')){ toast('保存失败（'+r.slice(6)+'）：已自动保存工作区，可用「打包」换个位置'); return; }
-      markClean(); toast('已保存到 '+docPath); return;
+      markClean(); toastSavedResult(r,docPath); return;
     }
     const f=DB.files.find(x=>x.id===DB.settings.docFileId);
     if(!f){ toast('原文件已不在工作区，请用「另存为」重新选择位置'); await exportPlot(); return; }
     const r=await bridge.saveToPath(docPath,plotData(f));
     if(r&&r.startsWith('ERROR')){ toast('保存失败（'+r.slice(6)+'）：已自动保存工作区，可用「另存为」换个位置'); return; }
-    markClean(); toast('已保存到 '+docPath); return;
+    markClean(); toastSavedResult(r,docPath); return;
   }
   // 首次保存（未关联文档）：退化为另存为，成功后自动记住路径；浏览器模式为下载
   await exportPlot();
