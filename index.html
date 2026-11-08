@@ -756,6 +756,62 @@ body.declutter .nrefbadge{opacity:.6;}
 .snaprow{display:flex; align-items:center; gap:10px; padding:8px 4px; border-bottom:1px dashed var(--pline); font-size:12.5px;}
 .snaprow .snaptime{flex:1;}
 .snaprow .snapsize{color:var(--sub); font-size:11px;}
+/* ---------- 版本差异对比（快照 diff） ---------- */
+#diffMask{position:fixed; inset:0; background:rgba(10,16,28,.42); backdrop-filter:blur(3px); z-index:100; display:flex; align-items:center; justify-content:center;}
+#diffMask.hidden{display:none;}
+#diffBox{width:min(860px,95vw); max-height:86vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; display:flex; flex-direction:column; box-shadow:var(--shadow-l);}
+#diffBox .shead span{cursor:pointer; color:var(--sub); padding:0 4px;}
+#diffBox .shead span:hover{color:var(--text);}
+.diffbar{display:flex; align-items:center; gap:7px; padding:9px 16px; border-bottom:1px solid var(--pline); flex-wrap:wrap; font-size:11.5px; color:var(--sub);}
+.diffbar select{border:1px solid var(--pline); border-radius:6px; padding:4px 7px; background:var(--bg); color:var(--text); outline:none; max-width:230px; font-size:11.5px;}
+.diffbar select:focus{border-color:var(--accent);}
+.diffarrow{color:var(--accent); font-weight:700;}
+.diffscope{flex:1; min-width:120px; text-align:right; color:var(--sub); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+#diffBody{padding:10px 16px 14px; overflow-y:auto; overscroll-behavior:contain;}
+.dsum{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:2px 0 8px; font-size:11.5px;}
+.dsumitem{display:inline-flex; align-items:center; gap:4px;}
+.dsumitem b{font-weight:600; color:var(--text);}
+.dchip{font-size:10.5px; border-radius:9px; padding:1px 7px; border:1px solid var(--pline); color:var(--sub);}
+.dchip.add{color:#2f8f57; border-color:#8ac9a4; background:rgba(70,175,110,.13);}
+.dchip.del{color:#c0453f; border-color:#e2a5a1; background:rgba(205,85,75,.13);}
+.dchip.mod{color:#a9770f; border-color:#e2c78f; background:rgba(222,175,60,.16);}
+details.dsec{border:1px solid var(--pline); border-radius:8px; margin:8px 0; overflow:hidden;}
+details.dsec>summary{cursor:pointer; padding:7px 10px; font-weight:600; font-size:12px; background:var(--bg); list-style:none; color:var(--text);}
+details.dsec>summary::-webkit-details-marker{display:none;}
+details.dsec>summary:before{content:'▸'; display:inline-block; width:12px; color:var(--sub); transition:transform .12s;}
+details.dsec[open]>summary:before{transform:rotate(90deg);}
+.dsecbody{padding:2px 9px 8px;}
+.drow{border-bottom:1px dashed var(--pline); padding:5px 2px;}
+.drow:last-child{border-bottom:none;}
+.dhead{display:flex; align-items:center; gap:7px; font-size:12.5px; min-height:24px;}
+.dhead.clickable{cursor:pointer;}
+.dhead.clickable:hover .dtitle{color:var(--accent);}
+.dhead .dtitle{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600;}
+.dhead .dtags{flex:none; display:flex; gap:3px; flex-wrap:wrap; justify-content:flex-end;}
+.dtag{font-size:9.5px; border-radius:8px; padding:1px 6px; background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+.dtag.add{color:#2f8f57; background:rgba(70,175,110,.15);}
+.dtag.del{color:#c0453f; background:rgba(205,85,75,.15);}
+.dtag.mod{color:#a9770f; background:rgba(222,175,60,.18);}
+.dhead .pbtn{font-size:10.5px; padding:2px 8px;}
+.dcaret{flex:none; color:var(--sub); font-size:10px; width:12px; text-align:center; transition:transform .12s;}
+.drow.open .dcaret{transform:rotate(90deg);}
+.ddetail{display:none; padding:6px 2px 4px 14px;}
+.drow.open .ddetail{display:block;}
+.dfield{margin:5px 0; font-size:11.5px; line-height:1.6;}
+.dfield .dflabel{display:inline-block; min-width:42px; font-weight:600; color:var(--sub); margin-right:6px;}
+.dold{color:#c0453f; text-decoration:line-through; opacity:.82;}
+.dnew{color:#2f8f57;}
+.dlines{border:1px solid var(--pline); border-radius:6px; overflow:auto; margin-top:4px; background:var(--bg); max-height:320px;}
+.dline{display:flex; gap:6px; font:11.5px/1.55 Consolas,"Microsoft YaHei",monospace; white-space:pre-wrap; word-break:break-word; padding:1px 8px;}
+.dline .dsign{flex:none; width:10px; text-align:center; color:var(--sub);}
+.dline.same{color:var(--sub);}
+.dline.skip{color:var(--sub); font-style:italic; opacity:.75;}
+.dline.del{background:rgba(210,80,70,.16); color:#a53a35;}
+.dline.add{background:rgba(60,170,100,.16); color:#276c46;}
+.dline.mod{background:rgba(224,178,55,.20); color:#7a5a10;}
+.dline.mod.old{opacity:.72;}
+.dempty{color:var(--sub); font-size:11.5px; padding:16px 0; line-height:1.7;}
+.diffhint{flex:1; color:var(--sub); font-size:10.5px; line-height:1.5;}
 /* ---------- 伏笔角标 / 角色状态 ---------- */
 .fsdot{position:absolute; top:-6px; right:-6px; width:12px; height:12px; border-radius:50%; border:2px solid var(--panel); pointer-events:none; z-index:7; box-shadow:0 1px 3px rgba(0,0,0,.3);}
 .chstate{margin-top:3px; font-size:10.5px; color:var(--accent); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -916,6 +972,7 @@ body.declutter .nrefbadge{opacity:.6;}
   <div class="mitem" data-act="replace"><span class="mico" data-ico="search"></span>查找替换</div>
   <div class="mitem" data-act="trash"><span class="mico" data-ico="trash"></span>回收站</div>
   <div class="mitem" data-act="snap"><span class="mico" data-ico="package"></span>备份快照</div>
+  <div class="mitem" data-act="diff"><span class="mico" data-ico="search"></span>版本对比（快照 diff）</div>
 </div>
 <div id="impMenu" class="popmenu hidden"></div>
 <div id="searchMask" class="hidden">
@@ -1217,7 +1274,21 @@ body.declutter .nrefbadge{opacity:.6;}
   <div id="snapBox">
     <div class="shead">备份快照 · 最多 5 份，超 12 小时自动备份<span id="snapClose">×</span></div>
     <div id="snapBody"></div>
-    <div class="trashfoot"><button class="pbtn" id="snapSave">手动存一份</button></div>
+    <div class="trashfoot"><button class="pbtn" id="snapDiff">版本对比</button><button class="pbtn" id="snapSave">手动存一份</button></div>
+  </div>
+</div>
+<div id="diffMask" class="hidden">
+  <div id="diffBox">
+    <div class="shead">版本差异对比<span id="diffClose">×</span></div>
+    <div class="diffbar">
+      <label>基准 A</label><select id="diffSelA"></select>
+      <span class="diffarrow">→</span>
+      <label>对照 B</label><select id="diffSelB"></select>
+      <button class="pbtn" id="diffSwap" title="交换 A / B">⇄</button>
+      <span class="diffscope" id="diffScope"></span>
+    </div>
+    <div id="diffBody"></div>
+    <div class="trashfoot"><span class="diffhint" id="diffHint"></span><button class="pbtn" id="diffDone">关闭</button></div>
   </div>
 </div>
 <div id="mindMask" class="hidden">
@@ -8235,10 +8306,14 @@ function renderSnaps(){
     <div class="snaprow">
       <span class="snaptime">${new Date(s.time).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}${i===0?' · 最新':''}</span>
       <span class="snapsize">${(s.data.length/1024).toFixed(1)} KB</span>
-      <span class="trops"><button class="pbtn" data-snap="${i}">恢复</button></span>
+      <span class="trops"><button class="pbtn" data-diff="${i}" title="与当前对比">对比</button><button class="pbtn" data-snap="${i}">恢复</button></span>
     </div>`).join('')
     +`<div class="phint">最多保留 ${SNAP_MAX} 份；超过 12 小时自动备份一份${nextAuto?('，下次自动备份：'+nextAuto):''}。</div>`
     :'<div class="phint" style="text-align:center;padding:22px 0">还没有快照 —— 点击下方「手动存一份」，或等待自动备份</div>';
+  host.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{
+    $('#snapMask').classList.add('hidden');
+    openDiff('s'+b.dataset.diff,'cur');
+  });
   host.querySelectorAll('[data-snap]').forEach(b=>b.onclick=async()=>{
     const s=loadSnaps().snaps[+b.dataset.snap]; if(!s)return;
     if(!await uiConfirm(`用 ${new Date(s.time).toLocaleString('zh-CN')} 的快照替换当前全部数据？之后未导出的修改将丢失（可先「另存为」留底）。`,'恢复'))return;
@@ -8251,8 +8326,416 @@ function renderSnaps(){
   });
 }
 $('#snapSave').onclick=()=>{ takeSnap(false); renderSnaps(); };
+$('#snapDiff').onclick=()=>{ $('#snapMask').classList.add('hidden'); openDiff(); };
 $('#snapClose').onclick=()=>$('#snapMask').classList.add('hidden');
 $('#snapMask').addEventListener('mousedown',e=>{ if(e.target.id==='snapMask')$('#snapMask').classList.add('hidden'); });
+
+/* ================= 工具：版本差异对比（只读比对现有备份快照，不新建版本系统） ================= */
+const DIFF_FIELD_NAMES={title:'标题',html:'正文',pos:'位置',color:'配色',refs:'关联',col:'合集',img:'图片'};
+let diffA='s0', diffB='cur';
+const diffRowData=new Map();
+let _diffSeq=0, _diffRefMap=null;
+const _dj=x=>JSON.stringify(x==null?null:x);
+
+function diffSnapBySel(sel){
+  if(sel==='cur')return null;
+  const i=+String(sel).slice(1);
+  return loadSnaps().snaps[i]||null;
+}
+function diffSideFile(sel){
+  if(sel==='cur')return F();
+  const s=diffSnapBySel(sel); if(!s)return null;
+  const d=safeParse(s.data); if(!d)return null;
+  return (d.files||[]).find(f=>f.id===F().id)||null;
+}
+function diffSnapText(sel){
+  if(sel==='cur')return '当前';
+  const s=diffSnapBySel(sel); if(!s)return '（快照已不存在）';
+  return new Date(s.time).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+function diffOptHtml(){
+  let h='<option value="cur">当前</option>';
+  loadSnaps().snaps.forEach((s,i)=>{ h+='<option value="s'+i+'">快照 '+(i+1)+' · '+esc(diffSnapText('s'+i))+(i===0?'（最新）':'')+'</option>'; });
+  return h;
+}
+function openDiff(a,b){
+  diffA=a||(loadSnaps().snaps.length?'s0':'cur');
+  diffB=b||'cur';
+  const A=$('#diffSelA'), B=$('#diffSelB');
+  A.innerHTML=diffOptHtml(); B.innerHTML=diffOptHtml();
+  A.value=diffA; B.value=diffB;
+  A.onchange=()=>{ diffA=A.value; renderDiff(); };
+  B.onchange=()=>{ diffB=B.value; renderDiff(); };
+  renderDiff();
+  $('#diffMask').classList.remove('hidden');
+}
+function diffColMap(f){
+  const m={};
+  (f.cols||[]).forEach(c=>(c.members||[]).forEach(id=>{
+    const o=m[id]||(m[id]={ids:[],names:[]});
+    o.ids.push(c.id); o.names.push(c.name||c.id);
+  }));
+  Object.keys(m).forEach(k=>{ m[k].ids.sort(); m[k].names.sort(); });
+  return m;
+}
+function diffList(aa,bb,key,eq){
+  const am=new Map((aa||[]).map(x=>[key(x),x])), bm=new Map((bb||[]).map(x=>[key(x),x]));
+  const add=[],del=[],mod=[];
+  bm.forEach((x,k)=>{ if(!am.has(k))add.push(x); });
+  am.forEach((x,k)=>{ const y=bm.get(k); if(!y)del.push(x); else if(!eq(x,y))mod.push({a:x,b:y}); });
+  return {add,del,mod};
+}
+function diffLineEq(a,b){ return _dj(a.from)===_dj(b.from)&&_dj(a.to)===_dj(b.to)&&(a.name||'')===(b.name||'')&&(a.color||'')===(b.color||''); }
+function diffColEq(a,b){ return (a.name||'')===(b.name||'')&&(a.color||'')===(b.color||'')&&_dj(a.parent||null)===_dj(b.parent||null)&&_dj((a.members||[]).slice().sort())===_dj((b.members||[]).slice().sort()); }
+function diffCleanAxis(x){ const o={}; Object.keys(x||{}).forEach(k=>{ if(k[0]!=='_')o[k]=x[k]; }); return o; }
+function diffAxisEq(a,b){ return _dj(diffCleanAxis(a))===_dj(diffCleanAxis(b)); }
+function diffNoteFields(a,b,cA,cB){
+  const ch=[];
+  if((a.title||'')!==(b.title||''))ch.push('title');
+  if((a.html||'')!==(b.html||''))ch.push('html');
+  if(Math.abs((a.x||0)-(b.x||0))>.01||Math.abs((a.y||0)-(b.y||0))>.01||Math.abs((a.w||0)-(b.w||0))>.01)ch.push('pos');
+  if((a.bg||'')!==(b.bg||'')||(a.titleBg||'')!==(b.titleBg||'')||(a.color||'')!==(b.color||'')||_dj(a.tbcolors)!==_dj(b.tbcolors))ch.push('color');
+  if(_dj(a.refs)!==_dj(b.refs)||_dj(a.ref||null)!==_dj(b.ref||null)||_dj(a.tbrefs)!==_dj(b.tbrefs))ch.push('refs');
+  if(_dj((cA&&cA.ids)||[])!==_dj((cB&&cB.ids)||[]))ch.push('col');
+  if(_dj(a.img||null)!==_dj(b.img||null))ch.push('img');
+  return ch;
+}
+function diffBuildRefMap(){
+  const m={};
+  DB.files.forEach(f=>{
+    m['file:'+f.id]=f.name||'文件';
+    (f.notes||[]).forEach(n=>{ m['note:'+n.id]=n.title||'便签'; });
+    (f.chars||[]).forEach(c=>{ m['char:'+c.id]=c.name||'角色'; });
+    (f.places||[]).forEach(p=>{ m['place:'+p.id]=p.name||'地点'; });
+    (f.terms||[]).forEach(t=>{ m['term:'+t.id]=t.name||'设定'; });
+    (f.events||[]).forEach(e=>{ m['event:'+e.id]=e.title||'事件'; });
+  });
+  return m;
+}
+function diffRefName(k){ return (_diffRefMap&&_diffRefMap[k])||k; }
+function diffEndLabel(f,e){
+  if(!e)return '?';
+  if(e.t==='note'){ const n=(f.notes||[]).find(x=>x.id===e.id); return n?(n.title||'无标题'):'（便签已删除）'; }
+  if(e.t==='tb')return '文本块';
+  if(e.t==='axpt'){
+    for(const ax of (f.axes||[])){ const p=(ax.points||[]).find(x=>x.id===e.id); if(p)return p.name||'轴点'; }
+    return '轴点';
+  }
+  return e.id||'?';
+}
+function diffLineText(f,l){ return (l.name?'「'+esc(l.name)+'」 ':'')+esc(diffEndLabel(f,l.from))+' ↔ '+esc(diffEndLabel(f,l.to)); }
+function diffColText(f,c){
+  const p=c.parent?((f.cols||[]).find(x=>x.id===c.parent)||{}).name:null;
+  return '「'+(c.name||'未命名')+'」'+(p?' · 父合集「'+p+'」':'')+' · 成员 '+(c.members||[]).length;
+}
+function diffAxisText(f,ax){
+  const hn=(f.notes||[]).find(n=>n.id===ax.head), tn=(f.notes||[]).find(n=>n.id===ax.tail);
+  return '「'+((hn&&hn.title)||'？')+'」→「'+((tn&&tn.title)||'？')+'」';
+}
+function diffAxisDetail(a,b){
+  const p=[];
+  if(a.head!==b.head)p.push('头便签变更');
+  if(a.tail!==b.tail)p.push('尾便签变更');
+  if((a.color||'')!==(b.color||''))p.push('颜色 '+(a.color||'—')+' → '+(b.color||'—'));
+  if(_dj(a.mounts||[])!==_dj(b.mounts||[]))p.push('挂载 '+(a.mounts||[]).length+' → '+(b.mounts||[]).length);
+  if(_dj(a.points||[])!==_dj(b.points||[]))p.push('轴点 '+(a.points||[]).length+' → '+(b.points||[]).length);
+  return p.join('；');
+}
+function diffColDetail(a,b){
+  const p=[];
+  if((a.name||'')!==(b.name||''))p.push('名称 '+esc(a.name||'—')+' → '+esc(b.name||'—'));
+  if((a.color||'')!==(b.color||''))p.push('颜色 '+(a.color||'—')+' → '+(b.color||'—'));
+  if(_dj(a.parent||null)!==_dj(b.parent||null))p.push('父合集变更');
+  if(_dj((a.members||[]).slice().sort())!==_dj((b.members||[]).slice().sort()))p.push('成员 '+(a.members||[]).length+' → '+(b.members||[]).length);
+  return p.join('；');
+}
+function diffDsumItem(name,a,d,m){
+  return '<span class="dsumitem"><b>'+name+'</b>'
+    +'<span class="dchip add">+'+a+'</span>'
+    +'<span class="dchip del">−'+d+'</span>'
+    +'<span class="dchip mod">~'+m+'</span></span>';
+}
+function diffNoteRow(kind,na,nb,ch,cA,cB,srcSel){
+  const n=nb||na;
+  const dk='n'+(++_diffSeq);
+  diffRowData.set(dk,{kind,id:n.id,a:na,b:nb,ch:ch||[],colA:cA||{ids:[],names:[]},colB:cB||{ids:[],names:[]},srcSel:srcSel||null});
+  const tags=kind==='add'?'<span class="dtag add">新增</span>'
+    :kind==='del'?'<span class="dtag del">删除</span>'
+    :'<span class="dtag mod">修改</span>'+(ch||[]).map(k=>'<span class="dtag">'+(DIFF_FIELD_NAMES[k]||k)+'</span>').join('');
+  const clickable=kind==='mod'?' clickable':'';
+  return '<div class="drow" data-dk="'+dk+'">'
+    +'<div class="dhead'+clickable+'">'
+    +'<span class="dtitle">'+esc(n.title||'（无标题）')+'</span>'
+    +'<span class="dtags">'+tags+'</span>'
+      +(srcSel?'<button class="pbtn" data-restore="'+dk+'">恢复到当前</button>':'')
+      +(kind==='mod'?'<span class="dcaret">▸</span>':'')
+    +'</div>'
+    +(kind==='mod'?'<div class="ddetail"></div>':'')
+    +'</div>';
+}
+function diffEntRow(kind,label,detail){
+  const tag=kind==='add'?'<span class="dtag add">新增</span>':kind==='del'?'<span class="dtag del">删除</span>':'<span class="dtag mod">修改</span>';
+  return '<div class="drow"><div class="dhead"><span class="dtitle">'+label+'</span><span class="dtags">'+tag+'</span></div>'
+    +(detail?'<div class="dfield" style="padding-left:2px">'+detail+'</div>':'')+'</div>';
+}
+/* 正文逐行 diff：LCS 对齐后把相邻的「删除+新增」配成「修改」 */
+function diffSplitHtml(html){
+  let s=String(html==null?'':html).replace(/\r\n?/g,'\n');
+  s=s.replace(/<br\s*\/?>/gi,'\n').replace(/<\/(div|p|li|h[1-6])>/gi,'\n').replace(/<(div|p|li|h[1-6])[^>]*>/gi,'');
+  s=s.replace(/<[^>]*>/g,'');
+  const ta=document.createElement('textarea'); ta.innerHTML=s;
+  const lines=ta.value.replace(/\u00a0/g,' ').split('\n');
+  while(lines.length>1&&lines[lines.length-1]==='')lines.pop();
+  return lines;
+}
+function diffLineOps(a,b){
+  const n=a.length, m=b.length;
+  if(n*m>400000){ // 超长文本退化：按行号直接对齐，保证不卡界面
+    const out=[], L=Math.max(n,m);
+    for(let i=0;i<L;i++){
+      if(i<n&&i<m)out.push(a[i]===b[i]?{t:'same',text:a[i]}:{t:'mod',old:a[i],neu:b[i]});
+      else if(i<n)out.push({t:'del',text:a[i]});
+      else out.push({t:'add',text:b[i]});
+    }
+    return out;
+  }
+  const W=m+1, dp=new Uint32Array((n+1)*W);
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--){
+    dp[i*W+j]=a[i]===b[j]?dp[(i+1)*W+j+1]+1:Math.max(dp[(i+1)*W+j],dp[i*W+j+1]);
+  }
+  const raw=[]; let i=0,j=0;
+  while(i<n&&j<m){
+    if(a[i]===b[j]){ raw.push({t:'same',text:a[i]}); i++; j++; }
+    else if(dp[(i+1)*W+j]>=dp[i*W+j+1]){ raw.push({t:'del',text:a[i]}); i++; }
+    else { raw.push({t:'add',text:b[j]}); j++; }
+  }
+  while(i<n)raw.push({t:'del',text:a[i++]});
+  while(j<m)raw.push({t:'add',text:b[j++]});
+  const out=[];
+  for(let k=0;k<raw.length;){
+    if(raw[k].t==='del'){
+      const d=[]; while(k<raw.length&&raw[k].t==='del'){ d.push(raw[k].text); k++; }
+      const e=[]; while(k<raw.length&&raw[k].t==='add'){ e.push(raw[k].text); k++; }
+      const p=Math.min(d.length,e.length);
+      for(let x=0;x<p;x++)out.push({t:'mod',old:d[x],neu:e[x]});
+      for(let x=p;x<d.length;x++)out.push({t:'del',text:d[x]});
+      for(let x=p;x<e.length;x++)out.push({t:'add',text:e[x]});
+    }else{ out.push(raw[k]); k++; }
+  }
+  return out;
+}
+function diffRenderLines(aHtml,bHtml){
+  const ops=diffCompress(diffLineOps(diffSplitHtml(aHtml),diffSplitHtml(bHtml)));
+  const cap=400;
+  let h='<div class="dlines">';
+  ops.slice(0,cap).forEach(op=>{
+    if(op.t==='skip')h+='<div class="dline skip"><span class="dsign">…</span><span>未改动的 '+(op.n)+' 行已折叠</span></div>';
+    else if(op.t==='same')h+='<div class="dline same"><span class="dsign"> </span><span>'+esc(op.text)+'</span></div>';
+    else if(op.t==='del')h+='<div class="dline del"><span class="dsign">−</span><span>'+esc(op.text)+'</span></div>';
+    else if(op.t==='add')h+='<div class="dline add"><span class="dsign">+</span><span>'+esc(op.text)+'</span></div>';
+    else h+='<div class="dline mod old"><span class="dsign">−</span><span>'+esc(op.old)+'</span></div>'
+           +'<div class="dline mod"><span class="dsign">+</span><span>'+esc(op.neu)+'</span></div>';
+  });
+  if(ops.length>cap)h+='<div class="dline same"><span class="dsign"> </span><span>… 另有 '+(ops.length-cap)+' 行未显示</span></div>';
+  return h+'</div>';
+}
+/* 折叠离改动较远的相同行，只保留改动前后各 2 行上下文 */
+function diffCompress(ops,ctx){
+  ctx=ctx||2;
+  const keep=new Array(ops.length).fill(false);
+  ops.forEach((op,i)=>{
+    if(op.t==='same')return;
+    for(let j=Math.max(0,i-ctx);j<=Math.min(ops.length-1,i+ctx);j++)keep[j]=true;
+  });
+  const out=[]; let skip=0;
+  ops.forEach((op,i)=>{
+    if(keep[i]){ if(skip){ out.push({t:'skip',n:skip}); skip=0; } out.push(op); }
+    else skip++;
+  });
+  if(skip)out.push({t:'skip',n:skip});
+  return out;
+}
+function diffRefDetail(a,b){
+  const set=x=>new Set((x||[]).map(r=>r.type+':'+r.id));
+  const sa=set(a.refs), sb=set(b.refs);
+  const add=[...sb].filter(k=>!sa.has(k)), del=[...sa].filter(k=>!sb.has(k));
+  const p=[];
+  if(add.length)p.push('<span class="dnew">+'+add.map(k=>esc(diffRefName(k))).join('、')+'</span>');
+  if(del.length)p.push('<span class="dold">−'+del.map(k=>esc(diffRefName(k))).join('、')+'</span>');
+  if(_dj(a.ref||null)!==_dj(b.ref||null)){
+    p.push('主关联 '+(a.ref?esc(diffRefName(a.ref.type+':'+a.ref.id)):'无')+' → '+(b.ref?esc(diffRefName(b.ref.type+':'+b.ref.id)):'无'));
+  }
+  if(_dj(a.tbrefs)!==_dj(b.tbrefs))p.push('文本块关联 '+Object.keys(a.tbrefs||{}).length+' → '+Object.keys(b.tbrefs||{}).length);
+  return p.join('；')||'—';
+}
+function diffField(label,html){ return '<div class="dfield"><span class="dflabel">'+label+'</span>'+html+'</div>'; }
+function diffNoteDetail(d){
+  const a=d.a,b=d.b,ch=new Set(d.ch);
+  let h='';
+  if(ch.has('title'))h+=diffField('标题','<span class="dold">'+esc(a.title||'（空）')+'</span> → <span class="dnew">'+esc(b.title||'（空）')+'</span>');
+  if(ch.has('html'))h+='<div class="dfield"><span class="dflabel">正文</span>'+diffRenderLines(a.html,b.html)+'</div>';
+  if(ch.has('pos')){
+    const p=[];
+    if(Math.abs((a.x||0)-(b.x||0))>.01)p.push('x '+(+a.x).toFixed(1)+' → '+(+b.x).toFixed(1));
+    if(Math.abs((a.y||0)-(b.y||0))>.01)p.push('y '+(+a.y).toFixed(1)+' → '+(+b.y).toFixed(1));
+    if(Math.abs((a.w||0)-(b.w||0))>.01)p.push('宽 '+(+a.w).toFixed(1)+' → '+(+b.w).toFixed(1));
+    h+=diffField('位置',p.join('，'));
+  }
+  if(ch.has('color')){
+    const p=[];
+    if((a.bg||'')!==(b.bg||''))p.push('背景 '+(a.bg||'—')+' → '+(b.bg||'—'));
+    if((a.titleBg||'')!==(b.titleBg||''))p.push('标题底 '+(a.titleBg||'—')+' → '+(b.titleBg||'—'));
+    if((a.color||'')!==(b.color||''))p.push('文字 '+(a.color||'—')+' → '+(b.color||'—'));
+    if(_dj(a.tbcolors)!==_dj(b.tbcolors))p.push('文本块颜色 '+Object.keys(a.tbcolors||{}).length+' → '+Object.keys(b.tbcolors||{}).length);
+    h+=diffField('配色',p.join('；'));
+  }
+  if(ch.has('refs'))h+=diffField('关联',diffRefDetail(a,b));
+  if(ch.has('col'))h+=diffField('合集','<span class="dold">'+esc(((d.colA&&d.colA.names)||[]).join('、')||'未加入')+'</span> → <span class="dnew">'+esc(((d.colB&&d.colB.names)||[]).join('、')||'未加入')+'</span>');
+  if(ch.has('img'))h+=diffField('图片','图片已变更');
+  return h||'<div class="dempty">没有可展开的字段差异</div>';
+}
+function diffFillDetail(row){
+  if(row.dataset.filled==='1')return;
+  const d=diffRowData.get(row.dataset.dk); if(!d||d.kind!=='mod')return;
+  const host=row.querySelector('.ddetail'); if(!host)return;
+  host.innerHTML=diffNoteDetail(d);
+  row.dataset.filled='1';
+}
+async function diffRestore(dk){
+  const d=diffRowData.get(dk); if(!d||!d.srcSel)return;
+  const side=diffSideFile(d.srcSel); if(!side){ toast('快照已不可用'); return; }
+  const sn=(side.notes||[]).find(n=>n.id===d.id); if(!sn){ toast('快照中没有这张便签'); return; }
+  const curF=F(), cur=(curF.notes||[]).find(n=>n.id===d.id);
+  const msg=cur
+    ? '用快照版本覆盖便签「'+(sn.title||'未命名')+'」的标题 / 正文 / 位置 / 配色 / 关联？\n（合集归属保持不变，可用 Ctrl+Z 撤销）'
+    : '把快照里的便签「'+(sn.title||'未命名')+'」恢复到当前文件？\n（若快照中它属于仍存在的合集，会一并加入；可用 Ctrl+Z 撤销）';
+  if(!await uiConfirm(msg,'恢复'))return;
+  beginChange();
+  const copy=JSON.parse(JSON.stringify(sn));
+  if(cur){
+    copy.oidx=cur.oidx;
+    Object.keys(cur).forEach(k=>{ if(!(k in copy))delete cur[k]; });
+    Object.assign(cur,copy);
+  }else{
+    if(!isFinite(copy.oidx))copy.oidx=(curF.notes.length+1)*10;
+    curF.notes.push(copy);
+    (side.cols||[]).forEach(c=>{
+      if((c.members||[]).indexOf(copy.id)>=0){
+        const tc=(curF.cols||[]).find(x=>x.id===c.id);
+        if(tc&&tc.members.indexOf(copy.id)<0)tc.members.push(copy.id);
+      }
+    });
+  }
+  touch();
+  const keep={x:cam.x,y:cam.y,z:cam.z};
+  buildWorld(); renderView(); cam=keep; applyCam();
+  toast('已恢复「'+(sn.title||'未命名')+'」');
+  renderDiff();
+}
+function renderDiff(){
+  const body=$('#diffBody'), f=F();
+  $('#diffScope').textContent='对比文件：'+(f.name||'未命名');
+  if(!loadSnaps().snaps.length){
+    $('#diffHint').textContent='';
+    body.innerHTML='<div class="dempty" style="text-align:center;padding:26px 0">还没有快照可比。<br>先在「备份快照」里点「手动存一份」，之后修改内容再回来对比。</div>';
+    return;
+  }
+  const sa=diffA!=='cur'?diffSnapBySel(diffA):null, sb=diffB!=='cur'?diffSnapBySel(diffB):null;
+  if((diffA!=='cur'&&!sa)||(diffB!=='cur'&&!sb)){
+    $('#diffHint').textContent='';
+    body.innerHTML='<div class="dempty">所选快照已不存在，请重新选择。</div>';
+    return;
+  }
+  const fa=diffSideFile(diffA), fb=diffSideFile(diffB);
+  if(!fa&&!fb){
+    $('#diffHint').textContent='';
+    body.innerHTML='<div class="dempty" style="text-align:center;padding:26px 0">两侧里都没有当前文件「'+esc(f.name||'')+'」。<br>diff 按「当前打开的文件」比对，请先切到要对比的剧情 / 画布文件。</div>';
+    return;
+  }
+  _diffRefMap=diffBuildRefMap();
+  diffRowData.clear(); _diffSeq=0;
+  const A=fa||{notes:[],lines:[],cols:[],axes:[]}, B=fb||{notes:[],lines:[],cols:[],axes:[]};
+  const colA=diffColMap(A), colB=diffColMap(B);
+  const mapA=new Map((A.notes||[]).map(n=>[n.id,n])), mapB=new Map((B.notes||[]).map(n=>[n.id,n]));
+  const nAdd=[],nDel=[],nMod=[];
+  mapB.forEach((nb,id)=>{ if(!mapA.has(id))nAdd.push(nb); });
+  mapA.forEach((na,id)=>{ if(!mapB.has(id))nDel.push(na); });
+  mapA.forEach((na,id)=>{
+    const nb=mapB.get(id); if(!nb)return;
+    const ch=diffNoteFields(na,nb,colA[id]||[],colB[id]||[]);
+    if(ch.length)nMod.push({a:na,b:nb,ch});
+  });
+  const byTitle=(x,y)=>String(x.title||'').localeCompare(String(y.title||''),'zh-CN');
+  nAdd.sort(byTitle); nDel.sort(byTitle); nMod.sort((x,y)=>byTitle(x.a,y.a));
+  const dLines=diffList(A.lines,B.lines,l=>l.id,diffLineEq);
+  const dCols=diffList(A.cols,B.cols,c=>c.id,diffColEq);
+  const dAxes=diffList(A.axes,B.axes,x=>x.id,diffAxisEq);
+  const restoreSel=(diffA==='cur'&&diffB!=='cur')?diffB:((diffB==='cur'&&diffA!=='cur')?diffA:null);
+  const srcForAdd=restoreSel===diffB?restoreSel:null;
+  const srcForDel=restoreSel===diffA?restoreSel:null;
+  let html='<div class="dsum">'
+    +diffDsumItem('便签',nAdd.length,nDel.length,nMod.length)
+    +diffDsumItem('连线',dLines.add.length,dLines.del.length,dLines.mod.length)
+    +diffDsumItem('合集',dCols.add.length,dCols.del.length,dCols.mod.length)
+    +diffDsumItem('轴',dAxes.add.length,dAxes.del.length,dAxes.mod.length)
+    +'</div>';
+  const total=nAdd.length+nDel.length+nMod.length+dLines.add.length+dLines.del.length+dLines.mod.length
+    +dCols.add.length+dCols.del.length+dCols.mod.length+dAxes.add.length+dAxes.del.length+dAxes.mod.length;
+  if(!total){
+    $('#diffHint').textContent='A：'+diffSnapText(diffA)+' 　B：'+diffSnapText(diffB);
+    body.innerHTML=html+'<div class="dempty" style="text-align:center;padding:28px 0">✓ 没有差异，两侧版本一致</div>';
+    return;
+  }
+  $('#diffHint').textContent='只比对「当前文件」；「恢复到当前」只覆盖单张便签，可用 Ctrl+Z 撤销。';
+  /* 便签：新增 / 删除 / 修改 */
+  let noteRows='';
+  nAdd.forEach(n=>{ noteRows+=diffNoteRow('add',null,n,[],null,colB[n.id],srcForAdd); });
+  nDel.forEach(n=>{ noteRows+=diffNoteRow('del',n,null,[],colA[n.id],null,srcForDel); });
+  nMod.forEach(m=>{ noteRows+=diffNoteRow('mod',m.a,m.b,m.ch,colA[m.a.id],colB[m.a.id],restoreSel); });
+  if(noteRows)html+='<details class="dsec" open><summary>便签 · 新增 '+nAdd.length+' / 删除 '+nDel.length+' / 修改 '+nMod.length+'</summary><div class="dsecbody">'+noteRows+'</div></details>';
+  /* 连线 */
+  if(dLines.add.length||dLines.del.length||dLines.mod.length){
+    let rows='';
+    dLines.add.forEach(l=>{ rows+=diffEntRow('add','+ '+diffLineText(B,l),''); });
+    dLines.del.forEach(l=>{ rows+=diffEntRow('del','− '+diffLineText(A,l),''); });
+    dLines.mod.forEach(m=>{ rows+=diffEntRow('mod','~ '+diffLineText(B,m.b),''); });
+    html+='<details class="dsec" open><summary>连线 · 新增 '+dLines.add.length+' / 删除 '+dLines.del.length+' / 修改 '+dLines.mod.length+'</summary><div class="dsecbody">'+rows+'</div></details>';
+  }
+  /* 合集 */
+  if(dCols.add.length||dCols.del.length||dCols.mod.length){
+    let rows='';
+    dCols.add.forEach(c=>{ rows+=diffEntRow('add','+ 合集'+diffColText(B,c),''); });
+    dCols.del.forEach(c=>{ rows+=diffEntRow('del','− 合集'+diffColText(A,c),''); });
+    dCols.mod.forEach(m=>{ rows+=diffEntRow('mod','~ 合集'+diffColText(B,m.b),diffColDetail(m.a,m.b)); });
+    html+='<details class="dsec" open><summary>合集 · 新增 '+dCols.add.length+' / 删除 '+dCols.del.length+' / 修改 '+dCols.mod.length+'</summary><div class="dsecbody">'+rows+'</div></details>';
+  }
+  /* 轴 */
+  if(dAxes.add.length||dAxes.del.length||dAxes.mod.length){
+    let rows='';
+    dAxes.add.forEach(ax=>{ rows+=diffEntRow('add','+ 轴'+diffAxisText(B,ax),''); });
+    dAxes.del.forEach(ax=>{ rows+=diffEntRow('del','− 轴'+diffAxisText(A,ax),''); });
+    dAxes.mod.forEach(m=>{ rows+=diffEntRow('mod','~ 轴'+diffAxisText(B,m.b),diffAxisDetail(m.a,m.b)); });
+    html+='<details class="dsec" open><summary>轴 · 新增 '+dAxes.add.length+' / 删除 '+dAxes.del.length+' / 修改 '+dAxes.mod.length+'</summary><div class="dsecbody">'+rows+'</div></details>';
+  }
+  body.innerHTML=html;
+}
+$('#diffBody').addEventListener('click',e=>{
+  const rb=e.target.closest('[data-restore]');
+  if(rb){ e.preventDefault(); e.stopPropagation(); diffRestore(rb.dataset.restore); return; }
+  const head=e.target.closest('.dhead.clickable');
+  if(!head)return;
+  const row=head.parentElement;
+  row.classList.toggle('open');
+  if(row.classList.contains('open'))diffFillDetail(row);
+});
+$('#diffClose').onclick=$('#diffDone').onclick=()=>$('#diffMask').classList.add('hidden');
+$('#diffMask').addEventListener('mousedown',e=>{ if(e.target.id==='diffMask')$('#diffMask').classList.add('hidden'); });
+$('#diffSwap').onclick=()=>{
+  const t=diffA; diffA=diffB; diffB=t;
+  $('#diffSelA').value=diffA; $('#diffSelB').value=diffB;
+  renderDiff();
+};
+
 
 /* ================= 工具：人设卡图片导出 ================= */
 function shadeHex(hex,f){
@@ -8380,6 +8863,7 @@ $('#btnTools').onclick=()=>{
     else if(a==='replace')openReplace();
     else if(a==='trash')openTrash();
     else if(a==='snap')openSnaps();
+    else if(a==='diff')openDiff();
   });
   const menu=$('#toolsMenu'), r=$('#btnTools').getBoundingClientRect();
   menu.style.left=r.left+'px'; menu.style.top=(r.bottom+4)+'px';
