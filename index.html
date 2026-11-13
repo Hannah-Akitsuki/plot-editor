@@ -834,6 +834,54 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 .asev.warn{background:var(--accent-soft); color:var(--accent);}
 .auditfix{margin-left:auto; font-size:11px; color:var(--accent); cursor:pointer;}
 .auditfix:hover{text-decoration:underline;}
+/* ---------- 族谱 / CP 关系树（人物模块，弹窗形态） ---------- */
+#famMask{position:fixed; inset:0; background:rgba(10,16,28,.42); backdrop-filter:blur(3px); z-index:100; display:flex; align-items:center; justify-content:center;}
+#famMask.hidden{display:none;}
+#famBox{width:min(1440px,96vw); height:88vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; display:flex; flex-direction:column; box-shadow:var(--shadow-l); overflow:hidden;}
+#famBox .shead{cursor:default;}
+.famtools{display:flex; align-items:center; gap:5px; flex-wrap:wrap; justify-content:flex-end; min-width:0;}
+.famtools .pbtn{padding:2px 9px; font-size:11px;}
+#famClose{cursor:pointer; color:var(--sub); padding:0 4px; font-size:16px;}
+#famClose:hover{color:var(--text);}
+.fammain{flex:1; position:relative; min-height:0;}
+#famStage{position:absolute; inset:0; overflow:hidden; cursor:grab; background-color:var(--bg); background-image:radial-gradient(var(--grid) 1px, transparent 1px); background-size:22px 22px;}
+#famStage.dragging{cursor:grabbing;}
+#famSvg{position:absolute; left:0; top:0; transform-origin:0 0;}
+#famSvg .fn{cursor:pointer;}
+#famSvg .fn:hover rect{filter:brightness(.96);}
+#famSvg .fn text{pointer-events:none; user-select:none;}
+#famSvg .fn image{pointer-events:none;}
+#famSvg .fntog:hover circle{stroke-width:2.2;}
+#famTip{position:absolute; left:12px; bottom:10px; color:var(--sub); font-size:11px; background:var(--panel); border:1px solid var(--pline); border-radius:12px; padding:2px 10px; pointer-events:none;}
+#famEmpty{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:13px; pointer-events:none; text-align:center; padding:0 20px;}
+#famNodeMenu{position:fixed; z-index:1000; background:var(--panel); border:1px solid var(--pline); border-radius:10px; box-shadow:var(--shadow-m); padding:8px 10px; font-size:12px; cursor:default; max-height:60vh; overflow-y:auto; min-width:170px;}
+.fammi{display:block; width:100%; text-align:left; border:none; background:none; color:var(--text); font-size:12px; padding:4px 8px; border-radius:6px; cursor:pointer; white-space:nowrap;}
+.fammi:hover{background:var(--accent-soft);}
+.fammi.danger{color:#d9534f;}
+.fammhead{color:var(--sub); font-size:11px; margin:5px 0 3px;}
+.fammsw{display:flex; gap:5px; align-items:center; flex-wrap:wrap;}
+.fammsw2{width:16px; height:16px; border-radius:50%; cursor:pointer; display:inline-block; border:1px solid rgba(0,0,0,.15); transition:transform .1s;}
+.fammsw2:hover{transform:scale(1.2);}
+.fammback{cursor:pointer; color:var(--accent); font-size:11.5px; margin-bottom:4px; display:inline-block;}
+@media (pointer:coarse){ .fammi{padding:8px 10px;} .fammsw2{width:22px; height:22px;} }
+/* ---------- 族谱信息字段弹层 + 批量角色导图（2026-11-12） ---------- */
+#famInfoPop{position:fixed; z-index:1002; background:var(--panel); border:1px solid var(--pline); border-radius:10px; box-shadow:var(--shadow-m); padding:8px 10px; font-size:12px; min-width:180px;}
+#famInfoPop .fammi{white-space:normal;}
+#cmMask{position:fixed; inset:0; background:rgba(10,16,28,.42); z-index:900; display:flex; align-items:center; justify-content:center;}
+#cmMask.hidden{display:none;}
+#cmBox{width:min(560px,92vw); max-height:82vh; background:var(--panel); border:1px solid var(--pline); border-radius:12px; box-shadow:var(--shadow-l); display:flex; flex-direction:column; overflow:hidden;}
+.cmhead{padding:12px 16px 8px; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:space-between;}
+.cmx{cursor:pointer; color:var(--sub); font-size:16px; padding:0 6px;}
+.cmx:hover{color:var(--text);}
+.cmtools{display:flex; gap:6px; padding:0 16px 8px; align-items:center; flex-wrap:wrap;}
+#cmList{flex:1; overflow:auto; padding:0 16px; border-top:1px solid var(--pline); min-height:0;}
+.cmi{display:flex; align-items:center; gap:8px; padding:6px 4px; border-bottom:1px dashed var(--grid); cursor:pointer; font-size:12px;}
+.cmi:last-child{border-bottom:none;}
+.cmi:hover{background:var(--accent-soft);}
+.cmi .cn{font-weight:600;}
+.cmi .ct{color:var(--sub); font-size:10.5px; margin-left:auto; max-width:50%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.cmfoot{padding:10px 16px; display:flex; justify-content:flex-end; gap:8px; align-items:center; border-top:1px solid var(--pline);}
+#cmCount{color:var(--sub); margin-right:auto; font-size:11px;}
 </style>
 </head>
 <body>
@@ -847,6 +895,8 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="tbtn" id="btnSearch" title="全局搜索（Ctrl+F）">搜索</div>
   <div class="tbtn" id="btnAddNote">＋便签</div>
   <div class="tbtn" id="btnAddImg">＋图片</div>
+  <div class="tbtn" id="btnFamily" style="display:none" title="族谱 / CP 关系树：幕布式树形管理配对与代际，可从角色向下延伸小孩">族谱</div>
+  <div class="tbtn" id="btnBatchMind" style="display:none" title="勾选多个角色，批量导出为一张思维导图（含基本信息，可选性格）">批量导图</div>
   <div class="tbtn" id="btnMarkTb" title="先在正文里选中一段文字，再点这里标记为可连线的文字块（快捷键 T）">标记</div>
   <div class="tbtn" id="btnMore" title="更多功能：导出 / 协同 / 统计 / 检查 / 工具 等">更多 ▾</div>
   <div class="tspace"></div>
@@ -1321,8 +1371,13 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
           <button class="pbtn" id="mindOpenAll" title="展开全部分支">展开</button>
           <button class="pbtn" id="mindAll">全选</button>
           <button class="pbtn" id="mindNone">清空</button>
-          <button class="pbtn" id="mindSvgBtn">导出 SVG</button>
-          <button class="pbtn" id="mindOpmlBtn">导出 OPML</button>
+          <select class="msel" id="mindFmtSel" title="导出格式">
+            <option value="svg">SVG 图片</option>
+            <option value="png">PNG 图片</option>
+            <option value="opml">OPML 大纲</option>
+            <option value="xmind">XMind 文件</option>
+          </select>
+          <button class="pbtn" id="mindExportBtn">导出</button>
           <button class="pbtn" id="mindCopyBtn">复制大纲</button>
           <span id="mindClose">×</span>
         </span>
@@ -1336,6 +1391,69 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
     </div>
   </div>
 </div>
+<div id="famMask" class="hidden">
+  <div id="famBox">
+    <div class="shead">族谱 / CP 关系树
+      <span class="mhead">
+        <span class="famtools">
+          <button class="pbtn" id="famAddGen" title="添加一个顶层代际分组（如：二代 / 三代）">＋代际</button>
+          <select class="msel" id="famLayoutSel" title="布局样式">
+            <option value="down">布局 · 向下树形（族谱）</option>
+            <option value="right">布局 · 横向幕布</option>
+            <option value="lr">布局 · 左右分列</option>
+          </select>
+          <select class="msel" id="famColorSel" title="配色样式">
+            <option value="soft">配色 · 柔和</option>
+            <option value="rainbow">配色 · 多彩</option>
+            <option value="ocean">配色 · 海洋</option>
+            <option value="mono">配色 · 单色</option>
+            <option value="dark">配色 · 暗色</option>
+          </select>
+          <span class="mfont" title="全局字号：所有节点一起缩放，节点尺寸与间距自适应">
+            <button id="famFsDown" title="缩小字号">−</button>
+            <input type="range" id="famFontRange" min="10" max="24" step="1">
+            <button id="famFsUp" title="放大字号">+</button>
+            <span class="mval" id="famFsVal">14</span>
+          </span>
+          <button class="pbtn" id="famInfoBtn" title="选择节点旁显示哪些个人信息（性格/简介/背景/外貌），全不勾则不显示">信息</button>
+          <button class="pbtn" id="famFoldAll" title="折叠到只显示代际分组">折叠</button>
+          <button class="pbtn" id="famOpenAll" title="展开全部分支">展开</button>
+          <button class="pbtn" id="famFit" title="一键适配整图（双击画布空白处同效）">适配</button>
+          <select class="msel" id="famFmtSel" title="导出格式">
+            <option value="svg">SVG 图片</option>
+            <option value="png">PNG 图片</option>
+            <option value="opml">OPML 大纲</option>
+            <option value="xmind">XMind 文件</option>
+          </select>
+          <button class="pbtn" id="famExportBtn" title="按所选格式导出族谱">导出</button>
+          <span id="famClose">×</span>
+        </span>
+      </span>
+    </div>
+    <div class="fammain">
+      <div id="famStage"><svg id="famSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="famEmpty" style="display:none">还没有族谱 —— 点上方「＋代际」开始，例如先建一个「二代」，<br>再把现有角色挂进去：点节点即可添加伴侣、小孩、改名、换色</div>
+        <div id="famTip">滚轮缩放 · 拖动平移 · 双击适配 · 点节点弹出操作菜单 · Tab/Shift+Tab 升降级</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="cmMask" class="hidden"><div id="cmBox">
+  <div class="cmhead">批量导出角色思维导图<span class="cmx" id="cmClose" title="关闭">×</span></div>
+  <div class="cmtools">
+    <button class="pbtn" id="cmAll" title="全部勾选">全选</button>
+    <button class="pbtn" id="cmNone" title="全部取消">清空</button>
+    <select class="msel" id="cmFmt" title="导出格式">
+      <option value="svg">SVG 图片</option>
+      <option value="png">PNG 图片</option>
+      <option value="opml">OPML 大纲</option>
+      <option value="xmind">XMind 文件</option>
+    </select>
+    <label class="msel" title="勾选后，每人导图中包含「性格」分支"><input type="checkbox" id="cmShowP" style="vertical-align:-2px;margin:0 3px 0 0">性格</label>
+  </div>
+  <div id="cmList"></div>
+  <div class="cmfoot"><span id="cmCount"></span><button class="pbtn" id="cmGo" title="按所选格式导出勾选的角色">导出所选</button></div>
+</div></div>
 <input type="file" id="fileInput" hidden> <!-- 不限 accept：iPad Safari 对 .plot/.ocpkg 这类无标准 MIME 的扩展名会置灰导致无法导入，内容校验由 parseImportText 兜底 -->
 <input type="file" id="imgInput" accept="image/*" multiple hidden>
 <script>
@@ -1441,6 +1559,21 @@ const bridge={
       }catch(e){ toast('导出失败'); return null; }
     }
     else{ dlFile(name,new Blob([json],{type:'application/json'})); return name; }
+  },
+  async saveFileAsB64(name,b64,mime){
+    // 二进制文件（PNG/XMind 等）导出：桌面走原生对话框，浏览器走下载链接
+    if(this.py){
+      try{
+        const p=await this.py.save_file_as_b64(name,b64);
+        if(p&&p.startsWith('ERROR')){ toast('导出失败：'+p.slice(6)); return null; }
+        if(p) toast('已导出：'+p);
+        return p||null;
+      }catch(e){ toast('导出失败'); return null; }
+    }
+    const bin=atob(b64); const u8=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+    dlFile(name,new Blob([u8],{type:mime||'application/octet-stream'}));
+    return name;
   },
   async saveToPath(path,json){
     // 静默覆盖写回已关联的文档路径；浏览器/访客模式无此能力，返回 null
@@ -1599,6 +1732,7 @@ function normFile(f){
     }
   });
   if(Array.isArray(f.chars))f.chars.forEach(c=>{ c.stats=Object.assign({},STAT_DEF,c.stats||{}); if(!Array.isArray(c.tags))c.tags=[]; if(!Array.isArray(c.states))c.states=[]; });
+  if(f.type==='chars')famEnsure(f); // 族谱字段兼容：旧包补空数组，悬空挂接降级为自定义节点
   return f;
 }
 
@@ -4557,6 +4691,8 @@ function renderView(){
   $('#btnImportChars').style.display=f.type==='relmap'?'':'none';
   $('#btnExportMd').style.display=['chars','world','lore','timeline'].includes(f.type)?'':'none';
   $('#btnMind').style.display=f.type==='story'?'':'none';
+  $('#btnFamily').style.display=f.type==='chars'?'':'none';
+  $('#btnBatchMind').style.display=f.type==='chars'?'':'none';
   syncSidenav();
   if(f.type==='chars')renderChars();
   if(f.type==='timeline')renderTL();
@@ -4748,6 +4884,16 @@ function deleteChar(id){
   }
   // 清理剧情便签上的角色引用
   (f.notes||[]).forEach(n=>{ if(n.charNode&&n.charRef===id)n.charRef=null; });
+  // 同步清理族谱：移除挂接该角色的节点（子节点上移一级），并清掉伴侣引用
+  if(Array.isArray(f.family)){
+    const ffix=arr=>{ for(let i=arr.length-1;i>=0;i--){ const n=arr[i];
+      if(n.partner&&n.partner.kind==='char'&&n.partner.charId===id)n.partner=null;
+      if(n.kind==='char'&&n.charId===id)arr.splice(i,1,...(Array.isArray(n.kids)?n.kids:[]));
+      else ffix(Array.isArray(n.kids)?n.kids:[]);
+    } };
+    ffix(f.family);
+    if(!$('#famMask').classList.contains('hidden'))renderFam();
+  }
   touch(); renderChars(); renderContext(); renderOutline(); toast('已删除角色（关联关系已一并移除）');
 }
 function renderCharEditor(box){
@@ -4777,6 +4923,14 @@ function renderCharEditor(box){
         <button class="pbtn" id="chAvaUp">上传图片</button>
         ${c.img?'<button class="pbtn" id="chAvaClr">清除头像</button>':''}
         <button class="pbtn" id="chCardBtn" title="把角色导出为 900×1200 的 PNG 人设卡">导出人设卡</button>
+        <select class="msel" id="chMindFmt" title="角色导图导出格式">
+          <option value="svg">SVG 图片</option>
+          <option value="png">PNG 图片</option>
+          <option value="opml">OPML 大纲</option>
+          <option value="xmind">XMind 文件</option>
+        </select>
+        <label class="msel" title="勾选后，导图中包含「性格」分支"><input type="checkbox" id="chMindShowP" style="vertical-align:-2px;margin:0 3px 0 0">性格</label>
+        <button class="pbtn" id="chMindBtn" title="把这张角色卡导出为思维导图（基本/性格/外貌/背景/关系 分支）">导出导图</button>
       </div>
     </div>
     <div class="prow"><label>名字</label><input type="text" id="chName" value="${esc(c.name)}"></div>
@@ -4795,6 +4949,7 @@ function renderCharEditor(box){
   $('#chColor').oninput=e=>{ c.color=e.target.value; touch(); renderChars(); };
   $('#chTags').oninput=e=>{ c.tags=e.target.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean); touch(); renderChars(); };
   $('#chCardBtn').onclick=()=>exportCharCard(c);
+  $('#chMindBtn').onclick=()=>exportCharMind(c);
   $('#chStateAdd').onclick=async()=>{
     const r1=await uiPrompt('状态名称（如：黑化 / 成婚 / 阵亡）','','状态名称');
     if(r1===null)return;
@@ -6398,11 +6553,11 @@ function mindSVGString(){
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`
     +`<rect width="${W}" height="${H}" fill="${mindDark()?'#151a20':'#ffffff'}"/>${svg.innerHTML}</svg>`;
 }
-function mindOPML(){
+function mindOPML(tree){
   const nodeXML=n=>n.children.length
     ? `<outline text="${escAttr(n.text)}">${n.children.map(nodeXML).join('')}</outline>`
     : `<outline text="${escAttr(n.text)}"/>`;
-  const t=mindTree();
+  const t=tree||mindTree();
   return '<?xml version="1.0" encoding="UTF-8"?>\n<opml version="2.0"><head><title>'+escAttr(t.text)
     +'</title></head><body>'+nodeXML(t)+'</body></opml>\n';
 }
@@ -6415,6 +6570,83 @@ async function exportMindOPML(){
   const r=await bridge.saveFileAs('思维导图.opml',mindOPML());
   if(r&&!String(r).startsWith('ERROR'))toast('已导出 OPML，可在 XMind / 幕布等软件导入');
   else if(r)toast('导出失败：'+r);
+}
+/* ---- PNG / XMind 导出（2026-11-11 新增，导出格式见 #mindFmtSel） ---- */
+async function mindPNGB64(svg){
+  svg=svg||mindSVGString();
+  const m=svg.match(/width="([\d.]+)" height="([\d.]+)"/);
+  const W=m?parseFloat(m[1]):800, H=m?parseFloat(m[2]):600;
+  const sc=Math.min(2,8000/W,8000/H); // 2 倍清晰度，超长图自动降到 8000px 以内防 canvas 超限
+  const img=new Image();
+  await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej;
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); });
+  const cv=document.createElement('canvas');
+  cv.width=Math.round(W*sc); cv.height=Math.round(H*sc);
+  cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+  return cv.toDataURL('image/png').split(',')[1];
+}
+/* 极简 ZIP 打包器（仅存储不压缩，免第三方依赖）：files=[{name,data:Uint8Array}] */
+function zipStore(files){
+  const CRC=(()=>{ const t=new Uint32Array(256);
+    for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; }
+    return t; })();
+  const crc=u=>{ let c=0xFFFFFFFF; for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
+  const enc=s=>new TextEncoder().encode(s);
+  const u16=v=>[v&255,(v>>8)&255], u32=v=>[v&255,(v>>8)&255,(v>>16)&255,(v>>24)&255];
+  const chunks=[],central=[]; let off=0;
+  for(const fl of files){
+    const nb=enc(fl.name), db=fl.data, c=crc(db);
+    const lh=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(c),...u32(db.length),...u32(db.length),...u16(nb.length),...u16(0)]);
+    chunks.push(lh,nb,db);
+    const ch=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(c),...u32(db.length),...u32(db.length),...u16(nb.length),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(0),...u32(off)]);
+    central.push(ch,nb);
+    off+=lh.length+nb.length+db.length;
+  }
+  let cs=0; central.forEach(x=>cs+=x.length);
+  const end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),
+    ...u32(cs),...u32(off),...u16(0)]);
+  return new Blob([...chunks,...central,end],{type:'application/octet-stream'});
+}
+function mindXMindBlob(tree){
+  const t=tree||mindTree();
+  const topic=n=>({ id:uid(), title:n.text,
+    children:n.children.length?{attached:n.children.map(topic)}:undefined });
+  const content=JSON.stringify([{ id:uid(), class:'sheet', title:t.text,
+    rootTopic:{ id:uid(), title:t.text, children:{attached:t.children.map(topic)} } }]);
+  const metadata=JSON.stringify({creator:{name:'剧情编辑器',version:'1.0'}});
+  const manifest=JSON.stringify({fileEntries:{'content.json':{},'metadata.json':{}}});
+  return zipStore([
+    {name:'content.json',data:new TextEncoder().encode(content)},
+    {name:'metadata.json',data:new TextEncoder().encode(metadata)},
+    {name:'manifest.json',data:new TextEncoder().encode(manifest)},
+  ]);
+}
+async function exportMindFmt(){
+  const fmt=$('#mindFmtSel').value;
+  if(fmt==='svg')return exportMindSVG();
+  if(fmt==='opml')return exportMindOPML();
+  if(fmt==='png'){
+    try{
+      const b64=await mindPNGB64();
+      const r=await bridge.saveFileAsB64('思维导图.png',b64,'image/png');
+      if(r&&!String(r).startsWith('ERROR'))toast('已导出 PNG（2 倍清晰度）');
+      else if(r)toast('导出失败：'+r);
+    }catch(e){ toast('PNG 导出失败：'+e); }
+    return;
+  }
+  if(fmt==='xmind'){
+    try{
+      const blob=mindXMindBlob();
+      const buf=new Uint8Array(await blob.arrayBuffer());
+      let bin=''; for(let i=0;i<buf.length;i+=0x8000)bin+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000));
+      const r=await bridge.saveFileAsB64('思维导图.xmind',btoa(bin),'application/octet-stream');
+      if(r&&!String(r).startsWith('ERROR'))toast('已导出 XMind，可在 XMind 中直接打开');
+      else if(r)toast('导出失败：'+r);
+    }catch(e){ toast('XMind 导出失败：'+e); }
+  }
 }
 async function copyMindOutline(){
   const txt=mindOutlineText(mindTree(),0);
@@ -6429,8 +6661,7 @@ $('#mindClose').onclick=()=>$('#mindMask').classList.add('hidden');
 $('#mindMask').onclick=e=>{ if(e.target.id==='mindMask')$('#mindMask').classList.add('hidden'); };
 $('#mindAll').onclick=()=>{ mindSelIds=new Set(F().notes.map(n=>n.id)); renderMindPick(); buildMind(); setTimeout(fitMind,80); };
 $('#mindNone').onclick=()=>{ mindSelIds=new Set(); renderMindPick(); buildMind(); };
-$('#mindSvgBtn').onclick=exportMindSVG;
-$('#mindOpmlBtn').onclick=exportMindOPML;
+$('#mindExportBtn').onclick=exportMindFmt;
 $('#mindCopyBtn').onclick=copyMindOutline;
 $('#mindLayoutSel').value=mindStyle.layout;
 $('#mindColorSel').value=mindStyle.color;
@@ -6516,6 +6747,635 @@ $('#mindStage').addEventListener('touchmove',e=>{
 $('#mindStage').addEventListener('touchend',()=>{ mindTouch=null; });
 $('#mindStage').addEventListener('touchcancel',()=>{ mindTouch=null; });
 
+/* ================= 族谱 / CP 关系树（人物模块） ================= */
+let famCam={x:0,y:0,z:1}, famDrag=null, famTouch=null, famSelId=null;
+const famStyle={
+  layout:localStorage.getItem('fam.layout')||'down',
+  color:localStorage.getItem('fam.color')||'soft',
+  fs:Math.min(24,Math.max(10,parseInt(localStorage.getItem('fam.fs'),10)||14)),
+  // 节点旁显示的个人信息字段（勾选式，全不勾=不显示）；兼容旧版 fam.showp
+  fields:(()=>{ try{ const v=JSON.parse(localStorage.getItem('fam.fields'));
+    return Array.isArray(v)?v:(localStorage.getItem('fam.showp')==='1'?['personality']:[]); }catch(e){ return []; } })()
+};
+const FAM_FIELDS=[['personality','性格'],['basic','简介'],['background','背景'],['appearance','外貌']];
+const famHide=new Set((()=>{ try{ return JSON.parse(localStorage.getItem('fam.hideids')||'[]'); }catch(e){ return []; } })());
+function famInfoText(c){ // 选中字段拼接为多行小字；被隐藏的人返回空
+  if(!c||famHide.has(c.id))return '';
+  const parts=[];
+  (famStyle.fields||[]).forEach(fd=>{
+    const lab=(FAM_FIELDS.find(x=>x[0]===fd)||['',fd])[1];
+    const v=String(c[fd]||'').trim();
+    if(v)parts.push(lab+'：'+v);
+  });
+  return parts.join('\n');
+}
+const FAM_PAL={soft:['#d9737a','#dd9a52','#c3a13c','#5aa86e','#4f93d6','#8a7ad4','#cf6f9d','#3fa8a2'],
+  rainbow:['#e05d6f','#e78a3c','#d9a23a','#5fae63','#3aa6a6','#4a90d9','#8a6fd9','#d9678f'],
+  ocean:['#3f7fb5','#3fa8a2','#4aa9c9','#5b9bd5','#2f8f83','#4a7fb0','#57a8b8','#3b8fa8'],
+  mono:['#4a90d9'],
+  dark:['#7fa8d9','#8a7ad4','#cf6f9d','#6aae7f','#d9a05a','#5aa8b5','#b58ad9','#d97f7f']};
+const FAM_SW=['#e05d6f','#e78a3c','#d9a23a','#5fae63','#4a90d9','#8a6fd9','#d9678f','#3aa6a6'];
+function famDark(){ return famStyle.color==='dark'; }
+/* 兼容兜底：旧包补 family 空数组；悬空挂接降级为自定义节点保留名字 */
+function famEnsure(f){
+  if(!Array.isArray(f.family))f.family=[];
+  const has=cid=>(f.chars||[]).some(c=>c.id===cid);
+  const seen=new Set();
+  const walk=n=>{
+    if(!n||typeof n!=='object')return null;
+    if(typeof n.id!=='string'||!n.id||seen.has(n.id))n.id=uid();
+    seen.add(n.id);
+    if(n.kind!=='gen'&&n.kind!=='char')n.kind='custom';
+    if(typeof n.label!=='string')n.label='';
+    if(n.kind==='char'&&!has(n.charId))n.kind='custom';
+    if(!n.partner||typeof n.partner!=='object'||(n.partner.kind==='char'&&!has(n.partner.charId)))n.partner=null;
+    else if(typeof n.partner.label!=='string')n.partner.label='';
+    if(typeof n.collapsed!=='boolean')n.collapsed=false;
+    if(!Array.isArray(n.kids))n.kids=[];
+    n.kids=n.kids.map(walk).filter(Boolean);
+    return n;
+  };
+  f.family=f.family.map(walk).filter(Boolean);
+}
+function famFind(f,id){
+  const dig=(arr,parent)=>{ for(const n of arr){ if(n.id===id)return {n,arr,parent}; const r=dig(n.kids,n); if(r)return r; } return null; };
+  return dig(f.family,null);
+}
+function famDescCount(n){ return (n.kids||[]).reduce((s,k)=>s+1+famDescCount(k),0); }
+function famPromote(f,id){ // Shift+Tab / 升级：变为父级的下一个兄弟
+  const r=famFind(f,id); if(!r||!r.parent)return;
+  const pr=famFind(f,r.parent.id); if(!pr)return;
+  r.arr.splice(r.arr.indexOf(r.n),1);
+  pr.arr.splice(pr.arr.indexOf(pr.n)+1,0,r.n);
+}
+function famDemote(f,id){ // Tab / 降级：变为上一个兄弟的孩子
+  const r=famFind(f,id); if(!r)return;
+  const i=r.arr.indexOf(r.n); if(i<=0)return;
+  const p=r.arr[i-1];
+  r.arr.splice(i,1); p.kids.push(r.n); p.collapsed=false;
+}
+function famMetrics(){
+  const fs=famStyle.fs;
+  return { fs,
+    lineH:Math.round(fs*1.5), padY:Math.round(fs*0.55), padX:Math.round(fs*0.9),
+    vgap:Math.round(fs*1.1), hgap:Math.round(fs*1.7),
+    av:Math.round(fs*2.1), gap:Math.round(fs*0.55), link:Math.round(fs*1.7),
+    minW:Math.round(fs*3.2), maxText:Math.round(fs*9), minH:Math.round(fs*2.05) };
+}
+/* 构建布局用包装树（复用 mindLayoutD / mindLayoutH：x=左边缘，y=中心） */
+function famBuildTree(f,m){
+  const box=(label,kind,bold,extra)=>{ // extra=性格摘要（勾选「性格」时传入）
+    const lines=mindWrap(label||'未命名',m.fs,kind==='gen'||bold,m.maxText);
+    let tw=0; lines.forEach(s=>tw=Math.max(tw,mindTextW(s,m.fs,kind==='gen'||bold)));
+    let pLines=[],pfs=Math.max(9,m.fs-1.5),ph=0;
+    if(extra){ pLines=mindWrap(extra,pfs,false,m.maxText);
+      pLines.forEach(s=>tw=Math.max(tw,mindTextW(s,pfs,false)));
+      ph=pLines.length*Math.round(pfs*1.45); }
+    return {lines,pLines,pfs,w:Math.max(m.minW,Math.round(tw+m.padX*2)),
+      h:Math.max(m.minH,Math.round(lines.length*m.lineH+m.padY*2+ph))};
+  };
+  const wrap=(d,depth,wc)=>{
+    const w={d,depth,wc:d.color||wc};
+    const c=d.kind==='char'?f.chars.find(x=>x.id===d.charId):null;
+    const name=c?(c.name||''):d.label;
+    const main=box(name,d.kind,false,famInfoText(c));
+    w.lines=main.lines; w.mw=main.w; w.pLines=main.pLines; w.pfs=main.pfs;
+    if(c)w.mw=Math.round(w.mw+m.av+m.gap); // 角色框加头像位
+    w.mh=Math.max(main.h,c?m.av+m.padY:0);
+    w.pw=0; w.ph=0; w.pc=null;
+    if(d.partner){
+      const pc=d.partner.kind==='char'?f.chars.find(x=>x.id===d.partner.charId):null;
+      w.pc=pc;
+      const pname=pc?(pc.name||''):(d.partner.label||'伴侣');
+      const pl=box(pname,d.partner.kind==='char'?'char':'custom',false,famInfoText(pc));
+      w.plines=pl.lines; w.ppLines=pl.pLines; w.ppfs=pl.pfs;
+      w.pw=Math.round(pl.w+(pc?m.av+m.gap:0));
+      w.ph=Math.max(pl.h,pc?m.av+m.padY:0);
+    }
+    w.w=Math.round(w.mw+(w.pw?m.link+w.pw:0));
+    w.h=Math.max(Math.round(w.mh),Math.round(w.ph));
+    w.kids=d.collapsed?[]:d.kids.map(k=>wrap(k,depth+1,w.wc));
+    w.all=d.kids;
+    return w;
+  };
+  const roots=f.family.map(d=>wrap(d,1,null));
+  return {d:null,virtual:true,w:0,h:0,kids:roots,depth:0,wc:'#4a90d9',all:[]};
+}
+function applyFamCam(){ $('#famSvg').style.transform=`translate(${famCam.x}px,${famCam.y}px) scale(${famCam.z})`; }
+function famFit(){
+  const stage=$('#famStage'), svg=$('#famSvg');
+  const W=parseFloat(svg.getAttribute('width'))||1, H=parseFloat(svg.getAttribute('height'))||1;
+  const sw=stage.clientWidth||800, sh=stage.clientHeight||500;
+  famCam.z=Math.max(.04,Math.min(1.5,(sw-40)/W,(sh-30)/H));
+  famCam.x=(sw-W*famCam.z)/2; famCam.y=(sh-H*famCam.z)/2;
+  applyFamCam();
+}
+function openFam(){
+  const f=F(); if(f.type!=='chars'){ toast('族谱在人物模块使用，请先切换到人物页'); return; }
+  famEnsure(f);
+  $('#famMask').classList.remove('hidden');
+  renderFam(); setTimeout(famFit,140);
+}
+function famSVGString(){
+  const svg=$('#famSvg'), W=svg.getAttribute('width'), H=svg.getAttribute('height');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="${famDark()?'#151a20':'#ffffff'}"/>${svg.innerHTML}</svg>`;
+}
+async function exportFamSVG(){
+  if(!F().family||!F().family.length){ toast('族谱为空，先添加代际再导出'); return; }
+  const r=await bridge.saveFileAs('族谱.svg',famSVGString());
+  if(r&&!String(r).startsWith('ERROR'))toast('族谱已导出为 SVG');
+  else if(r)toast('导出失败：'+r);
+}
+/* ---- 族谱 PNG / OPML / XMind 导出（2026-11-11 新增，导出格式见 #famFmtSel） ---- */
+function famTree(){
+  const f=F();
+  const name=d=>{ const c=d.kind==='char'?f.chars.find(x=>x.id===d.charId):null; return c?(c.name||''):(d.label||'未命名'); };
+  const conv=d=>{
+    let t=name(d);
+    if(d.partner){ const pc=d.partner.kind==='char'?f.chars.find(x=>x.id===d.partner.charId):null;
+      t+=' ∞ '+(pc?(pc.name||''):(d.partner.label||'伴侣')); }
+    return {text:t,children:d.kids.map(conv)};
+  };
+  return {text:'族谱',children:f.family.map(conv)};
+}
+async function exportFamFmt(){
+  if(!F().family||!F().family.length){ toast('族谱为空，先添加代际再导出'); return; }
+  const fmt=$('#famFmtSel').value;
+  if(fmt==='svg')return exportFamSVG();
+  if(fmt==='opml'){
+    const r=await bridge.saveFileAs('族谱.opml',mindOPML(famTree()));
+    if(r&&!String(r).startsWith('ERROR'))toast('已导出 OPML，可在 XMind / 幕布等软件导入');
+    else if(r)toast('导出失败：'+r);
+    return;
+  }
+  if(fmt==='png'){
+    try{
+      const b64=await mindPNGB64(famSVGString());
+      const r=await bridge.saveFileAsB64('族谱.png',b64,'image/png');
+      if(r&&!String(r).startsWith('ERROR'))toast('已导出 PNG（2 倍清晰度）');
+      else if(r)toast('导出失败：'+r);
+    }catch(e){ toast('PNG 导出失败：'+e); }
+    return;
+  }
+  if(fmt==='xmind'){
+    try{
+      const blob=mindXMindBlob(famTree());
+      const buf=new Uint8Array(await blob.arrayBuffer());
+      let bin=''; for(let i=0;i<buf.length;i+=0x8000)bin+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000));
+      const r=await bridge.saveFileAsB64('族谱.xmind',btoa(bin),'application/octet-stream');
+      if(r&&!String(r).startsWith('ERROR'))toast('已导出 XMind，可在 XMind 中直接打开');
+      else if(r)toast('导出失败：'+r);
+    }catch(e){ toast('XMind 导出失败：'+e); }
+  }
+}
+/* ---- 角色思维导图（2026-11-12）：单角色导出，可选包含「性格」分支 ---- */
+async function blobB64(blob){
+  const buf=new Uint8Array(await blob.arrayBuffer());
+  let bin=''; for(let i=0;i<buf.length;i+=0x8000)bin+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+function charMindTree(c,withP){ // withP：是否包含「性格」分支
+  const kids=[];
+  const add=(label,val)=>{ if(val&&String(val).trim())kids.push({text:label+'：'+String(val).trim(),children:[]}); };
+  add('基本',c.basic);
+  if(withP)add('性格',c.personality);
+  add('外貌',c.appearance); add('背景',c.background); add('关系',c.misc);
+  return {text:c.name||'角色',children:kids};
+}
+function charMindSVG(t){ /* 根节点+字段分支，向下布局，肘线连线 */
+  const m=mindMetrics();
+  const BR=['#4a90d9','#5aa86e','#d9a23a','#8a7ad4','#cf6f9d','#3fa8a2','#dd9a52'];
+  const mk=(n,depth,color)=>{
+    const bold=depth===0;
+    const lines=mindWrap(n.text,m.fs,bold,m.maxText(depth));
+    let tw=0; lines.forEach(s=>tw=Math.max(tw,mindTextW(s,m.fs,bold)));
+    n.lines=lines; n.depth=depth; n.color=color;
+    n.w=Math.max(Math.round(m.rootSize*3.5),Math.round(tw+m.padX*2));
+    n.h=Math.round(lines.length*m.lineH+m.padY*2);
+    n.kids=n.children.map(x=>mk(x,depth+1,x.color||color));
+    return n;
+  };
+  const root=mk({text:t.text,children:t.children.map((b,i)=>({text:b.text,children:b.children||[],color:BR[i%BR.length]}))},0,'#4a90d9');
+  mindLayoutD(root,m);
+  const fmt=v=>v.toFixed(1), els=[], edges=[];
+  const collect=n=>{ const out=[n]; n.kids.forEach(k=>out.push(...collect(k))); return out; };
+  const nodes=collect(root);
+  const walkE=(n,p)=>{
+    if(p){ const x1=p.cx, y1=p.y+p.h/2, x2=n.cx, y2=n.y-n.h/2, ym=(y1+y2)/2;
+      edges.push(`<path d="M ${fmt(x1)} ${fmt(y1)} L ${fmt(x1)} ${fmt(ym)} L ${fmt(x2)} ${fmt(ym)} L ${fmt(x2)} ${fmt(y2)}" fill="none" stroke="${hexA(n.color,n.depth<=1?.55:.4)}" stroke-width="${n.depth<=1?1.6:1.2}"/>`); }
+    n.kids.forEach(k=>walkE(k,n));
+  };
+  walkE(root,null);
+  nodes.forEach(n=>{
+    const by=n.y-n.h/2, bold=n.depth===0;
+    const fill=bold?n.color:mixHex('#ffffff',n.color,.08);
+    const stroke=hexA(n.color,bold?.9:.45);
+    const txtC=bold?'#ffffff':'#333a42';
+    const tspans=n.lines.map((s,k)=>`<tspan x="${fmt(n.cx-n.w/2+m.padX)}" y="${fmt(by+m.padY+k*m.lineH+m.lineH/2+m.fs*0.35)}">${esc(s)}</tspan>`).join('');
+    els.push(`<g><rect x="${fmt(n.cx-n.w/2)}" y="${fmt(by)}" width="${fmt(n.w)}" height="${fmt(n.h)}" rx="${bold?8:4}" fill="${fill}" stroke="${stroke}" stroke-width="1"/><text font-family="${MIND_FONT}" font-size="${(bold?m.rootSize:m.fs).toFixed(1)}" font-weight="${bold?700:400}" fill="${txtC}">${tspans}</text></g>`);
+  });
+  let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  nodes.forEach(n=>{ minX=Math.min(minX,n.cx-n.w/2); maxX=Math.max(maxX,n.cx+n.w/2);
+    minY=Math.min(minY,n.y-n.h/2); maxY=Math.max(maxY,n.y+n.h/2); });
+  const PAD=m.fs*1.8; minX-=PAD; minY-=PAD; maxX+=PAD; maxY+=PAD;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(maxX-minX)}" height="${Math.round(maxY-minY)}" viewBox="${fmt(minX)} ${fmt(minY)} ${fmt(maxX-minX)} ${fmt(maxY-minY)}"><rect x="${fmt(minX)}" y="${fmt(minY)}" width="${fmt(maxX-minX)}" height="${fmt(maxY-minY)}" fill="#ffffff"/>${edges.join('')}${els.join('')}</svg>`;
+}
+async function exportCharMind(c){
+  const t=charMindTree(c,$('#chMindShowP')&&$('#chMindShowP').checked);
+  if(!t.children.length){ toast('这张卡还没有可导出的字段内容'); return; }
+  const base=(c.name||'角色')+'导图', fmt=$('#chMindFmt').value;
+  const ok=r=>{ if(r&&!String(r).startsWith('ERROR'))toast('已导出：'+r); else if(r)toast('导出失败：'+r); };
+  if(fmt==='svg'){ ok(await bridge.saveFileAs(base+'.svg',charMindSVG(t))); return; }
+  if(fmt==='opml'){ ok(await bridge.saveFileAs(base+'.opml',mindOPML(t))); return; }
+  try{
+    if(fmt==='png')ok(await bridge.saveFileAsB64(base+'.png',await mindPNGB64(charMindSVG(t)),'image/png'));
+    if(fmt==='xmind')ok(await bridge.saveFileAsB64(base+'.xmind',await blobB64(mindXMindBlob(t)),'application/octet-stream'));
+  }catch(e){ toast('导出失败：'+e); }
+}
+/* ---- 批量角色导图（2026-11-12）：勾选多个角色，每人一个子树合成一张幕布式导图 ---- */
+function openCharMindPick(){
+  const f=F(); if(f.type!=='chars')return;
+  const list=$('#cmList');
+  list.innerHTML=f.chars.map(c=>`<label class="cmi"><input type="checkbox" class="cmck" value="${c.id}" checked><span class="cn">${esc(c.name||'未命名')}</span><span class="ct">${esc((c.tags||[]).join(' / '))}</span></label>`).join('')
+    ||'<div style="padding:14px;color:var(--sub)">还没有角色</div>';
+  updCmCount();
+  list.querySelectorAll('.cmck').forEach(el=>el.onchange=updCmCount);
+  $('#cmMask').classList.remove('hidden');
+}
+function updCmCount(){ const n=$('#cmList').querySelectorAll('.cmck:checked').length;
+  const t=$('#cmCount'); if(t)t.textContent='已选 '+n+' 人'; }
+function closeCm(){ $('#cmMask').classList.add('hidden'); }
+async function exportCharMindBatch(){
+  const f=F();
+  const ids=[...$('#cmList').querySelectorAll('.cmck:checked')].map(el=>el.value);
+  if(!ids.length){ toast('先勾选至少一个角色'); return; }
+  const withP=$('#cmShowP').checked;
+  const tree={text:(f.name||'角色')+'·角色导图',
+    children:ids.map(id=>{ const c=f.chars.find(x=>x.id===id); return charMindTree(c,withP); })};
+  const fmt=$('#cmFmt').value, base='角色导图'+(ids.length>1?'_'+ids.length+'人':'');
+  const ok=r=>{ if(r&&!String(r).startsWith('ERROR'))toast('已导出：'+r); else if(r)toast('导出失败：'+r); };
+  if(fmt==='svg'){ ok(await bridge.saveFileAs(base+'.svg',charMindSVG(tree))); closeCm(); return; }
+  if(fmt==='opml'){ ok(await bridge.saveFileAs(base+'.opml',mindOPML(tree))); closeCm(); return; }
+  try{
+    if(fmt==='png')ok(await bridge.saveFileAsB64(base+'.png',await mindPNGB64(charMindSVG(tree)),'image/png'));
+    if(fmt==='xmind')ok(await bridge.saveFileAsB64(base+'.xmind',await blobB64(mindXMindBlob(tree)),'application/octet-stream'));
+    closeCm();
+  }catch(e){ toast('导出失败：'+e); }
+}
+function renderFam(){
+  $('#famNodeMenu')&&$('#famNodeMenu').remove();
+  const f=F(); if(f.type!=='chars')return;
+  famEnsure(f);
+  const svg=$('#famSvg');
+  $('#famEmpty').style.display=f.family.length?'none':'flex';
+  if(!f.family.length){
+    svg.setAttribute('width',10); svg.setAttribute('height',10);
+    svg.setAttribute('viewBox','0 0 10 10'); svg.innerHTML=''; applyFamCam(); return;
+  }
+  const dark=famDark(), m=famMetrics();
+  const vroot=famBuildTree(f,m);
+  const keepML=mindStyle.layout; mindStyle.layout=famStyle.layout; // mindLayoutH 的 lr 分支读 mindStyle.layout，临时借位
+  try{ if(famStyle.layout==='down')mindLayoutD(vroot,m); else mindLayoutH(vroot,m); }
+  finally{ mindStyle.layout=keepML; }
+  const nodes=[];
+  const collect=n=>{ n.kids.forEach(k=>{ nodes.push(k); collect(k); }); };
+  collect(vroot);
+  const fmt=v=>v.toFixed(1);
+  /* 直角肘线（方方正正），区别于思维导图的贝塞尔曲线 */
+  const edges=[];
+  const walkE=(n,p)=>{
+    if(p&&!p.virtual){
+      let d;
+      if(famStyle.layout==='down'){
+        const x1=(p.cx!==undefined?p.cx:p.x+p.w/2), y1=p.y+p.h/2;
+        const x2=(n.cx!==undefined?n.cx:n.x+n.w/2), y2=n.y-n.h/2;
+        const ym=(y1+y2)/2;
+        d=`M ${fmt(x1)} ${fmt(y1)} L ${fmt(x1)} ${fmt(ym)} L ${fmt(x2)} ${fmt(ym)} L ${fmt(x2)} ${fmt(y2)}`;
+      }else if((n.side||1)<0){
+        const x1=p.x, y1=p.y, x2=n.x+n.w, y2=n.y, xm=(x1+x2)/2;
+        d=`M ${fmt(x1)} ${fmt(y1)} L ${fmt(xm)} ${fmt(y1)} L ${fmt(xm)} ${fmt(y2)} L ${fmt(x2)} ${fmt(y2)}`;
+      }else{
+        const x1=p.x+p.w, y1=p.y, x2=n.x, y2=n.y, xm=(x1+x2)/2;
+        d=`M ${fmt(x1)} ${fmt(y1)} L ${fmt(xm)} ${fmt(y1)} L ${fmt(xm)} ${fmt(y2)} L ${fmt(x2)} ${fmt(y2)}`;
+      }
+      edges.push(`<path d="${d}" fill="none" stroke="${hexA(n.wc||'#4a90d9',dark?.55:.45)}" stroke-width="${n.depth<=1?1.6:1.2}"/>`);
+    }
+    n.kids.forEach(c=>walkE(c,n));
+  };
+  walkE(vroot,null);
+  const defs=[], els=[], badges=[];
+  const txtC=dark?'#e7e2d4':'#333a42';
+  nodes.forEach((n,i)=>{
+    const base=n.wc||'#4a90d9';
+    const d=n.d;
+    const c=d.kind==='char'?f.chars.find(x=>x.id===d.charId):null;
+    const bold=d.kind==='gen';
+    const fill=dark?mixHex('#1d222a',base,d.kind==='gen'?.26:.14):mixHex('#ffffff',base,d.kind==='gen'?.16:.07);
+    const stroke=hexA(base,dark?.6:(d.kind==='gen'?.5:.38));
+    const dash=d.kind==='custom'?' stroke-dasharray="4 3"':'';
+    const bx=n.x, by=n.y-n.h/2;
+    let g=`<g class="fn" data-i="${i}">`;
+    if(famSelId===d.id)g+=`<rect x="${fmt(bx-4)}" y="${fmt(by-4)}" width="${fmt(n.w+8)}" height="${fmt(n.h+8)}" rx="7" fill="none" stroke="#4a90d9" stroke-width="1.4" stroke-dasharray="5 3" opacity=".85"/>`;
+    g+=`<rect x="${fmt(bx)}" y="${fmt(by)}" width="${fmt(n.mw)}" height="${fmt(n.h)}" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="1"${dash}/>`;
+    let tx=bx+m.padX;
+    if(c){ /* 角色头像 */
+      const as=m.av, ax=bx+m.padX, ay=n.y-as/2;
+      defs.push(`<clipPath id="fc${i}"><rect x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" rx="${(as*0.3).toFixed(1)}"/></clipPath>`);
+      if(c.img)g+=`<image href="${esc(c.img)}" x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" clip-path="url(#fc${i})" preserveAspectRatio="xMidYMid slice"/>`;
+      else g+=`<rect x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" rx="${(as*0.3).toFixed(1)}" fill="${c.color||'#8fa3bf'}"/><text x="${fmt(ax+as/2)}" y="${fmt(n.y+as*0.18)}" text-anchor="middle" font-family="${MIND_FONT}" font-size="${(as*0.52).toFixed(1)}" font-weight="700" fill="#ffffff">${esc((c.name||'?').slice(0,1))}</text>`;
+      tx=bx+m.padX+as+m.gap;
+    }
+    const textTop=by+m.padY;
+    const tspans=n.lines.map((s,k)=>`<tspan x="${fmt(tx)}" y="${fmt(textTop+k*m.lineH+m.lineH/2+m.fs*0.35)}">${esc(s)}</tspan>`).join('');
+    g+=`<text font-family="${MIND_FONT}" font-size="${m.fs.toFixed(1)}" font-weight="${bold?700:400}" fill="${txtC}">${tspans}</text>`;
+    if(n.pLines&&n.pLines.length){ /* 性格摘要：灰色小字，勾选工具栏「性格」时显示 */
+      const plh=Math.round(n.pfs*1.45);
+      const pts=n.pLines.map((s,k)=>`<tspan x="${fmt(tx)}" y="${fmt(textTop+n.lines.length*m.lineH+k*plh+n.pfs*0.85)}">${esc(s)}</tspan>`).join('');
+      g+=`<text font-family="${MIND_FONT}" font-size="${n.pfs.toFixed(1)}" fill="${dark?'#9aa6b4':'#7a8694'}">${pts}</text>`;
+    }
+    g+='</g>';
+    els.push(g);
+    if(d.partner){ /* 伴侣框：并排 + ∞ 连接，kids 从配对整体下方引出 */
+      const px=bx+n.mw, pby=n.y-n.ph/2;
+      const pbase=(d.partner.kind==='char'&&n.pc)?(n.pc.color||base):base;
+      const pdash=d.partner.kind==='custom'?' stroke-dasharray="4 3"':'';
+      const pfill=dark?mixHex('#1d222a',pbase,.14):mixHex('#ffffff',pbase,.07);
+      let pg=`<g class="fn" data-pi="${i}">`;
+      pg+=`<path d="M ${fmt(bx+n.mw)} ${fmt(n.y)} H ${fmt(px)}" stroke="${hexA(base,.55)}" stroke-width="1.4"/>`;
+      pg+=`<text x="${fmt(bx+n.mw+m.link/2)}" y="${fmt(n.y-m.fs*0.15)}" text-anchor="middle" font-family="${MIND_FONT}" font-size="${(m.fs*0.85).toFixed(1)}" fill="${hexA(base,.9)}">∞</text>`;
+      pg+=`<rect x="${fmt(px)}" y="${fmt(pby)}" width="${fmt(n.pw)}" height="${fmt(n.ph)}" rx="4" fill="${pfill}" stroke="${hexA(pbase,.38)}" stroke-width="1"${pdash}/>`;
+      let ptx=px+m.padX;
+      if(n.pc){
+        const as=m.av, ax=px+m.padX, ay=n.y-as/2;
+        defs.push(`<clipPath id="fp${i}"><rect x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" rx="${(as*0.3).toFixed(1)}"/></clipPath>`);
+        if(n.pc.img)pg+=`<image href="${esc(n.pc.img)}" x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" clip-path="url(#fp${i})" preserveAspectRatio="xMidYMid slice"/>`;
+        else pg+=`<rect x="${fmt(ax)}" y="${fmt(ay)}" width="${as}" height="${as}" rx="${(as*0.3).toFixed(1)}" fill="${n.pc.color||'#8fa3bf'}"/><text x="${fmt(ax+as/2)}" y="${fmt(n.y+as*0.18)}" text-anchor="middle" font-family="${MIND_FONT}" font-size="${(as*0.52).toFixed(1)}" font-weight="700" fill="#ffffff">${esc((n.pc.name||'?').slice(0,1))}</text>`;
+        ptx=px+m.padX+as+m.gap;
+      }
+      const ptextTop=pby+m.padY;
+      const ptspans=n.plines.map((s,k)=>`<tspan x="${fmt(ptx)}" y="${fmt(ptextTop+k*m.lineH+m.lineH/2+m.fs*0.35)}">${esc(s)}</tspan>`).join('');
+      pg+=`<text font-family="${MIND_FONT}" font-size="${m.fs.toFixed(1)}" fill="${txtC}">${ptspans}</text>`;
+      if(n.ppLines&&n.ppLines.length){
+        const pplh=Math.round(n.ppfs*1.45);
+        const ppts=n.ppLines.map((s,k)=>`<tspan x="${fmt(ptx)}" y="${fmt(ptextTop+n.plines.length*m.lineH+k*pplh+n.ppfs*0.85)}">${esc(s)}</tspan>`).join('');
+        pg+=`<text font-family="${MIND_FONT}" font-size="${n.ppfs.toFixed(1)}" fill="${dark?'#9aa6b4':'#7a8694'}">${ppts}</text>`;
+      }
+      pg+='</g>';
+      els.push(pg);
+    }
+    if(d.kids.length&&d.collapsed){ /* 折叠角标：＋后代数 */
+      const cnt=famDescCount(d);
+      const r=Math.max(7,Math.round(m.fs*0.55));
+      let bxp,byp;
+      if(famStyle.layout==='down'){ bxp=(n.cx!==undefined?n.cx:n.x+n.w/2); byp=n.y+n.h/2+r+2; }
+      else if((n.side||1)<0){ bxp=n.x-r-2; byp=n.y; }
+      else{ bxp=n.x+n.w+r+2; byp=n.y; }
+      badges.push(`<g class="fntog" data-id="${d.id}" style="cursor:pointer"><circle cx="${fmt(bxp)}" cy="${fmt(byp)}" r="${r}" fill="${dark?'#1d222a':'#ffffff'}" stroke="${hexA(base,.55)}" stroke-width="1.2"/><text x="${fmt(bxp)}" y="${fmt(byp+r*0.34)}" text-anchor="middle" font-family="${MIND_FONT}" font-size="${(r*0.95).toFixed(1)}" fill="${base}">${cnt}</text></g>`);
+    }
+  });
+  let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  nodes.forEach(n=>{ minX=Math.min(minX,n.x); maxX=Math.max(maxX,n.x+n.w);
+    minY=Math.min(minY,n.y-n.h/2); maxY=Math.max(maxY,n.y+n.h/2); });
+  const PAD=m.fs*1.8;
+  minX-=PAD; minY-=PAD; maxX+=PAD; maxY+=PAD;
+  svg.setAttribute('width',Math.round(maxX-minX)); svg.setAttribute('height',Math.round(maxY-minY));
+  svg.setAttribute('viewBox',`${fmt(minX)} ${fmt(minY)} ${fmt(maxX-minX)} ${fmt(maxY-minY)}`);
+  svg.innerHTML=`<defs>${defs.join('')}</defs><g>${edges.join('')}${els.join('')}${badges.join('')}</g>`;
+  svg.querySelectorAll('.fn').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const i=+(el.dataset.pi!==undefined?el.dataset.pi:el.dataset.i);
+      const n=nodes[i]; if(!n)return;
+      famSelId=n.d.id;
+      openFamNodeMenu(n.d, el.dataset.pi!==undefined?(n.d.partner?'pset':'padd'):'main', ev);
+    });
+  });
+  svg.querySelectorAll('.fntog').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const r=famFind(F(),el.dataset.id); if(!r)return;
+      beginChange(); r.n.collapsed=!r.n.collapsed; touch(); renderFam();
+    });
+  });
+  applyFamCam();
+}
+/* 节点操作菜单（多级页面） */
+function openFamNodeMenu(d,page,ev){
+  $('#famNodeMenu')&&$('#famNodeMenu').remove();
+  const f=F();
+  const m=document.createElement('div'); m.id='famNodeMenu';
+  m.addEventListener('click',e2=>e2.stopPropagation());
+  document.body.appendChild(m);
+  const render=pg=>{
+    const used=new Set();
+    const cu=arr=>arr.forEach(n=>{ if(n.kind==='char')used.add(n.charId); if(n.partner&&n.partner.kind==='char')used.add(n.partner.charId); cu(n.kids||[]); });
+    cu(f.family);
+    const charBtns=skipSelf=>f.chars
+      .filter(c=>!skipSelf||c.id!==d.charId)
+      .map(c=>`<button class="fammi" data-cc="${c.id}">${esc(c.name||'未命名')}${used.has(c.id)?' <span style="color:var(--sub);font-size:10px">·已在树中</span>':''}</button>`).join('')
+      ||'<div class="fammhead">还没有角色</div>';
+    const back='<span class="fammback" data-back="1">← 返回</span>';
+    if(pg==='main'){
+      m.innerHTML=`<div class="fammhead">${esc(d.label||'未命名')}</div>`
+        +(d.kind==='char'?'<button class="fammi" data-op="open">打开角色编辑</button>':'')
+        +(d.kind==='char'?`<button class="fammi" data-op="hideinfo">${famHide.has(d.charId)?'显示此人信息':'隐藏此人信息'}</button>`
+          +(d.partner&&d.partner.kind==='char'?`<button class="fammi" data-op="hidepinfo">${famHide.has(d.partner.charId)?'显示伴侣信息':'隐藏伴侣信息'}</button>`:''):'')
+        +(d.kind==='custom'?'<button class="fammi" data-op="toc">转为角色卡</button><button class="fammi" data-op="bind">挂接到现有角色 ▸</button>':'')
+        +'<button class="fammi" data-op="ren">改名</button>'
+        +(d.partner?`<button class="fammi" data-op="pset">伴侣：${esc(d.partner.label||'')} ▸</button>`:'<button class="fammi" data-op="padd">添加伴侣 ▸</button>')
+        +'<button class="fammi" data-op="kids">添加小孩 ▸</button>'
+        +'<div class="fammhead">节点颜色</div><div class="fammsw">'+FAM_SW.map(c=>`<span class="fammsw2" data-c="${c}" style="background:${c}"></span>`).join('')
+          +'<span class="fammsw2" data-c="" title="恢复跟随分支色" style="background:linear-gradient(135deg,#fff,#bbb)"></span></div>'
+        +'<div class="fammhead">调整位置</div><div class="fammsw"><button class="fammi" data-op="up" style="width:auto">↑上移</button><button class="fammi" data-op="dn" style="width:auto">↓下移</button><button class="fammi" data-op="pro" style="width:auto">⇤升级</button><button class="fammi" data-op="dem" style="width:auto">⇥降级</button></div>'
+        +'<button class="fammi danger" data-op="del">移除节点（子节点上移一级）</button>';
+    }else if(pg==='padd'||pg==='pset'){
+      m.innerHTML=back
+        +(d.partner?`<div class="fammhead">当前伴侣：${esc(d.partner.label||'')}</div><button class="fammi danger" data-op="pclr">清除伴侣</button>`
+          +(d.partner.kind==='char'?`<button class="fammi" data-op="hidepinfo">${famHide.has(d.partner.charId)?'显示伴侣信息':'隐藏伴侣信息'}</button>`:'')
+          +'<div class="fammhead">更换为角色</div>'
+         :'<div class="fammhead">选择角色为伴侣</div>')
+        +charBtns(true)
+        +(d.partner?'<button class="fammi" data-op="pdc">＋自定义伴侣</button>':'<div class="fammhead">或自定义名字</div><button class="fammi" data-op="pdc">＋自定义伴侣</button>');
+    }else if(pg==='kids'){
+      m.innerHTML=back+'<div class="fammhead">添加小孩</div><button class="fammi" data-op="kdc">＋自定义小孩（先写名字）</button><div class="fammhead">或挂现有角色</div>'+charBtns(true);
+    }else if(pg==='bind'){
+      m.innerHTML=back+'<div class="fammhead">挂接到现有角色</div>'+charBtns(false);
+    }
+    bind(pg);
+  };
+  const bind=pg=>{
+    m.querySelectorAll('[data-back]').forEach(el=>el.onclick=()=>render('main'));
+    m.querySelectorAll('[data-cc]').forEach(el=>el.onclick=()=>{
+      const cid=el.dataset.cc, c=f.chars.find(x=>x.id===cid); if(!c)return;
+      beginChange();
+      if(pg==='padd'||pg==='pset'){ d.partner={kind:'char',charId:cid,label:c.name}; }
+      else if(pg==='kids'){ d.kids.push({id:uid(),kind:'char',charId:cid,label:c.name,kids:[],collapsed:false}); d.collapsed=false; }
+      else if(pg==='bind'){ d.kind='char'; d.charId=cid; d.label=c.name; }
+      touch(); m.remove(); renderFam();
+    });
+    m.querySelectorAll('[data-c]').forEach(el=>el.onclick=()=>{
+      beginChange(); if(el.dataset.c)d.color=el.dataset.c; else delete d.color; touch(); m.remove(); renderFam();
+    });
+    m.querySelectorAll('[data-op]').forEach(el=>el.onclick=async()=>{
+      const op=el.dataset.op;
+      if(op==='open'){ m.remove(); $('#famMask').classList.add('hidden'); selectChar(d.charId); }
+      else if(op==='hideinfo'||op==='hidepinfo'){ // 个人信息显隐：视图偏好，存 localStorage 不写文件
+        const cid=op==='hideinfo'?d.charId:d.partner.charId;
+        if(famHide.has(cid))famHide.delete(cid); else famHide.add(cid);
+        localStorage.setItem('fam.hideids',JSON.stringify([...famHide]));
+        m.remove(); renderFam(); }
+      else if(op==='ren'){ const v=await uiPrompt('名字',d.label||'','名字'); if(v===null)return; beginChange();
+        if(d.kind==='char'){ const c=f.chars.find(x=>x.id===d.charId); if(c)c.name=v.trim()||c.name; d.label=c?c.name:d.label; renderChars(); renderOutline(); renderContext(); }
+        else d.label=v.trim()||d.label;
+        touch(); m.remove(); renderFam(); }
+      else if(op==='toc'){ m.remove(); await famToChar(d); }
+      else if(op==='padd'){ render('padd'); return; }
+      else if(op==='pset'){ render('pset'); return; }
+      else if(op==='kids'){ render('kids'); return; }
+      else if(op==='bind'){ render('bind'); return; }
+      else if(op==='pdc'){ const v=await uiPrompt('伴侣名字（可虚写，之后也能转为角色卡）','','名字'); if(v===null)return; beginChange(); d.partner={kind:'custom',label:v.trim()||'伴侣'}; touch(); m.remove(); renderFam(); }
+      else if(op==='pclr'){ beginChange(); d.partner=null; touch(); m.remove(); renderFam(); }
+      else if(op==='kdc'){ const v=await uiPrompt('小孩名字（可先虚写，之后在节点菜单「转为角色卡」）','','名字'); if(v===null)return; beginChange(); d.kids.push({id:uid(),kind:'custom',label:v.trim()||'小孩',kids:[],collapsed:false}); d.collapsed=false; touch(); m.remove(); renderFam(); }
+      else if(op==='up'||op==='dn'){ beginChange(); const r=famFind(f,d.id);
+        if(r){ const i=r.arr.indexOf(r.n), j=op==='up'?i-1:i+1;
+          if(j>=0&&j<r.arr.length){ r.arr.splice(i,1); r.arr.splice(j,0,r.n); } }
+        touch(); m.remove(); renderFam(); }
+      else if(op==='pro'){ beginChange(); famPromote(f,d.id); touch(); m.remove(); renderFam(); }
+      else if(op==='dem'){ beginChange(); famDemote(f,d.id); touch(); m.remove(); renderFam(); }
+      else if(op==='del'){ beginChange(); const r=famFind(f,d.id);
+        if(r){ const i=r.arr.indexOf(r.n); r.arr.splice(i,1,...(r.n.kids||[])); }
+        touch(); m.remove(); renderFam(); }
+    });
+  };
+  render(page||'main');
+  const r=m.getBoundingClientRect();
+  m.style.left=Math.max(8,Math.min(ev.clientX,innerWidth-r.width-10))+'px';
+  m.style.top=Math.max(8,Math.min(ev.clientY+8,innerHeight-r.height-10))+'px';
+  setTimeout(()=>document.addEventListener('click',()=>m.remove(),{once:true}),0);
+}
+async function famToChar(d){ // 自定义小孩 → 一键建角色卡并挂接
+  const f=F();
+  const v=await uiPrompt('角色名字',d.label||'','名字'); if(v===null)return;
+  beginChange();
+  const palette=['#e79aa0','#7fc4e8','#8fd3b6','#f2c67f','#c3a6e8','#d9a441'];
+  const c={id:uid(),name:v.trim()||d.label||'新角色',color:d.color||palette[f.chars.length%palette.length],tags:[],
+    basic:'',personality:'',appearance:'',background:'',misc:'',stats:Object.assign({},STAT_DEF)};
+  f.chars.push(c); d.kind='char'; d.charId=c.id; d.label=c.name;
+  touch(); renderChars(); renderOutline(); renderContext();
+  $('#famMask').classList.add('hidden'); selectChar(c.id);
+  toast('已创建角色卡并挂接到族谱');
+}
+/* 画布交互：平移 / 滚轮缩放 / 双指捏合 / 双击适配（与思维导图同款） */
+$('#famStage').addEventListener('mousedown',e=>{
+  if(e.button!==0)return;
+  famDrag={x:e.clientX,y:e.clientY,cx:famCam.x,cy:famCam.y};
+  $('#famStage').classList.add('dragging');
+});
+window.addEventListener('mousemove',e=>{
+  if(!famDrag)return;
+  famCam.x=famDrag.cx+e.clientX-famDrag.x; famCam.y=famDrag.cy+e.clientY-famDrag.y; applyFamCam();
+});
+window.addEventListener('mouseup',()=>{ if(famDrag)$('#famStage').classList.remove('dragging'); famDrag=null; });
+$('#famStage').addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=$('#famStage').getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const z0=famCam.z;
+  famCam.z=Math.max(.04,Math.min(2.5,z0*(e.deltaY<0?1.1:0.9)));
+  famCam.x=mx-(mx-famCam.x)*famCam.z/z0;
+  famCam.y=my-(my-famCam.y)*famCam.z/z0;
+  applyFamCam();
+},{passive:false});
+$('#famStage').addEventListener('dblclick',e=>{ if(e.target.closest('.fn')||e.target.closest('.fntog'))return; famFit(); });
+$('#famStage').addEventListener('click',e=>{ if(e.target.id==='famStage'||e.target.id==='famSvg')famSelId=null; });
+$('#famStage').addEventListener('touchstart',e=>{
+  if(e.touches.length===1){
+    const t=e.touches[0];
+    famTouch={x:t.clientX,y:t.clientY,cx:famCam.x,cy:famCam.y,pinch:false};
+  }else if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    famTouch={pinch:true,pd:Math.hypot(dx,dy),z0:famCam.z};
+  }
+},{passive:true});
+$('#famStage').addEventListener('touchmove',e=>{
+  if(!famTouch)return; e.preventDefault();
+  if(famTouch.pinch&&e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    famCam.z=Math.max(.04,Math.min(2.5,famTouch.z0*Math.hypot(dx,dy)/Math.max(1,famTouch.pd)));
+    applyFamCam();
+  }else if(!famTouch.pinch&&e.touches.length===1){
+    const t=e.touches[0];
+    famCam.x=famTouch.cx+t.clientX-famTouch.x; famCam.y=famTouch.cy+t.clientY-famTouch.y;
+    applyFamCam();
+  }
+},{passive:false});
+$('#famStage').addEventListener('touchend',()=>{ famTouch=null; });
+/* 工具条 */
+$('#btnFamily').onclick=openFam;
+$('#famClose').onclick=()=>$('#famMask').classList.add('hidden');
+$('#famMask').addEventListener('click',e=>{ if(e.target.id==='famMask')$('#famMask').classList.add('hidden'); });
+$('#famAddGen').onclick=async()=>{
+  const v=await uiPrompt('代际名称（如：一代 / 二代 / 三代）','二代','如：二代'); if(v===null)return;
+  beginChange();
+  F().family.push({id:uid(),kind:'gen',label:v.trim()||'新代际',kids:[],collapsed:false});
+  touch(); renderFam();
+};
+$('#famFoldAll').onclick=()=>{ const f=F(); beginChange(); f.family.forEach(r=>{ if(r.kids.length)r.collapsed=true; }); touch(); renderFam(); };
+$('#famOpenAll').onclick=()=>{ const f=F(); beginChange();
+  const w=arr=>arr.forEach(n=>{ n.collapsed=false; w(n.kids||[]); }); w(f.family);
+  touch(); renderFam(); };
+$('#famFit').onclick=famFit;
+$('#famExportBtn').onclick=exportFamFmt;
+function openFamInfoPop(ev){ // 族谱「信息」字段勾选弹层（加减号式）
+  $('#famInfoPop')&&$('#famInfoPop').remove();
+  const p=document.createElement('div'); p.id='famInfoPop';
+  p.addEventListener('click',e2=>e2.stopPropagation());
+  const cur=famStyle.fields||[];
+  p.innerHTML='<div class="fammhead">节点旁显示的个人信息</div>'
+    +FAM_FIELDS.map(([k,lab])=>`<label class="fammi" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" data-fd="${k}" ${cur.includes(k)?'checked':''} style="margin:0">${lab}</label>`).join('')
+    +'<div class="fammhead">全不勾 = 不显示个人信息<br>按人隐藏：点节点菜单「隐藏此人信息」</div>';
+  document.body.appendChild(p);
+  const r=$('#famInfoBtn').getBoundingClientRect();
+  p.style.left=Math.min(r.left,window.innerWidth-200)+'px';
+  p.style.top=(r.bottom+6)+'px';
+  p.querySelectorAll('[data-fd]').forEach(el=>el.onchange=()=>{
+    const set=new Set(famStyle.fields||[]);
+    if(el.checked)set.add(el.dataset.fd); else set.delete(el.dataset.fd);
+    famStyle.fields=[...set];
+    localStorage.setItem('fam.fields',JSON.stringify(famStyle.fields));
+    renderFam();
+  });
+  setTimeout(()=>{ const close=e2=>{ if(!p.contains(e2.target))p.remove(); document.removeEventListener('click',close); };
+    document.addEventListener('click',close); },0);
+}
+$('#famInfoBtn').onclick=openFamInfoPop;
+$('#btnBatchMind').onclick=openCharMindPick;
+$('#cmClose').onclick=closeCm;
+$('#cmAll').onclick=()=>{ $('#cmList').querySelectorAll('.cmck').forEach(el=>{ el.checked=true; }); updCmCount(); };
+$('#cmNone').onclick=()=>{ $('#cmList').querySelectorAll('.cmck').forEach(el=>{ el.checked=false; }); updCmCount(); };
+$('#cmGo').onclick=exportCharMindBatch;
+$('#cmMask').addEventListener('click',e=>{ if(e.target.id==='cmMask')closeCm(); });
+$('#famLayoutSel').value=famStyle.layout;
+$('#famColorSel').value=famStyle.color;
+$('#famLayoutSel').onchange=e=>{ famStyle.layout=e.target.value; localStorage.setItem('fam.layout',famStyle.layout); renderFam(); setTimeout(famFit,80); };
+$('#famColorSel').onchange=e=>{ famStyle.color=e.target.value; localStorage.setItem('fam.color',famStyle.color); renderFam(); };
+function setFamFs(v){ famStyle.fs=Math.min(24,Math.max(10,v)); localStorage.setItem('fam.fs',famStyle.fs);
+  $('#famFontRange').value=famStyle.fs; $('#famFsVal').textContent=famStyle.fs; renderFam(); }
+$('#famFontRange').value=famStyle.fs; $('#famFsVal').textContent=famStyle.fs;
+$('#famFontRange').oninput=e=>setFamFs(+e.target.value);
+$('#famFsDown').onclick=()=>setFamFs(famStyle.fs-1);
+$('#famFsUp').onclick=()=>setFamFs(famStyle.fs+1);
+/* 族谱打开时：Tab/Shift+Tab 升降级；Ctrl+Z/Y 撤销重做后刷新 */
+document.addEventListener('keydown',e=>{
+  if($('#famMask').classList.contains('hidden'))return;
+  if(e.key==='Tab'&&famSelId&&!$('#famNodeMenu')){
+    e.preventDefault(); beginChange();
+    if(e.shiftKey)famPromote(F(),famSelId); else famDemote(F(),famSelId);
+    touch(); renderFam();
+  }else if((e.ctrlKey||e.metaKey)&&(e.key==='z'||e.key==='Z'||e.key==='y'||e.key==='Y')){
+    setTimeout(renderFam,80);
+  }
+});
 /* ================= 全局搜索 ================= */
 function openSearch(){ $('#searchMask').classList.remove('hidden'); setTimeout(()=>$('#searchInput').focus(),60); runSearch(); }
 function searchAll(q){
@@ -7788,6 +8648,8 @@ document.addEventListener('keydown',e=>{
     if(!$('#searchMask').classList.contains('hidden')){$('#searchMask').classList.add('hidden');return;}
     if(!$('#helpMask').classList.contains('hidden')){hideHelpDoc();return;}
     if(!$('#mindMask').classList.contains('hidden')){$('#mindMask').classList.add('hidden');return;}
+    if(!$('#famMask').classList.contains('hidden')){$('#famMask').classList.add('hidden');return;}
+    if(!$('#cmMask').classList.contains('hidden')){closeCm();return;}
     if(!$('#statsMask').classList.contains('hidden')){$('#statsMask').classList.add('hidden');return;}
     if(pickCtx){ cancelPick(); return; }
     if(!$('#modalMask').classList.contains('hidden')){$('#modalMask').classList.add('hidden');return;}

@@ -4,7 +4,7 @@
    注意：Service Worker 只在安全上下文（https 或 localhost）注册；
    iPad 通过局域网 http 地址访问时本文件不会生效——加到主屏仍可全屏（apple meta），
    但没有离线缓存。要拿到完整 PWA 能力需 https（如 Tailscale Serve / 反向代理）。 */
-const CACHE = 'plotoc-web-v4';
+const CACHE = 'plotoc-web-v5';
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
                 './icon-180.png', './icon-192.png', './icon-512.png'];
 
