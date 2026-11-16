@@ -6459,7 +6459,7 @@ function renderNovelBook(f){
   v.querySelectorAll('.nvchcard').forEach(el=>{
     const id=el.dataset.id;
     el.onclick=e=>{ if(e.target.closest('button,.nvchip,.nvav'))return;
-      nvSelId=id; nvMode='read'; nvEditing=null; nvSaveRoute(); renderNovel(); };
+      nvSelId=id; nvMode='read'; nvRoute='chapter'; nvEditing=null; nvSaveRoute(); renderNovel(); };
     el.querySelectorAll('.nvops button').forEach(btn=>btn.onclick=e=>{ e.stopPropagation();
       const op=btn.dataset.op, ch=novelCh(id);
       if(op==='up')moveChapter(id,-1);
