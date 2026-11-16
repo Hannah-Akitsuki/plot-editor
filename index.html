@@ -923,6 +923,58 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 .nvedit-body:empty:before{content:attr(data-ph); color:var(--sub);}
 .nvedit-body p{margin:0 0 .6em;}
 @media(max-width:900px){ .nvgrid{grid-template-columns:1fr;} .nvlist{max-height:40vh;} }
+/* ---- 小说模块三视图（2026-11-13）：书架 / 章节墙 / 阅读页 ---- */
+.nvshelfhead,.nvbooktop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:1200px; margin:0 auto 12px; background:var(--panel); border:1px solid var(--pline); border-radius:12px; padding:12px 18px; box-shadow:var(--shadow-s);}
+.nvshelftitle{font-size:20px; font-weight:700;}
+.nvshelfsub{color:var(--sub); font-size:12px; margin-right:auto;}
+.nvshelfgrid{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:16px;}
+.nvbookcard{background:var(--panel); border:1px solid var(--pline); border-radius:12px; overflow:hidden; cursor:pointer; box-shadow:var(--shadow-s); transition:transform .15s,box-shadow .15s; padding:0; text-align:left; font:inherit; color:inherit;}
+.nvbookcard:hover{transform:translateY(-4px); box-shadow:var(--shadow-m);}
+.nvbookcard.cur{box-shadow:0 0 0 2px var(--accent),var(--shadow-m);}
+.nvbookcard.add{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:190px; color:var(--sub); font-size:13px; border-style:dashed; background:transparent;}
+.nvbookcard.add:hover{color:var(--accent); border-color:var(--accent);}
+.nvbookcard.add span:first-child{font-size:26px;}
+.nvcover{position:relative; height:150px; display:flex; flex-direction:column; justify-content:flex-end; padding:12px; color:#fff;}
+.nvcover-t{font-size:16px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.25); word-break:break-all; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.nvcover-b{font-size:11px; opacity:.85; margin-top:3px;}
+.nvcover-cur{position:absolute; top:8px; right:8px; font-size:10px; background:rgba(255,255,255,.85); color:var(--accent); border-radius:999px; padding:1px 8px;}
+.nvbookmeta{display:flex; align-items:center; gap:8px; padding:9px 12px; font-size:11px; color:var(--sub); flex-wrap:wrap;}
+.nvbookmeta .nvw{margin-left:auto;}
+.nvmini{display:inline-block; width:22px; height:30px; border-radius:4px 8px 8px 4px; flex:none; box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.nvchbar{max-width:1200px; margin:4px auto 10px; display:flex; align-items:center; gap:10px; font-size:12.5px; font-weight:600; color:var(--text);}
+.nvchbar .pbtn{margin-left:auto;}
+.nvchbar>div:first-child{}
+.nvchbar span:first-child{}
+.nvchgrid{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px;}
+.nvchcard{background:var(--panel); border:1px solid var(--pline); border-radius:10px; padding:11px 13px; cursor:pointer; box-shadow:var(--shadow-s); transition:transform .12s,box-shadow .12s;}
+.nvchcard:hover{transform:translateY(-2px); box-shadow:var(--shadow-m);}
+.nvchcard.sel{box-shadow:0 0 0 2px var(--accent),var(--shadow-m);}
+.nvchhead{display:flex; align-items:center; gap:7px;}
+.nvctitle{font-weight:600; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.nvchfoot{display:flex; align-items:center; gap:6px; margin-top:7px; flex-wrap:wrap;}
+.nvchfoot .nvchips{margin-right:auto; display:flex; flex-wrap:wrap; gap:4px;}
+.nvchfoot .nvops{opacity:.25; transition:opacity .12s;}
+.nvchcard:hover .nvops{opacity:1;}
+.nvavs{display:inline-flex; align-items:center; margin-top:7px;}
+.nvav{width:26px; height:26px; border-radius:50%; border:2px solid var(--panel); margin-right:-8px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:11px; overflow:hidden; cursor:pointer; position:relative; transition:transform .12s;}
+.nvav:hover{transform:translateY(-2px); z-index:2;}
+.nvav img{width:100%; height:100%; object-fit:cover; display:block;}
+.nvav.more{background:var(--grid); color:var(--sub); font-size:10px;}
+.nvav.gone{background:var(--grid); color:var(--sub);}
+.nvchapter{max-width:860px; margin:0 auto;}
+.nvchapbar{display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--pline); border-radius:12px 12px 0 0; padding:10px 16px; box-shadow:var(--shadow-s); flex-wrap:wrap;}
+.nvchapbar .nvedit-title{font-size:16px;}
+.nvchapbar .nvedit-title.view{outline:none; cursor:default; font-weight:700;}
+.nvchapbar #nvChWords{margin-left:auto; color:var(--sub); font-size:11px; flex:none;}
+.nvchapmeta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--panel); border:1px solid var(--pline); border-top:none; padding:8px 16px;}
+.nvmetalam{font-size:11px; color:var(--sub); flex:none;}
+.nvchapmeta .nvav{width:30px; height:30px; margin-right:-6px;}
+.nvchapbody{background:var(--panel); border:1px solid var(--pline); border-top:none; border-radius:0 0 12px 12px; min-height:50vh; padding:28px 44px 44px; line-height:2; font-size:15px; max-width:860px;}
+.nvchapbody.read{user-select:text; -webkit-user-select:text; color:var(--text);}
+.nvchapbody.edit{outline:none; user-select:text; -webkit-user-select:text;}
+.nvchapbody:empty:before{content:attr(data-ph); color:var(--sub);}
+.nvchapbody p{margin:0 0 .8em;}
+@media(max-width:700px){ .nvchapbody{padding:18px 18px 30px;} .nvshelfgrid,.nvchgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));} }
 </style>
 </head>
 <body>
@@ -6205,14 +6257,22 @@ function openCharRef(id){
 let nvSelId=null;    // 当前选中章节 id
 let nvEditing=null;  // 正在编辑正文的章节 id（期间不重建编辑器，防焦点丢失）
 let nvWordsH=null;   // 字数统计防抖
+let nvRoute=localStorage.getItem('nv.route')||'shelf'; // shelf 书架总览 | book 章节墙 | chapter 阅读页
+let nvBookId=localStorage.getItem('nv.book')||null;    // book/chapter 视图对应的书（文件 id）
+let nvMode=localStorage.getItem('nv.mode')||'read';    // chapter 视图 read 阅读 | edit 编辑
+const NV_COVERS=[['#4a90d9','#6ea9e6'],['#e79aa0','#c46a7e'],['#7fc4e8','#4f9e95'],['#f2c67f','#d9a441'],['#a48fd3','#7c5fb0'],['#8fd3b6','#3fa76a'],['#5aa0c8','#3a6a8f'],['#d98a6a','#b85c3f']];
+function nvSaveRoute(){ try{ localStorage.setItem('nv.route',nvRoute); localStorage.setItem('nv.book',nvBookId||''); localStorage.setItem('nv.mode',nvMode); }catch(e){} }
 function novelCh(id){ const f=F(); return (f.novel&&f.novel.chapters.find(c=>c.id===id))||null; }
 function novelWords(html){ return plainTextOf(html||'').replace(/\s/g,'').length; }
-function novelTotal(){ const f=F(); return ((f.novel&&f.novel.chapters)||[]).reduce((s,c)=>s+(c.words||0),0); }
+function novelTotal(f){ f=f||F(); return ((f.novel&&f.novel.chapters)||[]).reduce((s,c)=>s+(c.words||0),0); }
+function nvFindChar(cid){ for(const x of DB.files){ if(x.type!=='chars')continue; const c=x.chars.find(k=>k.id===cid); if(c)return c; } return null; }
+function nvHostFile(cid){ return DB.files.find(x=>x.type==='chars'&&x.chars.some(k=>k.id===cid))||null; }
 function addChapter(){
   const f=F(); if(f.type!=='novel')return;
   beginChange();
   const ch={id:uid(),title:'第'+(f.novel.chapters.length+1)+'章',status:'draft',content:'',words:0,charIds:[]};
-  f.novel.chapters.push(ch); nvSelId=ch.id; nvEditing=null; touch(); renderNovel();
+  f.novel.chapters.push(ch); nvSelId=ch.id; nvEditing=ch.id; nvMode='edit'; touch();
+  nvRoute='chapter'; nvSaveRoute(); renderNovel();
 }
 function delChapter(id){
   const f=F(); if(f.type!=='novel')return;
@@ -6228,7 +6288,19 @@ function moveChapter(id,dir){
   beginChange(); const c=f.novel.chapters.splice(i,1)[0]; f.novel.chapters.splice(j,0,c);
   touch(); renderNovel();
 }
-function nvChipsHTML(f,c){
+function nvAvatarRowHTML(c,limit){ // 章节绑定角色头像叠（img 头像 / 首字圆底）
+  const all=(c.charIds||[]); limit=limit||6;
+  const ids=all.slice(0,limit), rest=all.length-ids.length;
+  let h='<span class="nvavs">';
+  ids.forEach(cid=>{
+    const cc=nvFindChar(cid);
+    h+=cc?`<span class="nvav" data-chip="char" data-id="${cid}" title="${esc(cc.name||'角色')}（点击跳转 · 右键解绑）" style="background:${cc.color||'#8fa3bf'}">${cc.img?`<img src="${cc.img}" alt="">`:esc((cc.name||'?').slice(0,1))}</span>`
+        :`<span class="nvav gone" data-chip="gone" data-id="${cid}" title="角色已删除（右键解绑）">?</span>`;
+  });
+  if(rest>0)h+=`<span class="nvav more" title="还有 ${rest} 位绑定角色">+${rest}</span>`;
+  return h+'</span>';
+}
+function nvChipRowHTML(f,c){ // 剧情绑定芯片（文件 · 便签）
   let h='';
   if(c.bindFileId){ const bf=DB.files.find(x=>x.id===c.bindFileId);
     if(bf){ let label=bf.name;
@@ -6236,21 +6308,7 @@ function nvChipsHTML(f,c){
       h+=`<span class="nvchip" data-chip="file" title="点击跳转 · 右键解绑">${esc(label)}</span>`;
     }else h+=`<span class="nvchip gone" data-chip="gone" title="右键解绑">（绑定的文件已不存在）</span>`;
   }
-  (c.charIds||[]).forEach(cid=>{
-    const hf=DB.files.find(x=>x.type==='chars'&&x.chars.some(k=>k.id===cid));
-    const cc=hf&&hf.chars.find(k=>k.id===cid);
-    h+=cc?`<span class="nvchip" data-chip="char" data-id="${cid}" title="点击跳转 · 右键解绑" style="color:${cc.color||'var(--accent)'}">${esc(cc.name||'角色')}</span>`
-        :`<span class="nvchip gone" data-chip="gone" data-id="${cid}" title="右键解绑">（角色已删除）</span>`;
-  });
   return h;
-}
-function nvListHTML(f){
-  return f.novel.chapters.map(c=>`
-  <div class="nvch ${c.id===nvSelId?'sel':''}" data-id="${c.id}">
-    <div class="nvrow1"><span class="nvdot ${c.status==='done'?'done':''}"></span><span class="nvtitle" title="双击可改章节名（如：随笔、番外）">${esc(c.title)}</span><span class="nvw">${c.words||0}字</span></div>
-    <div class="nvchips">${nvChipsHTML(f,c)}</div>
-    <div class="nvops"><button data-op="up" title="上移">↑</button><button data-op="dn" title="下移">↓</button><button data-op="bind" title="绑定剧情页 / 便签 / 角色">绑</button><button data-op="del" class="danger" title="删除章节">删</button></div>
-  </div>`).join('')||'<div class="nvempty">还没有章节，点右上「＋章节」开始</div>';
 }
 function nvFloatMenu(items,ev,title){
   const m=document.createElement('div'); m.className='popmenu';
@@ -6307,71 +6365,73 @@ function nvUnbind(ch,cp){
   else if(cp.dataset.chip==='char'){ ch.charIds=ch.charIds.filter(x=>x!==cp.dataset.id); }
   touch(); renderNovel();
 }
-function nvEditHTML(ch){
-  return `<div class="nvedithead">
-    <div class="nvedit-title" id="nvEdTitle" contenteditable="true" spellcheck="false" title="点击改章节名（不一定要「第N章」，随笔/番外都可以）">${esc(ch.title)}</div>
-    <button class="nvst ${ch.status==='done'?'done':''}" id="nvChSt" title="切换本章 草稿/完本 状态">${ch.status==='done'?'完本':'草稿'}</button>
-    <span id="nvChWords">本章 ${novelWords(ch.content)} 字</span>
-  </div>
-  <div class="nvedit-body" id="nvEdBody" contenteditable="true" spellcheck="false" data-ph="从这里开始写正文…">${ch.content}</div>`;
-}
-function nvBindEditor(f,ch){
-  const t=$('#nvEdTitle'), b=$('#nvEdBody'), st=$('#nvChSt');
-  if(st)st.onclick=()=>{ beginChange(); ch.status=ch.status==='done'?'draft':'done'; touch(); renderNovel(); };
-  if(t)t.onfocusout=()=>{ const v2=t.textContent.trim()||ch.title;
-    if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
-    setTimeout(()=>{ const ae=document.activeElement;
-      if(!(ae&&ae.closest&&ae.closest('.nvedit-body,.nvbook,#nvAuthor,#nvIntro')))renderNovel(); },200); };
-  if(!b)return;
-  b.addEventListener('focus',()=>{ nvEditing=ch.id; });
-  b.addEventListener('input',()=>{ ch.content=b.innerHTML; touch();
-    clearTimeout(nvWordsH);
-    nvWordsH=setTimeout(()=>{ ch.words=novelWords(ch.content);
-      const w=$('#nvChWords'); if(w)w.textContent='本章 '+ch.words+' 字';
-      const tt=$('#nvTotal'); if(tt)tt.textContent='全书 '+novelTotal()+' 字';
-      const lw=($('#nvList')||{}).querySelector&&$('#nvList').querySelector(`.nvch[data-id="${ch.id}"] .nvw`);
-      if(lw)lw.textContent=ch.words+'字';
-      touch(); },300); });
-  b.addEventListener('focusout',()=>{ ch.content=b.innerHTML; if(nvEditing===ch.id)nvEditing=null; touch();
-    setTimeout(()=>{ const ae=document.activeElement;
-      if(!(ae&&ae.closest&&ae.closest('.nvedit-title,.nvbook,#nvAuthor,#nvIntro')))renderNovel(); },200); });
-  b.addEventListener('paste',ev=>{ const cd=ev.clipboardData||window.clipboardData;
-    const txt=cd?cd.getData('text/plain'):''; if(txt){ ev.preventDefault(); document.execCommand('insertText',false,txt); } });
-}
-function renderNovel(){
-  const f=F(); if(f.type!=='novel'||!f.novel)return;
+/* ---- 视图一：书架总览（所有小说的卡片墙） ---- */
+function renderNovelShelf(){
   const v=$('#novelView');
-  if(nvEditing){ // 编辑正文期间：只刷新列表与字数，不重建编辑器
-    const ch=novelCh(nvEditing), list=$('#nvList');
-    if(list&&ch){ list.innerHTML=nvListHTML(f); nvBindList(f,list); }
-    const w=$('#nvChWords'); if(w&&ch)w.textContent='本章 '+novelWords(ch.content)+' 字';
-    const tt=$('#nvTotal'); if(tt)tt.textContent='全书 '+novelTotal()+' 字';
-    return;
-  }
-  if(!nvSelId||!novelCh(nvSelId))nvSelId=(f.novel.chapters[0]||{}).id||null;
-  const ch=novelCh(nvSelId);
-  v.innerHTML=`
-  <div class="nvhead">
-    <div class="nvhead-row">
-      <span style="color:var(--accent);display:inline-flex;width:20px;height:20px">${ICO.novel}</span>
-      <div class="nvbook" id="nvBook" contenteditable="true" spellcheck="false" title="书名（即页签名，可改）">${esc(f.name)}</div>
-      <span class="nvfield" style="flex:none">作者</span>
-      <div class="nvfield" id="nvAuthor" contenteditable="true" spellcheck="false" style="min-width:80px">${esc(f.novel.author||'')}</div>
-      <button class="nvst ${f.novel.status==='完本'?'done':''}" id="nvStatus" title="点击切换 连载状态">${esc(f.novel.status||'连载中')}</button>
-      <button class="nvst" id="nvNewBook" title="再建一本小说（生成新页签）">＋新建小说</button>
-      <span class="nvtotal" id="nvTotal">全书 ${novelTotal()} 字</span>
+  const books=DB.files.filter(x=>x.type==='novel');
+  v.innerHTML=`<div class="nvshelf">
+    <div class="nvshelfhead">
+      <span style="color:var(--accent);display:inline-flex;width:22px;height:22px">${ICO.novel}</span>
+      <div class="nvshelftitle">我的书架</div>
+      <span class="nvshelfsub">${books.length} 本 · ${books.reduce((s,x)=>s+novelTotal(x),0).toLocaleString()} 字</span>
+      <button class="pbtn prim" id="nvShelfNew">＋新建小说</button>
     </div>
-    <div class="nvintro" id="nvIntro" contenteditable="true" spellcheck="false" title="点击填写简介">${esc(f.novel.intro||'')||'简介：一句话介绍这本书（点击填写）'}</div>
-  </div>
-  <div class="nvgrid">
-    <div class="nvlistwrap">
-      <div class="nvlisthead">章节（${f.novel.chapters.length}）<button class="pbtn" id="nvAddCh">＋章节</button></div>
-      <div class="nvlist" id="nvList">${nvListHTML(f)}</div>
+    <div class="nvshelfgrid">
+      ${books.map(x=>{
+        const i=books.indexOf(x), cv=NV_COVERS[i%NV_COVERS.length];
+        const done=x.novel.chapters.filter(c=>c.status==='done').length;
+        return `<div class="nvbookcard ${x.id===DB.active?'cur':''}" data-id="${x.id}" title="打开这本书">
+          <div class="nvcover" style="background:linear-gradient(135deg,${cv[0]},${cv[1]})">
+            <span class="nvcover-t">${esc(x.name)}</span>
+            <span class="nvcover-b">${esc(x.novel.author||'佚名')}</span>
+            ${x.id===DB.active?'<span class="nvcover-cur">当前</span>':''}
+          </div>
+          <div class="nvbookmeta">
+            <span class="nvst ${x.novel.status==='完本'?'done':''}">${esc(x.novel.status||'连载中')}</span>
+            <span>${x.novel.chapters.length} 章${done?` · 完 ${done}`:''}</span>
+            <span class="nvw">${novelTotal(x).toLocaleString()} 字</span>
+          </div>
+        </div>`;
+      }).join('')}
+      <button class="nvbookcard add" id="nvShelfAdd" title="再建一本">＋<span>新建小说</span></button>
     </div>
-    <div class="nvedit">${ch?nvEditHTML(ch):'<div class="nvempty">从左侧选择一章，或点「＋章节」开始写作</div>'}</div>
   </div>`;
-  nvBindList(f,v.querySelector('#nvList'));
+  const go=id=>{ nvRoute='book'; nvBookId=id; nvMode='read'; nvSaveRoute();
+    if(id!==DB.active)switchTab(id); else renderNovel(); };
+  v.querySelectorAll('.nvbookcard[data-id]').forEach(c=>c.onclick=()=>go(c.dataset.id));
+  $('#nvShelfNew').onclick=()=>newFile('novel');
+  $('#nvShelfAdd').onclick=()=>newFile('novel');
+}
+/* ---- 视图二：某本书（章节墙） ---- */
+function renderNovelBook(f){
+  const v=$('#novelView');
+  if(!nvSelId||!novelCh(nvSelId))nvSelId=(f.novel.chapters[0]||{}).id||null;
+  const bi=DB.files.filter(x=>x.type==='novel').indexOf(f), cv=NV_COVERS[(bi<0?0:bi)%NV_COVERS.length];
+  v.innerHTML=`<div class="nvbooktop">
+    <button class="pbtn" id="nvBack">← 书架</button>
+    <span class="nvmini" style="background:linear-gradient(135deg,${cv[0]},${cv[1]})"></span>
+    <div class="nvbook" id="nvBook" contenteditable="true" spellcheck="false" title="书名（即页签名，可改）">${esc(f.name)}</div>
+    <span class="nvfield" style="flex:none">作者</span>
+    <div class="nvfield" id="nvAuthor" contenteditable="true" spellcheck="false" style="min-width:70px">${esc(f.novel.author||'')}</div>
+    <button class="nvst ${f.novel.status==='完本'?'done':''}" id="nvStatus" title="点击切换 连载状态">${esc(f.novel.status||'连载中')}</button>
+    <span class="nvtotal" id="nvTotal">全书 ${novelTotal(f).toLocaleString()} 字</span>
+    <button class="pbtn" id="nvNewBook" title="再建一本小说（生成新页签）">＋新书</button>
+  </div>
+  <div class="nvintro" id="nvIntro" contenteditable="true" spellcheck="false" title="点击填写简介">${esc(f.novel.intro||'')||'简介：一句话介绍这本书（点击填写）'}</div>
+  <div class="nvchbar">章节（${f.novel.chapters.length}）· 点章节卡进入阅读，可随时编辑<button class="pbtn prim" id="nvAddCh">＋章节</button></div>
+  <div class="nvchgrid">${f.novel.chapters.map(c=>`
+    <div class="nvchcard ${c.id===nvSelId?'sel':''}" data-id="${c.id}" title="点击进入本章">
+      <div class="nvchhead"><span class="nvdot ${c.status==='done'?'done':''}"></span><span class="nvctitle">${esc(c.title)}</span><span class="nvw">${c.words||0}字</span></div>
+      ${nvAvatarRowHTML(c,5)}
+      <div class="nvchfoot">
+        <span class="nvchips">${nvChipRowHTML(f,c)}</span>
+        <span class="nvops"><button data-op="up" title="上移">↑</button><button data-op="dn" title="下移">↓</button><button data-op="bind" title="绑定剧情页 / 便签 / 角色">绑</button><button data-op="del" class="danger" title="删除章节">删</button></span>
+      </div>
+    </div>`).join('')||'<div class="nvempty">还没有章节，点右上「＋章节」开始写作</div>'}
+  </div>`;
+  $('#nvBack').onclick=()=>{ nvRoute='shelf'; nvSaveRoute(); renderNovel(); };
   $('#nvAddCh').onclick=addChapter;
+  $('#nvNewBook').onclick=()=>newFile('novel');
   const bk=$('#nvBook');
   bk.onfocusout=()=>{ const nm=bk.textContent.trim();
     if(nm&&nm!==f.name){ beginChange(); f.name=nm; touch(); renderTabs(); } else bk.textContent=f.name; };
@@ -6382,25 +6442,10 @@ function renderNovel(){
   it.onfocusout=()=>{ const v2=it.textContent.trim();
     if(v2!==(f.novel.intro||'')){ beginChange(); f.novel.intro=v2; touch(); } };
   $('#nvStatus').onclick=()=>{ beginChange(); f.novel.status=f.novel.status==='完本'?'连载中':'完本'; touch(); renderNovel(); };
-  $('#nvNewBook').onclick=()=>newFile('novel');
-  if(ch)nvBindEditor(f,ch);
-}
-function nvBindList(f,list){
-  if(!list)return;
-  list.querySelectorAll('.nvch').forEach(el=>{
+  v.querySelectorAll('.nvchcard').forEach(el=>{
     const id=el.dataset.id;
-    el.onclick=e=>{ if(e.target.closest('button,.nvchip,.nvtitle'))return; // 标题区留给双击改名，不触发选中重建
-      nvSelId=id; nvEditing=null; touch(true); renderNovel(); };
-    el.querySelectorAll('.nvtitle').forEach(tt=>{ // 双击列表标题直接改名
-      tt.ondblclick=e=>{ e.stopPropagation(); tt.contentEditable='true'; tt.focus();
-        try{document.getSelection().selectAllChildren(tt);}catch(_e){} };
-      tt.onfocusout=()=>{ tt.contentEditable='false';
-        const ch=novelCh(id); if(!ch)return;
-        const v2=tt.textContent.trim()||ch.title;
-        if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
-        renderNovel(); };
-      tt.onkeydown=e2=>{ e2.stopPropagation(); if(e2.key==='Enter'){ e2.preventDefault(); tt.blur(); } };
-    });
+    el.onclick=e=>{ if(e.target.closest('button,.nvchip,.nvav'))return;
+      nvSelId=id; nvMode='read'; nvEditing=null; nvSaveRoute(); renderNovel(); };
     el.querySelectorAll('.nvops button').forEach(btn=>btn.onclick=e=>{ e.stopPropagation();
       const op=btn.dataset.op, ch=novelCh(id);
       if(op==='up')moveChapter(id,-1);
@@ -6408,11 +6453,95 @@ function nvBindList(f,list){
       else if(op==='del')delChapter(id);
       else if(op==='bind')nvBindMenu(ch,e);
     });
-    el.querySelectorAll('.nvchip').forEach(cp=>{
+    el.querySelectorAll('.nvav,.nvchip').forEach(cp=>{
       cp.onclick=e=>{ e.stopPropagation(); nvJump(novelCh(id),cp); };
       cp.oncontextmenu=e=>{ e.preventDefault(); e.stopPropagation(); nvUnbind(novelCh(id),cp); };
     });
   });
+}
+/* ---- 视图三：章节阅读 / 编辑 ---- */
+function renderNovelChapter(f){
+  const v=$('#novelView');
+  const ch=novelCh(nvSelId); if(!ch){ nvRoute='book'; nvSaveRoute(); return renderNovelBook(f); }
+  const i=f.novel.chapters.indexOf(ch);
+  const prev=f.novel.chapters[i-1], next=f.novel.chapters[i+1];
+  const editing=nvMode==='edit';
+  const bodyEditing=editing&&nvEditing===ch.id; // 正文编辑中不重建编辑器
+  v.innerHTML=`<div class="nvchapter">
+    <div class="nvchapbar">
+      <button class="pbtn" id="nvChBack">← 章节</button>
+      <button class="pbtn" id="nvPrev" ${prev?'':'disabled style="opacity:.4"'} title="上一章">‹</button>
+      <button class="pbtn" id="nvNext" ${next?'':'disabled style="opacity:.4"'} title="下一章">›</button>
+      <div class="nvedit-title ${editing?'':'view'}" id="nvEdTitle" ${editing?'contenteditable="true" spellcheck="false"':''} title="${editing?'点击改章节名（随笔/番外都可以）':'章节标题'}">${esc(ch.title)}</div>
+      ${editing
+        ?`<button class="nvst ${ch.status==='done'?'done':''}" id="nvChSt" title="切换本章 草稿/完本 状态">${ch.status==='done'?'完本':'草稿'}</button>
+          <button class="pbtn prim" id="nvSave" title="立即保存（平时也自动保存）">保存</button>
+          <button class="pbtn" id="nvDone">完成</button>`
+        :`<button class="pbtn prim" id="nvEdit">✎ 编辑</button>`}
+      <span id="nvChWords">本章 ${novelWords(ch.content).toLocaleString()} 字</span>
+    </div>
+    <div class="nvchapmeta">
+      <span class="nvmetalam">出场角色</span>
+      ${nvAvatarRowHTML(ch,8)}
+      <button class="pbtn" id="nvAddBind" title="绑定剧情页 / 便签 / 角色">＋绑定</button>
+      <span class="nvchips" style="margin-left:8px">${nvChipRowHTML(f,ch)||'<span style="color:var(--sub);font-size:11px">未绑定剧情页</span>'}</span>
+    </div>
+    ${bodyEditing
+      ?`<div class="nvchapbody edit" id="nvEdBody" contenteditable="true" spellcheck="false" data-ph="从这里开始写正文…">${ch.content}</div>`
+      :`<div class="nvchapbody ${editing?'edit':'read'}" id="nvBodyShow">${ch.content||'<span class="nvempty">本章还没有内容，点右上「✎ 编辑」开始写作</span>'}</div>`}
+  </div>`;
+  $('#nvChBack').onclick=()=>{ nvEditing=null; nvRoute='book'; nvSaveRoute(); renderNovel(); };
+  const goCh=c=>{ if(!c)return; nvSelId=c.id; nvEditing=null; nvMode='read'; nvSaveRoute(); renderNovel(); };
+  $('#nvPrev').onclick=()=>goCh(prev);
+  $('#nvNext').onclick=()=>goCh(next);
+  $('#nvAddBind').onclick=e=>nvBindMenu(ch,e);
+  v.querySelectorAll('.nvav,.nvchip').forEach(cp=>{
+    cp.onclick=e=>{ nvJump(ch,cp); };
+    cp.oncontextmenu=e=>{ e.preventDefault(); nvUnbind(ch,cp); };
+  });
+  const t=$('#nvEdTitle');
+  if(t&&editing)t.onfocusout=()=>{ const v2=t.textContent.trim()||ch.title;
+    if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
+    setTimeout(()=>{ const ae=document.activeElement;
+      if(!(ae&&ae.closest&&ae.closest('.nvchapbody.edit')))renderNovel(); },200); };
+  const st=$('#nvChSt');
+  if(st)st.onclick=()=>{ beginChange(); ch.status=ch.status==='done'?'draft':'done'; touch(); renderNovel(); };
+  const sv=$('#nvSave');
+  if(sv)sv.onclick=()=>{ ch.content=($('#nvEdBody')||{}).innerHTML||ch.content; ch.words=novelWords(ch.content); touch(); toast('已保存（平时输入也会自动保存）'); };
+  const dn=$('#nvDone');
+  if(dn)dn.onclick=()=>{ ch.content=($('#nvEdBody')||{}).innerHTML||ch.content; ch.words=novelWords(ch.content);
+    nvEditing=null; nvMode='read'; touch(); nvSaveRoute(); renderNovel(); };
+  const eb=$('#nvEdit');
+  if(eb)eb.onclick=()=>{ nvMode='edit'; nvSaveRoute(); renderNovel(); setTimeout(()=>{ const b=$('#nvEdBody'); if(b)b.focus(); },40); };
+  const b=$('#nvEdBody');
+  if(b){
+    b.addEventListener('focus',()=>{ nvEditing=ch.id; nvSaveRoute(); });
+    b.addEventListener('input',()=>{ ch.content=b.innerHTML; touch();
+      clearTimeout(nvWordsH);
+      nvWordsH=setTimeout(()=>{ ch.words=novelWords(ch.content);
+        const w=$('#nvChWords'); if(w)w.textContent='本章 '+ch.words.toLocaleString()+' 字';
+        touch(); },300); });
+    b.addEventListener('focusout',()=>{ ch.content=b.innerHTML; if(nvEditing===ch.id)nvEditing=null; touch(); });
+    b.addEventListener('paste',ev=>{ const cd=ev.clipboardData||window.clipboardData;
+      const txt=cd?cd.getData('text/plain'):''; if(txt){ ev.preventDefault(); document.execCommand('insertText',false,txt); } });
+  }
+}
+/* ---- 总分发：书架 / 书 / 章节 ---- */
+function renderNovel(){
+  const f=F(); if(f.type!=='novel'||!f.novel)return;
+  const v=$('#novelView');
+  if(nvRoute!=='shelf'&&nvBookId!==f.id){ nvBookId=f.id; if(nvRoute==='shelf'){} else if(!novelCh(nvSelId))nvSelId=(f.novel.chapters[0]||{}).id||null; nvSaveRoute(); }
+  if(nvRoute==='chapter'){
+    const ch=novelCh(nvSelId);
+    if(!ch){ nvRoute='book'; nvSaveRoute(); }
+    else if(nvMode==='edit'&&nvEditing===ch.id){ // 正文编辑中：只刷新字数，不重建编辑器
+      const w=$('#nvChWords'); if(w)w.textContent='本章 '+novelWords(ch.content).toLocaleString()+' 字';
+      return;
+    }
+  }
+  if(nvRoute==='shelf')return renderNovelShelf();
+  if(nvRoute==='chapter')return renderNovelChapter(f);
+  return renderNovelBook(f);
 }
 
 /* ================= 剧情思维导图 ================= */
