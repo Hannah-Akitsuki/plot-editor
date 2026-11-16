@@ -5693,44 +5693,47 @@ function quickNewChar(name){
 }
 function openRefPicker(kind,cb){
   const menu=$('#impMenu'), items=refItems(kind);
-  const draw=(q)=>{
+  // 搜索框只创建一次、只刷新列表区——不能整层 innerHTML 重建，否则打断输入法组合（中文变散字母）
+  const listHTML=q=>{
     q=String(q||'').trim().toLowerCase();
     const list=q?items.filter(it=>String(it.name).toLowerCase().includes(q)):items;
-    menu.innerHTML=`<div class="mpgroup">关联到${REF_KINDS[kind]||'内容'}（共 ${items.length}）</div>`
-      +(items.length>6?`<input class="mpsearch" id="mpSearch" placeholder="输入关键字筛选…" value="${esc(q)}">`:'')
-      +`<div class="mpscroll" id="mpList">`
-      +(list.length?list.map(it=>`<div class="mitem" data-id="${it.id}"><span class="mico" style="color:${it.color}">${it.icon}</span>${esc(it.name)}</div>`).join('')
-        :`<div class="phint" style="padding:6px 10px">没有可关联的${REF_KINDS[kind]||'内容'}，先在对应模块创建</div>`)
-      +`</div>`
-      +(kind==='char'||kind==='event'?'<div class="mpgroup">或直接新建</div><div class="mitem" data-new="1"><span class="mico">'+(kind==='char'?ICO.chars:ICO.timeline)+'</span>＋ '+(kind==='char'?'新建角色并关联':'新建时间点/事件并关联')+'</div>':'');
+    return list.length?list.map(it=>`<div class="mitem" data-id="${it.id}"><span class="mico" style="color:${it.color}">${it.icon}</span>${esc(it.name)}</div>`).join('')
+      :`<div class="phint" style="padding:6px 10px">没有可关联的${REF_KINDS[kind]||'内容'}，先在对应模块创建</div>`;
+  };
+  menu.innerHTML=`<div class="mpgroup">关联到${REF_KINDS[kind]||'内容'}（共 ${items.length}）</div>`
+    +(items.length>6?`<input class="mpsearch" id="mpSearch" placeholder="输入关键字筛选…">`:'')
+    +`<div class="mpscroll" id="mpList"></div>`
+    +(kind==='char'||kind==='event'?'<div class="mpgroup">或直接新建</div><div class="mitem" data-new="1"><span class="mico">'+(kind==='char'?ICO.chars:ICO.timeline)+'</span>＋ '+(kind==='char'?'新建角色并关联':'新建时间点/事件并关联')+'</div>':'');
+  const nm=menu.querySelector('[data-new]');
+  if(nm)nm.onclick=async()=>{
+    menu.classList.add('hidden');
+    if(kind==='event'){
+      const title=await uiPrompt('新事件标题','如：天倾之战爆发','事件名');
+      if(title==null)return;
+      const time=await uiPrompt('事件时间','如：历元3200年（可留空）','时间');
+      if(time==null)return;
+      beginChange();
+      let tf=DB.files.find(f=>f.type==='timeline');
+      if(!tf){ tf={id:uid(),type:'timeline',name:'时间线',events:[]}; DB.files.push(tf); renderTabs(); }
+      const ev={id:uid(),time:time||'',title:title||'新事件',desc:'',color:['#e79aa0','#7fc4e8','#8fd3b6','#f2c67f','#c3a6e8'][tf.events.length%5]};
+      tf.events.push(ev); touch();
+      cb({type:'event',id:ev.id});
+      toast('已在「'+tf.name+'」创建事件并关联，切到时间线可编辑');
+    }else{
+      const c=quickNewChar();
+      cb({type:'char',id:c.id});
+    }
+  };
+  const redraw=q=>{
+    $('#mpList').innerHTML=listHTML(q);
     $$('#mpList .mitem').forEach(m=>m.onclick=()=>{
       menu.classList.add('hidden');
       cb({type:kind,id:m.dataset.id});
     });
-    const nm=menu.querySelector('[data-new]');
-    if(nm)nm.onclick=async()=>{
-      menu.classList.add('hidden');
-      if(kind==='event'){
-        const title=await uiPrompt('新事件标题','如：天倾之战爆发','事件名');
-        if(title==null)return;
-        const time=await uiPrompt('事件时间','如：历元3200年（可留空）','时间');
-        if(time==null)return;
-        beginChange();
-        let tf=DB.files.find(f=>f.type==='timeline');
-        if(!tf){ tf={id:uid(),type:'timeline',name:'时间线',events:[]}; DB.files.push(tf); renderTabs(); }
-        const ev={id:uid(),time:time||'',title:title||'新事件',desc:'',color:['#e79aa0','#7fc4e8','#8fd3b6','#f2c67f','#c3a6e8'][tf.events.length%5]};
-        tf.events.push(ev); touch();
-        cb({type:'event',id:ev.id});
-        toast('已在「'+tf.name+'」创建事件并关联，切到时间线可编辑');
-      }else{
-        const c=quickNewChar();
-        cb({type:'char',id:c.id});
-      }
-    };
-    const s=menu.querySelector('#mpSearch');
-    if(s){ s.oninput=()=>draw(s.value); s.onkeydown=ev=>{ if(ev.key==='Escape')menu.classList.add('hidden'); }; setTimeout(()=>s.focus(),40); }
   };
-  draw('');
+  redraw('');
+  const s=menu.querySelector('#mpSearch');
+  if(s){ s.oninput=()=>redraw(s.value); s.onkeydown=ev=>{ if(ev.key==='Escape')menu.classList.add('hidden'); }; setTimeout(()=>s.focus(),40); }
   menu.style.left=Math.min(lastMenuPos.x,window.innerWidth-230)+'px';
   menu.style.top=Math.min(lastMenuPos.y,window.innerHeight-330)+'px';
   menu.classList.remove('hidden');
@@ -5740,25 +5743,31 @@ function openTlAnchorPick(n){
   const evs=[];
   DB.files.forEach(f=>{ if(f.type==='timeline')(f.events||[]).forEach(ev=>evs.push({f,ev})); });
   if(!evs.length){ toast('还没有时间线文件，先在「＋」新建一个时间线'); return; }
-  const draw=q=>{
+  const listHTML=q=>{ // 只刷新列表区，不重建搜索框（保输入法组合）
     q=String(q||'').trim().toLowerCase();
     const list=q?evs.filter(x=>((x.ev.time||'')+' '+(x.ev.title||'')).toLowerCase().includes(q)):evs;
-    menu.innerHTML='<div class="mpgroup">插到哪个事件之后？（不创建新时间点）</div>'
-      +(evs.length>6?'<input class="mpsearch" id="mpSearch" placeholder="搜索事件…">':'')
-      +'<div class="mpscroll" id="mpList">'
-      +(list.map(x=>`<div class="mitem" data-id="${x.ev.id}"><span class="mico" style="color:${x.ev.color||'#8fa3bf'}">${ICO.timeline}</span>${esc(x.ev.time?x.ev.time+' · ':'')}${esc(x.ev.title||'未命名')}<span style="color:var(--sub);font-size:11px">　${esc(x.f.name)}</span></div>`).join('')||'<div class="phint" style="padding:6px 10px">没有匹配的事件</div>')
-      +(n.tref?'<div class="mitem" data-clear="1"><span class="mico">×</span>取消时间轴链接</div>':'')
-      +'</div>';
+    return list.map(x=>`<div class="mitem" data-id="${x.ev.id}"><span class="mico" style="color:${x.ev.color||'#8fa3bf'}">${ICO.timeline}</span>${esc(x.ev.time?x.ev.time+' · ':'')}${esc(x.ev.title||'未命名')}<span style="color:var(--sub);font-size:11px">　${esc(x.f.name)}</span></div>`).join('')
+      ||'<div class="phint" style="padding:6px 10px">没有匹配的事件</div>';
+  };
+  menu.innerHTML='<div class="mpgroup">插到哪个事件之后？（不创建新时间点）</div>'
+    +(evs.length>6?'<input class="mpsearch" id="mpSearch" placeholder="搜索事件…">':'')
+    +'<div class="mpscroll" id="mpList"></div>'
+    +(n.tref?'<div class="mitem" data-clear="1"><span class="mico">×</span>取消时间轴链接</div>':'');
+  $$('#impMenu .mitem[data-clear]').forEach(m=>m.onclick=()=>{
+    menu.classList.add('hidden');
+    beginChange(); delete n.tref; touch(); renderTL(); toast('已取消时间轴链接');
+  });
+  const redraw=q=>{
+    $('#mpList').innerHTML=listHTML(q);
     $$('#mpList .mitem').forEach(m=>m.onclick=()=>{
       menu.classList.add('hidden');
-      if(m.dataset.clear){ beginChange(); delete n.tref; touch(); renderTL(); toast('已取消时间轴链接'); return; }
       beginChange(); n.tref={evId:m.dataset.id}; touch(); renderTL();
       toast('已链接到时间轴，事件卡上的「◇」可跳回这段剧情');
     });
-    const s=menu.querySelector('#mpSearch');
-    if(s){ s.oninput=()=>draw(s.value); s.onkeydown=ev=>{ if(ev.key==='Escape')menu.classList.add('hidden'); }; setTimeout(()=>s.focus(),40); }
   };
-  draw('');
+  redraw('');
+  const s=menu.querySelector('#mpSearch');
+  if(s){ s.oninput=()=>redraw(s.value); s.onkeydown=ev=>{ if(ev.key==='Escape')menu.classList.add('hidden'); }; setTimeout(()=>s.focus(),40); }
   menu.style.left=Math.min(lastMenuPos.x,window.innerWidth-260)+'px';
   menu.style.top=Math.min(lastMenuPos.y,window.innerHeight-330)+'px';
   menu.classList.remove('hidden');
@@ -8447,7 +8456,7 @@ $('#btnPlotOnly').onclick=()=>{
 /* ================= 画布事件 ================= */
 wrap.addEventListener('contextmenu',e=>e.preventDefault());
 wrap.addEventListener('wheel',e=>{
-  if(e.target.closest&&e.target.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView'))return;
+  if(e.target.closest&&e.target.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#impMenu'))return;
   e.preventDefault();
   // Ctrl/⌘+滚轮：以指针为中心缩放（触控板捏合在 Windows/WebView 下也会合成 Ctrl+滚轮）
   if(e.ctrlKey||e.metaKey){ zoomAt(e.clientX,e.clientY,e.deltaY<0?1.12:1/1.12); return; }
@@ -8471,7 +8480,7 @@ document.addEventListener('wheel',e=>{
   const t=e.target;
   if(!t||!t.closest)return;
   if(t.closest('#mindStage'))return;
-  if(t.closest('#wrap')&&!t.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView'))return;
+  if(t.closest('#wrap')&&!t.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#impMenu'))return;
   const sc=closestScrollable(t);
   if(sc){ e.preventDefault(); sc.scrollTop+=e.deltaY; sc.scrollLeft+=e.deltaX; }
 },{passive:false});
