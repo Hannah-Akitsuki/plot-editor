@@ -8936,7 +8936,12 @@ document.addEventListener('wheel',e=>{
   if(t.closest('#mindStage'))return;
   if(t.closest('#wrap')&&!t.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#impMenu'))return;
   const sc=closestScrollable(t);
-  if(sc){ e.preventDefault(); sc.scrollTop+=e.deltaY; sc.scrollLeft+=e.deltaX; }
+  if(sc){ e.preventDefault();
+    // Shift+滚轮 = 横向平移：部分内核（WebView2/pywebview）不自动把 deltaY 映射为 deltaX，需显式处理；
+    // 浏览器已转换时 deltaX>0，走正常分支结果一致
+    if(e.shiftKey&&Math.abs(e.deltaX)<1&&sc.scrollWidth>sc.clientWidth+1){ sc.scrollLeft+=e.deltaY; }
+    else { sc.scrollTop+=e.deltaY; sc.scrollLeft+=e.deltaX; }
+  }
 },{passive:false});
 wrap.addEventListener('dragover',e=>e.preventDefault());
 wrap.addEventListener('drop',e=>{
