@@ -1061,8 +1061,6 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="tbtn" id="btnSearch" title="全局搜索（Ctrl+F）">搜索</div>
   <div class="tbtn" id="btnAddNote">＋便签</div>
   <div class="tbtn" id="btnAddImg">＋图片</div>
-  <div class="tbtn" id="btnImportChars" style="display:none" title="把「角色」模块里的角色加入 / 移出关系图（勾选批量）">＋添加角色</div>
-  <div class="tbtn" id="btnRelTidy" style="display:none" title="自动整理布局：同心圆 / 环形 / 网格；放大 / 缩小 / 复位视图">整理</div>
   <div class="tbtn" id="btnFamily" style="display:none" title="族谱 / CP 关系树：幕布式树形管理配对与代际，可从角色向下延伸小孩">族谱</div>
   <div class="tbtn" id="btnBatchMind" style="display:none" title="勾选多个角色，批量导出为一张思维导图（含基本信息，可选性格）">批量导图</div>
   <div class="tbtn" id="btnMarkTb" title="先在正文里选中一段文字，再点这里标记为可连线的文字块（快捷键 T）">标记</div>
@@ -1083,6 +1081,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="tbtn" id="btnOv" title="总览板：全项目内容一览，点击任意条目直达">总览</div>
   <div class="tbtn" id="btnTools" title="伏笔清单 / 查找替换 / 回收站 / 备份快照">工具</div>
   <div class="tbtn" id="btnMind" style="display:none" title="把选中的剧情便签生成思维导图">导图</div>
+  <div class="tbtn" id="btnImportChars" style="display:none" title="把「角色」模块里的角色加入 / 移出关系图（勾选批量）">＋添加角色</div>
 </div>
 <div id="tabbar"><div id="foldChips"></div><div id="tabs"></div></div>
 <div id="main">
@@ -1166,7 +1165,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
       <div class="ptitle">快捷键（点击后按新组合键；Esc 取消，Delete 清除）</div>
       <div id="hkList"></div>
       <button class="pbtn" id="hkReset">恢复默认快捷键</button>
-      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（横向 / 左右分列两种布局，可调全局字号、折叠分支、缩放平移、一键适配，可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点顶栏「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系。</div>
+      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（横向 / 左右分列两种布局，可调全局字号、折叠分支、缩放平移、一键适配，可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点图上方工具条「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系；滚轮平移、Shift+滚轮横移、Ctrl+滚轮缩放，「整理 / 缩放」可自动排版并适配全图。</div>
     </div>
   </div>
 </div>
@@ -1329,7 +1328,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
         <ul>
           <li><b>剧情</b>：无限画布，本指南大部分内容都在讲它。</li>
           <li><b>角色</b>：卡片列表。选中角色后右侧面板可上传 / 粘贴头像、改主题色与标签、编辑设定字段、拖<b>六维属性</b>滑杆；「<b>状态轴</b>」记录角色在不同卷 / 章的状态变化（如：黑化 · 第三卷）；「<b>导出人设卡</b>」生成 900×1200 的 PNG 图片。</li>
-          <li><b>关系</b>：角色关系图。顶栏「＋添加角色」加入已有角色，拖动摆位；从一个角色拖到另一个即连关系线，<b>点连线可命名关系</b>（如师徒 / 敌对）；可建<b>分组</b>（阵营 / 势力）把角色圈在一起，分组可命名、解散。</li>
+          <li><b>关系</b>：角色关系图。图上方工具条「＋添加角色」加入已有角色，拖动摆位；选中角色后「从 TA 拉一条关系」再点另一个角色即连关系线，<b>点连线可命名关系</b>（如师徒 / 敌对）；可建<b>分组</b>（阵营 / 势力）把角色圈在一起，分组可命名、解散；滚轮平移、Shift+滚轮横移、Ctrl+滚轮缩放，「整理 / 缩放」可自动排版并适配全图。</li>
           <li><b>世界观</b>：分栏文本设定（可建多个条目）。</li>
           <li><b>时间线</b>：按时间排列的事件轴，事件可改时间 / 标题 / 描述 / 颜色；剧情便签右键「链接到时间轴」可把便签插到某事件之后。</li>
           <li><b>地图</b>：地点合集，点地点卡编辑名称与描述，可与剧情关联。</li>
@@ -3927,7 +3926,7 @@ function renderOutline(){
       const c=charInfo(id);
       const act=relSel&&relSel.kind==='char'&&relSel.id===id?' active':'';
       return `<div class="orow${act}" data-t="relchar" data-id="${id}"><span class="oarr"></span><span class="oicon">${c&&c.img?`<span class="oava"><img src="${c.img}" alt=""></span>`:ICO.chars}</span><span class="oname">${esc(c?c.name:'已删除角色')}</span></div>`;
-    }).join(''):'<div class="phint">尚未添加角色，点顶栏「＋添加角色」</div>';
+    }).join(''):'<div class="phint">尚未添加角色，点图上方工具条「＋添加角色」</div>';
     if(R.edges.length)html+='<div class="mpgroup">关系</div>'+R.edges.map(e=>{
       const act=relSel&&relSel.kind==='edge'&&relSel.id===e.id?' active':'';
       const an=(charInfo(e.a)||{}).name||'?',bn=(charInfo(e.b)||{}).name||'?';
@@ -4893,7 +4892,6 @@ function renderView(){
   $('#btnAddNote').style.display=(f.type==='world'||f.type==='relmap'||f.type==='novel')?'none':'';
   $('#btnAddImg').style.display=cv?'':'none';
   $('#btnImportChars').style.display=f.type==='relmap'?'':'none';
-  $('#btnRelTidy').style.display=f.type==='relmap'?'':'none';
   $('#btnExportMd').style.display=['chars','world','lore','timeline'].includes(f.type)?'':'none';
   $('#btnMind').style.display=f.type==='story'?'':'none';
   $('#btnFamily').style.display=f.type==='chars'?'':'none';
@@ -4967,7 +4965,7 @@ function newFile(type){
     const n=createNote(60,60,{title:nf.name,html:'在无尽画布上开始你的剧情吧。\n按 N 快速新建便签。',w:220});
     centerOnRect(noteRect(n));
   }else if(type==='relmap'){
-    toast('点顶栏「＋添加角色」把「角色」模块里的角色加进关系图');
+    toast('点图上方工具条「＋添加角色」把「角色」模块里的角色加进关系图');
   }else if(type==='chars'){
     toast('点击左上角「＋角色」创建你的第一个 OC');
   }else if(type==='timeline'){
@@ -5792,7 +5790,7 @@ function renderPlaceEditor(box){
 }
 
 /* ================= 关系图（选中现有角色 · 编辑关系 · 生成连接图） ================= */
-let relSel=null, relLinkFrom=null, relFocusGrp=null, relMgrGrp=null;
+let relSel=null, relLinkFrom=null, relFocusGrp=null, relMgrGrp=null, relFitKey=null;
 function charInfo(id){ for(const f of DB.files){ if(f.type!=='chars')continue; const c=f.chars.find(x=>x.id===id); if(c)return c; } return null; }
 function allCharsList(){ const out=[]; DB.files.forEach(f=>{ if(f.type==='chars')f.chars.forEach(c=>out.push(c)); }); return out; }
 
@@ -6119,6 +6117,10 @@ function openColMenu(c,e){
 function selectRel(sel){ relSel=sel; relLinkFrom=null; touch(true); renderRelmap(); renderContext(); renderOutline(); }
 function renderRelmap(){
   const f=F(), host=$('#relView'), R=f.rels;
+  /* 首次进入该文件时自动适配全图（大图不再被裁掉出不了屏）；此后保留用户的缩放与滚动位置 */
+  const fitNow = relFitKey!==f.id;
+  relFitKey=f.id;
+  const _stage=$('#relView .relstage'), _sl=_stage?_stage.scrollLeft:0, _sv=_stage?_stage.scrollTop:0;
   if(relFocusGrp&&!(R.groups||[]).some(g=>g.id===relFocusGrp))relFocusGrp=null;
   const memberIds=relFocusGrp?new Set((((R.groups||[]).find(g=>g.id===relFocusGrp)||{}).members)||[]):null;
   /* 选中角色时：只亮他参与的关系与相邻角色（拉线中不淡化，保证目标可点） */
@@ -6133,13 +6135,23 @@ function renderRelmap(){
   R.chars.forEach((id,i)=>{
     const sv=R.pos&&R.pos[id];
     if(sv&&isFinite(sv.x)&&isFinite(sv.y)){
-      // 加载时只防负/贴边，不再压回视口——整理布局可产生超出视口的坐标（靠滚动/缩放查看）
-      pos[id]={x:Math.max(sv.x,40),y:Math.max(sv.y,40)};
+      // 不再压回视口——逻辑画布随布局外扩（见下），超大图靠缩放/滚动查看
+      pos[id]={x:sv.x,y:sv.y};
     }else{
       const a=-Math.PI/2+i*2*Math.PI/Math.max(n,1);
       pos[id]={x:cx+rad*Math.cos(a),y:cy+rad*Math.sin(a)};
     }
   });
+  /* 逻辑画布外扩：布局（整理同心圆大半径 / 手动拖到远处）超出容器尺寸时，
+     viewBox 原点负偏移 + 尺寸扩展，内容不再被裁掉；svg 元素随缩放变大，.relstage 自然可滚 */
+  const _vs=Object.values(pos);
+  let VW=W, VH=H, vox=0, voy=0;
+  if(_vs.length){
+    const xs=_vs.map(p=>p.x), ys=_vs.map(p=>p.y);
+    const L=Math.min(0,Math.min(...xs)-120), T=Math.min(0,Math.min(...ys)-100);
+    const Rt=Math.max(W,Math.max(...xs)+120), B=Math.max(H,Math.max(...ys)+160);
+    vox=L; voy=T; VW=Rt-L; VH=B-T;
+  }
   const updRelEdge=eid=>{
     const e=R.edges.find(x=>x.id===eid); if(!e)return;
     const a=pos[e.a],b=pos[e.b]; if(!a||!b)return;
@@ -6154,14 +6166,14 @@ function renderRelmap(){
     const id=el.dataset.id, p=pos[id]; if(!p||relLinkFrom)return;
     const svg=$('#relSvg'); if(!svg)return;
     const rect=svg.getBoundingClientRect();
-    const zx=(svg.viewBox.baseVal.width||W)/(rect.width||1), zy=(svg.viewBox.baseVal.height||H)/(rect.height||1);
-    const off={dx:p.x-(ev.clientX-rect.left)*zx, dy:p.y-(ev.clientY-rect.top)*zy};
+    const zx=(svg.viewBox.baseVal.width||VW)/(rect.width||1), zy=(svg.viewBox.baseVal.height||VH)/(rect.height||1);
+    const off={dx:p.x-((ev.clientX-rect.left)*zx+vox), dy:p.y-((ev.clientY-rect.top)*zy+voy)};
     let moved=false;
     const onMove=me=>{
-      const nx=(me.clientX-rect.left)*zx+off.dx, ny=(me.clientY-rect.top)*zy+off.dy;
+      const nx=(me.clientX-rect.left)*zx+off.dx+vox, ny=(me.clientY-rect.top)*zy+off.dy+voy;
       if(!moved&&Math.abs(nx-p.x)<3&&Math.abs(ny-p.y)<3)return;
       moved=true;
-      p.x=Math.min(Math.max(nx,40),W-40); p.y=Math.min(Math.max(ny,40),H-40);
+      p.x=Math.min(Math.max(nx,vox+40),vox+VW-40); p.y=Math.min(Math.max(ny,voy+40),voy+VH-40);
       R.pos=R.pos||{}; R.pos[id]={x:Math.round(p.x),y:Math.round(p.y)};
       el.setAttribute('transform',`translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
       R.edges.forEach(e=>{ if(e.a===id||e.b===id)updRelEdge(e.id); });
@@ -6212,12 +6224,13 @@ function renderRelmap(){
   }).join('');
   host.innerHTML=`<div class="relwrap">
     <div class="relbar">
-      <span class="relhint">${relLinkFrom?'正在拉关系：点击图中的另一个角色完成连线':'拖动角色可自由调整布局 · 点击连线编辑 · 双击角色打开角色卡 · 标签页右键可归档文件夹'}</span>
+      <span class="relhint">${relLinkFrom?'正在拉关系：点击图中的另一个角色完成连线':'拖动角色可自由调整布局 · 滚轮平移 / Shift+滚轮横移 / Ctrl+滚轮缩放 · 点击连线编辑 · 双击角色打开角色卡'}</span>
       <button class="pbtn" id="relAddChar">＋添加角色</button>
       <button class="pbtn" id="relAddGrp" title="创建分组圈，把角色归到同一阵营/神府">＋分组</button>
+      <button class="pbtn" id="btnRelTidy" title="自动整理布局：同心圆 / 环形 / 网格；放大 / 缩小 / 一键适配全图">整理 / 缩放</button>
       ${relLinkFrom?'<button class="pbtn" id="relCancelLink">取消拉线</button>':''}
     </div>
-    <div class="relstage"><svg id="relSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" data-w="${W}" data-h="${H}" onwheel="relWheel(event)">${grps}${edges}${nodes}</svg>
+    <div class="relstage"><svg id="relSvg" width="${VW}" height="${VH}" viewBox="${vox} ${voy} ${VW} ${VH}" data-w="${VW}" data-h="${VH}" data-ox="${vox}" data-oy="${voy}" onwheel="relWheel(event)">${grps}${edges}${nodes}</svg>
       ${selId?(()=>{ const es=R.edges.filter(e=>e.a===selId||e.b===selId); const cc=charInfo(selId);
         return `<div class="relrelcard"><div class="rrhead">${esc(cc?cc.name:'?')} 的关系（${es.length}）</div>`
           +(es.map(e=>{const o=e.a===selId?e.b:e.a;const oc=charInfo(o);
@@ -6300,7 +6313,10 @@ function renderRelmap(){
     relSel=null; relLinkFrom=null; renderRelmap(); renderContext();
   });
   $('#relAddChar').onclick=openCharImportMenu;
-  relApplyZoom(); // 恢复用户的缩放状态（渲染会重置 viewBox）
+  $('#btnRelTidy').onclick=openRelTidyMenu; // 工具条每次重渲染，需重绑
+  relApplyZoom(); // 恢复用户的缩放状态（渲染会重置 svg 尺寸）
+  if(_stage){ _stage.scrollLeft=_sl; _stage.scrollTop=_sv; } // 恢复滚动位置
+  if(fitNow&&(R.chars.length>3))relFitView(); // 进入大图自动适配全图
   const cl=$('#relCancelLink'); if(cl)cl.onclick=()=>{ relLinkFrom=null; renderRelmap(); };
 }
 function renderRelContext(box){
@@ -6354,32 +6370,64 @@ function renderRelContext(box){
   }
   box.innerHTML=`
     <div class="ptitle">关系图</div>
-    <div class="phint">1. 点顶栏「＋添加角色」，把「角色」模块里的角色加入图中<br>2. 选中角色 →「从 TA 拉一条关系」→ 再点另一个角色<br>3. 点连线可命名关系、写描述、改颜色；Delete 删除选中项</div>
+    <div class="phint">1. 点图上方工具条「＋添加角色」，把「角色」模块里的角色加入图中<br>2. 选中角色 →「从 TA 拉一条关系」→ 再点另一个角色<br>3. 点连线可命名关系、写描述、改颜色；Delete 删除选中项<br>滚轮平移 / Shift+滚轮横移 / Ctrl+滚轮缩放；「整理 / 缩放」菜单可自动排版并一键适配全图</div>
     <div class="prow"><button class="pbtn" id="reAdd">＋添加角色</button></div>`;
   $('#reAdd').onclick=openCharImportMenu;
 }
 function relApplyZoom(){
+  /* 缩放通过放大 svg 元素实现：.relstage(overflow:auto) 自然出现滚动条，
+     滚轮上下 / Shift+滚轮左右平移由全局滚轮兜底接管；Ctrl+滚轮缩放。
+     （旧实现只改 viewBox——视野窗口不变，超出的内容永远看不到也无法平移） */
   const svg=$('#relSvg'); if(!svg)return;
-  const W=+svg.dataset.w||800, H=+svg.dataset.h||460, z=window.__relZoom||1;
-  svg.setAttribute('viewBox',(W*(1-z)/2).toFixed(1)+' '+(H*(1-z)/2).toFixed(1)+' '+(W/z).toFixed(1)+' '+(H/z).toFixed(1));
+  const W=+svg.dataset.w||800, H=+svg.dataset.h||460;
+  const ox=+svg.dataset.ox||0, oy=+svg.dataset.oy||0, z=window.__relZoom||1;
+  svg.setAttribute('viewBox',ox+' '+oy+' '+W+' '+H);
+  svg.setAttribute('width',(W*z).toFixed(1));
+  svg.setAttribute('height',(H*z).toFixed(1));
+}
+const REL_ZMIN=0.08, REL_ZMAX=4;
+function relSetZoom(z){
+  z=Math.min(REL_ZMAX,Math.max(REL_ZMIN,z));
+  const svg=$('#relSvg'); if(!svg){window.__relZoom=z;return;}
+  const st=$('#relView .relstage');
+  const ox=+svg.dataset.ox||0, oy=+svg.dataset.oy||0;
+  const old=window.__relZoom||1;
+  window.__relZoom=z; relApplyZoom();
+  if(st){ /* 以视图中心对应的逻辑点为锚缩放，内容不跳走 */
+    const lx=ox+(st.scrollLeft+st.clientWidth/2)/old, ly=oy+(st.scrollTop+st.clientHeight/2)/old;
+    st.scrollLeft=Math.max(0,(lx-ox)*z-st.clientWidth/2);
+    st.scrollTop=Math.max(0,(ly-oy)*z-st.clientHeight/2);
+  }
 }
 function relWheel(e){
-  if(!e.ctrlKey&&!e.metaKey&&!window.__relWheelAlways)return; // 默认 Ctrl+滚轮缩放，普通滚轮留给页面滚动
+  if(!e.ctrlKey&&!e.metaKey&&!window.__relWheelAlways)return; // 默认 Ctrl+滚轮缩放，普通滚轮留给滚动平移
   e.preventDefault();
   const svg=e.target.closest('svg'); if(!svg)return;
-  const z=Math.min(3,Math.max(0.25,(window.__relZoom||1)*(e.deltaY<0?1.12:1/1.12)));
-  window.__relZoom=z; relApplyZoom();
+  relSetZoom((window.__relZoom||1)*(e.deltaY<0?1.12:1/1.12));
 }
 function relZoomStep(d){
-  const svg=$('#relSvg'); if(!svg)return;
-  window.__relZoom=Math.min(3,Math.max(0.25,(window.__relZoom||1)*d)); relApplyZoom();
+  relSetZoom((window.__relZoom||1)*d);
   toast('缩放 '+Math.round((window.__relZoom||1)*100)+'%');
 }
-function relResetView(){
-  window.__relZoom=1; relApplyZoom();
-  const st=$('#relView .relstage'); if(st){st.scrollTop=0;st.scrollLeft=0;}
-  toast('视图已复位');
+/* 一键适配全图：按内容外接框算缩放并居中——整理/复位后不再有节点落在屏幕外 */
+function relFitView(){
+  const svg=$('#relSvg'); if(!svg)return;
+  const st=$('#relView .relstage'); if(!st){window.__relZoom=1;relApplyZoom();return;}
+  const W=+svg.dataset.w||800, H=+svg.dataset.h||460;
+  const ox=+svg.dataset.ox||0, oy=+svg.dataset.oy||0;
+  const ps=Object.values(F().rels.pos||{});
+  let minX=ox, minY=oy, maxX=ox+W, maxY=oy+H;
+  if(ps.length){
+    const xs=ps.map(p=>p.x), ys=ps.map(p=>p.y);
+    minX=Math.min(minX,Math.min(...xs)-120); minY=Math.min(minY,Math.min(...ys)-100);
+    maxX=Math.max(maxX,Math.max(...xs)+120); maxY=Math.max(maxY,Math.max(...ys)+160);
+  }
+  const z=Math.min(REL_ZMAX,Math.max(REL_ZMIN,Math.min(st.clientWidth/(maxX-minX),st.clientHeight/(maxY-minY))));
+  window.__relZoom=z; relApplyZoom();
+  st.scrollLeft=Math.max(0,((minX+maxX)/2-ox)*z-st.clientWidth/2);
+  st.scrollTop=Math.max(0,((minY+maxY)/2-oy)*z-st.clientHeight/2);
 }
+function relResetView(){ relFitView(); toast('视图已适配全图'); }
 /* 关系图一键整理：同心圆（按关系数分层）/ 环形 / 网格对齐 */
 function relTidy(mode){
   const f=F(), R=f.rels;
@@ -6423,9 +6471,12 @@ function openRelTidyMenu(){
     +'<div class="mpgroup">视图</div>'
     +'<div class="mitem" data-m="zin">＋ 放大视图</div>'
     +'<div class="mitem" data-m="zout">－ 缩小视图（看全局）</div>'
-    +'<div class="mitem" data-m="reset">⤢ 复位视图</div>';
-  const a=$('#btnRelTidy'), r=a.getBoundingClientRect();
-  menu.style.left=Math.min(r.left,window.innerWidth-250)+'px'; menu.style.top=(r.bottom+4)+'px';
+    +'<div class="mitem" data-m="reset">⤢ 适配全图（复位）</div>';
+  const a=$('#btnRelTidy');
+  if(!a||!a.getClientRects().length){ menu.classList.remove('hidden'); return; }
+  const r=a.getBoundingClientRect();
+  menu.style.left=Math.max(6,Math.min(r.left,window.innerWidth-270))+'px';
+  menu.style.top=Math.min(r.bottom+4,Math.max(6,window.innerHeight-300))+'px';
   menu.classList.remove('hidden');
   $$('#relTidyMenu .mitem').forEach(m=>m.onclick=()=>{
     menu.classList.add('hidden');
@@ -9626,7 +9677,6 @@ $('#ovClose').onclick=()=>$('#ovMask').classList.add('hidden');
 $('#ovMask').addEventListener('mousedown',e=>{ if(e.target.id==='ovMask')$('#ovMask').classList.add('hidden'); });
 $('#btnHelp').onclick=()=>showHelpDoc();
 $('#btnImportChars').onclick=openCharImportMenu;
-$('#btnRelTidy').onclick=openRelTidyMenu;
 $('#btnMind').onclick=()=>openMind();
 $('#searchClose').onclick=()=>$('#searchMask').classList.add('hidden');
 $('#statsClose').onclick=()=>$('#statsMask').classList.add('hidden');
