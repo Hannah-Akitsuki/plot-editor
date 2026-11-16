@@ -6416,6 +6416,16 @@ function relWheel(e){
   if(e.shiftKey&&Math.abs(e.deltaX)<1){ st.scrollLeft+=e.deltaY*k; }
   else { st.scrollTop+=e.deltaY*k; st.scrollLeft+=e.deltaX*k; }
 }
+/* 时间线：同样手动滚动（普通滚轮垂直 / Shift+滚轮横向），WebView2 下 Shift 不自动转换 */
+document.addEventListener('wheel',e=>{
+  const v=e.target&&e.target.closest&&e.target.closest('#tlView'); if(!v)return;
+  if(e.ctrlKey||e.metaKey)return; // 保留浏览器/捏合缩放
+  if(v.scrollWidth<=v.clientWidth+1&&v.scrollHeight<=v.clientHeight+1)return;
+  e.preventDefault(); e.stopPropagation(); // 免得全局兜底再滚一次
+  const k=e.deltaMode===1?16:e.deltaMode===2?v.clientHeight:1;
+  if(e.shiftKey&&Math.abs(e.deltaX)<1){ v.scrollLeft+=e.deltaY*k; }
+  else { v.scrollTop+=e.deltaY*k; v.scrollLeft+=e.deltaX*k; }
+},true);
 function relZoomStep(d){
   relSetZoom((window.__relZoom||1)*d);
   toast('缩放 '+Math.round((window.__relZoom||1)*100)+'%');
