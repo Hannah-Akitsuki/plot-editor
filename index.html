@@ -1129,7 +1129,9 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="mitem" data-act="snap"><span class="mico" data-ico="package"></span>备份快照</div>
   <div class="mitem" data-act="diff"><span class="mico" data-ico="search"></span>版本对比（快照 diff）</div>
 </div>
+<div class="tbtn" id="btnRelTidy" style="display:none" title="自动整理布局：同心圆 / 环形 / 网格，一键复位视图">整理</div>
 <div id="impMenu" class="popmenu hidden"></div>
+<div id="relTidyMenu" class="popmenu hidden"></div>
 <div id="searchMask" class="hidden">
   <div id="searchBox">
     <div class="shead">全局搜索<span id="searchClose">×</span></div>
@@ -4819,6 +4821,7 @@ function renderView(){
   $('#btnAddNote').style.display=(f.type==='world'||f.type==='relmap'||f.type==='novel')?'none':'';
   $('#btnAddImg').style.display=cv?'':'none';
   $('#btnImportChars').style.display=f.type==='relmap'?'':'none';
+  $('#btnRelTidy').style.display=f.type==='relmap'?'':'none';
   $('#btnExportMd').style.display=['chars','world','lore','timeline'].includes(f.type)?'':'none';
   $('#btnMind').style.display=f.type==='story'?'':'none';
   $('#btnFamily').style.display=f.type==='chars'?'':'none';
@@ -5989,7 +5992,8 @@ function renderRelmap(){
   R.chars.forEach((id,i)=>{
     const sv=R.pos&&R.pos[id];
     if(sv&&isFinite(sv.x)&&isFinite(sv.y)){
-      pos[id]={x:Math.min(Math.max(sv.x,40),W-40),y:Math.min(Math.max(sv.y,40),H-40)};
+      // 加载时只防负/贴边，不再压回视口——整理布局可产生超出视口的坐标（靠滚动/缩放查看）
+      pos[id]={x:Math.max(sv.x,40),y:Math.max(sv.y,40)};
     }else{
       const a=-Math.PI/2+i*2*Math.PI/Math.max(n,1);
       pos[id]={x:cx+rad*Math.cos(a),y:cy+rad*Math.sin(a)};
@@ -6072,7 +6076,7 @@ function renderRelmap(){
       <button class="pbtn" id="relAddGrp" title="创建分组圈，把角色归到同一阵营/神府">＋分组</button>
       ${relLinkFrom?'<button class="pbtn" id="relCancelLink">取消拉线</button>':''}
     </div>
-    <div class="relstage"><svg id="relSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${grps}${edges}${nodes}</svg>
+    <div class="relstage"><svg id="relSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" data-w="${W}" data-h="${H}" onwheel="relWheel(event)">${grps}${edges}${nodes}</svg>
       ${selId?(()=>{ const es=R.edges.filter(e=>e.a===selId||e.b===selId); const cc=charInfo(selId);
         return `<div class="relrelcard"><div class="rrhead">${esc(cc?cc.name:'?')} 的关系（${es.length}）</div>`
           +(es.map(e=>{const o=e.a===selId?e.b:e.a;const oc=charInfo(o);
@@ -6155,6 +6159,7 @@ function renderRelmap(){
     relSel=null; relLinkFrom=null; renderRelmap(); renderContext();
   });
   $('#relAddChar').onclick=openCharImportMenu;
+  relApplyZoom(); // 恢复用户的缩放状态（渲染会重置 viewBox）
   const cl=$('#relCancelLink'); if(cl)cl.onclick=()=>{ relLinkFrom=null; renderRelmap(); };
 }
 function renderRelContext(box){
@@ -6211,6 +6216,85 @@ function renderRelContext(box){
     <div class="phint">1. 点顶栏「＋添加角色」，把「角色」模块里的角色加入图中<br>2. 选中角色 →「从 TA 拉一条关系」→ 再点另一个角色<br>3. 点连线可命名关系、写描述、改颜色；Delete 删除选中项</div>
     <div class="prow"><button class="pbtn" id="reAdd">＋添加角色</button></div>`;
   $('#reAdd').onclick=openCharImportMenu;
+}
+function relApplyZoom(){
+  const svg=$('#relSvg'); if(!svg)return;
+  const W=+svg.dataset.w||800, H=+svg.dataset.h||460, z=window.__relZoom||1;
+  svg.setAttribute('viewBox',(W*(1-z)/2).toFixed(1)+' '+(H*(1-z)/2).toFixed(1)+' '+(W/z).toFixed(1)+' '+(H/z).toFixed(1));
+}
+function relWheel(e){
+  if(!e.ctrlKey&&!e.metaKey&&!window.__relWheelAlways)return; // 默认 Ctrl+滚轮缩放，普通滚轮留给页面滚动
+  e.preventDefault();
+  const svg=e.target.closest('svg'); if(!svg)return;
+  const z=Math.min(3,Math.max(0.25,(window.__relZoom||1)*(e.deltaY<0?1.12:1/1.12)));
+  window.__relZoom=z; relApplyZoom();
+}
+function relZoomStep(d){
+  const svg=$('#relSvg'); if(!svg)return;
+  window.__relZoom=Math.min(3,Math.max(0.25,(window.__relZoom||1)*d)); relApplyZoom();
+  toast('缩放 '+Math.round((window.__relZoom||1)*100)+'%');
+}
+function relResetView(){
+  window.__relZoom=1; relApplyZoom();
+  const st=$('#relView .relstage'); if(st){st.scrollTop=0;st.scrollLeft=0;}
+  toast('视图已复位');
+}
+/* 关系图一键整理：同心圆（按关系数分层）/ 环形 / 网格对齐 */
+function relTidy(mode){
+  const f=F(), R=f.rels;
+  const host=$('#relView');
+  const _coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
+  const W=Math.max(host.clientWidth||800,_coarse?920:600), H=Math.max(host.clientHeight||460,_coarse?640:420);
+  const cx=W/2, cy=H/2+6;
+  const nameOf=id=>{ const c=allCharsList().find(x=>x.id===id); return c?String(c.name||''):''; };
+  const deg={}; R.chars.forEach(id=>deg[id]=0);
+  R.edges.forEach(e=>{ if(deg[e.a]!=null)deg[e.a]++; if(deg[e.b]!=null)deg[e.b]++; });
+  beginChange(); R.pos={};
+  if(mode==='ring'){
+    // 环形：清空自定义位置即可（renderRelmap 会自动均布），但大图自适应半径更疏朗
+    const n=Math.max(R.chars.length,1);
+    const r=Math.max(Math.min(W,H)/2-92,120, n*100/(2*Math.PI)); // 人数多时放大半径防挤爆
+    R.chars.forEach((id,i)=>{ const a=-Math.PI/2+i*2*Math.PI/n;
+      R.pos[id]={x:Math.round(cx+r*Math.cos(a)),y:Math.round(cy+r*Math.sin(a))}; });
+  }else if(mode==='concentric'){
+    // 同心圆：关系多（≥3）的内圈，1-2 条的中圈，孤立的在外圈；每圈半径按人数自适应保证间距
+    const g3=R.chars.filter(id=>deg[id]>=3), g2=R.chars.filter(id=>deg[id]===1||deg[id]===2), g1=R.chars.filter(id=>deg[id]===0);
+    const ringRad=(cnt,base)=>Math.max(base,cnt*105/(2*Math.PI));
+    const r1=ringRad(g3.length,140), r2=ringRad(g2.length,r1+135), r3=ringRad(g1.length,r2+135);
+    const lay=(arr,rad)=>arr.forEach((id,i)=>{ const a=-Math.PI/2+i*2*Math.PI/Math.max(arr.length,1);
+      R.pos[id]={x:Math.round(cx+rad*Math.cos(a)),y:Math.round(cy+rad*Math.sin(a))}; });
+    lay(g3,r1); lay(g2,r2); lay(g1,r3);
+  }else{ // grid
+    const list=R.chars.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b),'zh'));
+    const cols=Math.max(3,Math.min(Math.floor((W-80)/170),12));
+    list.forEach((id,i)=>{ const r=Math.floor(i/cols), c=i%cols;
+      R.pos[id]={x:Math.round(W/(cols+1)*(c+1)),y:Math.round(80+r*135)}; });
+  }
+  touch(); relResetView(); renderRelmap(); renderContext();
+  toast(mode==='concentric'?'已按关系紧密程度分层排布':mode==='grid'?'已按名字网格对齐（可滚动 / 缩放查看）':'已环形排布');
+}
+function openRelTidyMenu(){
+  const menu=$('#relTidyMenu');
+  menu.innerHTML='<div class="mpgroup">自动整理布局</div>'
+    +'<div class="mitem" data-m="concentric">◎ 同心圆分层（推荐：关系多的在中间）</div>'
+    +'<div class="mitem" data-m="ring">○ 环形排布</div>'
+    +'<div class="mitem" data-m="grid">▦ 网格对齐（按名字排序）</div>'
+    +'<div class="mpgroup">视图</div>'
+    +'<div class="mitem" data-m="zin">＋ 放大视图</div>'
+    +'<div class="mitem" data-m="zout">－ 缩小视图（看全局）</div>'
+    +'<div class="mitem" data-m="reset">⤢ 复位视图</div>';
+  const a=$('#btnRelTidy'), r=a.getBoundingClientRect();
+  menu.style.left=Math.min(r.left,window.innerWidth-250)+'px'; menu.style.top=(r.bottom+4)+'px';
+  menu.classList.remove('hidden');
+  $$('#relTidyMenu .mitem').forEach(m=>m.onclick=()=>{
+    menu.classList.add('hidden');
+    const mo=m.dataset.m;
+    if(mo==='zin')relZoomStep(1.25);
+    else if(mo==='zout')relZoomStep(1/1.25);
+    else if(mo==='reset')relResetView();
+    else if(F().rels.chars.length<2){ toast('至少加入两个角色再整理'); }
+    else relTidy(mo);
+  });
 }
 function openCharImportMenu(){
   const f=F();
@@ -9118,7 +9202,7 @@ document.addEventListener('keydown',e=>{
   }
   if(e.code==='Escape'){
     $('#newMenu').classList.add('hidden'); $('#pkgMenu').classList.add('hidden');
-    $('#impMenu').classList.add('hidden');
+    $('#impMenu').classList.add('hidden'); $('#relTidyMenu').classList.add('hidden');
     if(!$('#searchMask').classList.contains('hidden')){$('#searchMask').classList.add('hidden');return;}
     if(!$('#helpMask').classList.contains('hidden')){hideHelpDoc();return;}
     if(!$('#mindMask').classList.contains('hidden')){$('#mindMask').classList.add('hidden');return;}
@@ -9254,8 +9338,8 @@ function openMenu(menu,btn){
 }
 document.addEventListener('mousedown',e=>{
   const noteMenu=$('#noteMenu');
-  if(!e.target.closest('.popmenu')&&!e.target.closest('#btnNew')&&!e.target.closest('#btnPackage')&&!e.target.closest('#btnImportChars')&&!e.target.closest('#btnTools')){
-    $('#newMenu').classList.add('hidden'); $('#pkgMenu').classList.add('hidden'); $('#impMenu').classList.add('hidden'); $('#toolsMenu').classList.add('hidden'); noteMenu.classList.add('hidden');
+  if(!e.target.closest('.popmenu')&&!e.target.closest('#btnNew')&&!e.target.closest('#btnPackage')&&!e.target.closest('#btnImportChars')&&!e.target.closest('#btnRelTidy')&&!e.target.closest('#btnTools')){
+    $('#newMenu').classList.add('hidden'); $('#pkgMenu').classList.add('hidden'); $('#impMenu').classList.add('hidden'); $('#relTidyMenu').classList.add('hidden'); $('#toolsMenu').classList.add('hidden'); noteMenu.classList.add('hidden');
   }
 },true);
 $('#btnNew').onclick=()=>openMenu($('#newMenu'),$('#btnNew'));
@@ -9401,6 +9485,7 @@ $('#ovClose').onclick=()=>$('#ovMask').classList.add('hidden');
 $('#ovMask').addEventListener('mousedown',e=>{ if(e.target.id==='ovMask')$('#ovMask').classList.add('hidden'); });
 $('#btnHelp').onclick=()=>showHelpDoc();
 $('#btnImportChars').onclick=openCharImportMenu;
+$('#btnRelTidy').onclick=openRelTidyMenu;
 $('#btnMind').onclick=()=>openMind();
 $('#searchClose').onclick=()=>$('#searchMask').classList.add('hidden');
 $('#statsClose').onclick=()=>$('#statsMask').classList.add('hidden');
