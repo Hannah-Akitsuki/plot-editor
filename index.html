@@ -6400,10 +6400,21 @@ function relSetZoom(z){
   }
 }
 function relWheel(e){
-  if(!e.ctrlKey&&!e.metaKey&&!window.__relWheelAlways)return; // 默认 Ctrl+滚轮缩放，普通滚轮留给滚动平移
+  const st=$('#relView .relstage');
+  if(e.ctrlKey||e.metaKey||window.__relWheelAlways){ // Ctrl+滚轮缩放
+    e.preventDefault();
+    const svg=e.target.closest('svg'); if(!svg)return;
+    relSetZoom((window.__relZoom||1)*(e.deltaY<0?1.12:1/1.12));
+    return;
+  }
+  /* 滚轮平移：手动滚动 .relstage，与剧情画布 panBy 同思路——
+     不依赖内核原生滚动 / 全局兜底（WebView2/pywebview 下不可靠），Shift+滚轮横向 */
+  if(!st)return;
+  if(st.scrollWidth<=st.clientWidth+1&&st.scrollHeight<=st.clientHeight+1)return; // 内容未超出，无需滚动
   e.preventDefault();
-  const svg=e.target.closest('svg'); if(!svg)return;
-  relSetZoom((window.__relZoom||1)*(e.deltaY<0?1.12:1/1.12));
+  const k=e.deltaMode===1?16:e.deltaMode===2?st.clientHeight:1;
+  if(e.shiftKey&&Math.abs(e.deltaX)<1){ st.scrollLeft+=e.deltaY*k; }
+  else { st.scrollTop+=e.deltaY*k; st.scrollLeft+=e.deltaX*k; }
 }
 function relZoomStep(d){
   relSetZoom((window.__relZoom||1)*d);
