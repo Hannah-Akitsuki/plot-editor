@@ -926,6 +926,12 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 /* ---- 小说模块三视图（2026-11-13）：书架 / 章节墙 / 阅读页 ---- */
 /* 编辑区强制可选可输入：body 全局 user-select:none 会影响 WebView2 里 contenteditable 的选字与输入 */
 .nvbook,.nvfield,.nvintro,.nvchapbody,.nvedit-title,.nvtitle,.nvbookcard{user-select:text; -webkit-user-select:text;}
+/* ---- 关系图批量导入复选样式 ---- */
+.mitem.relpick{position:relative;}
+.mitem.relpick.on{background:var(--accent-soft); color:var(--accent); font-weight:600;}
+.mitem.relpick.on:before{content:'✓'; margin-right:6px; font-weight:700;}
+.relmark{color:var(--sub); font-size:11px; margin-left:6px; font-weight:400;}
+#impMenu .mpscroll{user-select:none;}
 .nvchapbody{cursor:text;}
 .nvshelfhead,.nvbooktop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:1200px; margin:0 auto 12px; background:var(--panel); border:1px solid var(--pline); border-radius:12px; padding:12px 18px; box-shadow:var(--shadow-s);}
 .nvshelftitle{font-size:20px; font-weight:700;}
@@ -6210,42 +6216,63 @@ function openCharImportMenu(){
   const f=F();
   const chars=allCharsList();
   const menu=$('#impMenu');
-  let html='';
-  if(chars.length){
-    html='<div class="mpgroup">点角色加入 / 移出关系图（共 '+chars.length+'）</div><div class="mpscroll">'+chars.map(c=>{
-      const inG=f.rels.chars.includes(c.id);
-      return `<div class="mitem" data-id="${c.id}"><span class="mico" style="color:${c.color||'#8fa3bf'}">${ICO.chars}</span>${esc(c.name||'未命名')}${inG?' <span style="color:var(--sub)">· 已在图中</span>':''}</div>`;
-    }).join('')+'</div>';
-  }else{
-    html='<div class="mpgroup">还没有角色</div><div class="phint" style="padding:4px 10px">在下面输入名字就能直接建一个人物，不用先去别的模块。</div>';
-  }
-  html+='<div class="mpgroup">快速新建角色</div>'
+  const inSet=new Set(f.rels.chars); // 打开菜单时已在图中的角色
+  const sel=new Set(inSet);          // 本次勾选集合
+  const filter=()=>(($('#relFilter')||{}).value||'');
+  const listHTML=q=>{
+    q=String(q||'').trim().toLowerCase();
+    const list=q?chars.filter(c=>String(c.name||'').toLowerCase().includes(q)):chars;
+    return list.length?list.map(c=>`<div class="mitem relpick ${sel.has(c.id)?'on':''}" data-id="${c.id}"><span class="mico" style="color:${c.color||'#8fa3bf'}">${ICO.chars}</span>${esc(c.name||'未命名')}${inSet.has(c.id)?'<span class="relmark">已在图中</span>':''}</div>`).join('')
+      :'<div class="phint" style="padding:4px 10px">没有匹配的角色</div>';
+  };
+  menu.innerHTML=`<div class="mpgroup">勾选要加入 / 移出关系图的角色（共 ${chars.length}，已选 <span id="relCnt">${sel.size}</span>）</div>`
+    +(chars.length>8?'<input class="mpsearch" id="relFilter" placeholder="搜索角色名筛选…">':'')
+    +'<div class="mpscroll" style="max-height:300px" id="relList"></div>'
+    +'<div style="display:flex;gap:6px;padding:8px 6px 2px">'
+    +'<button class="pbtn" id="relAll">全选</button><button class="pbtn" id="relNone">清空</button>'
+    +'<button class="pbtn prim" id="relApply" style="margin-left:auto">应用（批量更新）</button></div>'
+    +'<div class="mpgroup">快速新建角色</div>'
     +'<div style="display:flex;gap:6px;padding:0 6px 8px"><input class="mpsearch" id="relQuickName" placeholder="输入角色名，回车创建" style="margin:0"><button class="pbtn prim" id="relQuickAdd">创建</button></div>';
-  menu.innerHTML=html;
   const anchor=(()=>{ const a=$('#btnImportChars'); if(a&&a.getClientRects().length)return a; const b=$('#relAddChar'); if(b&&b.getClientRects().length)return b; return null; })();
   const r=anchor?anchor.getBoundingClientRect():{left:window.innerWidth/2-110, top:100, bottom:100};
-  menu.style.left=Math.min(r.left,window.innerWidth-230)+'px'; menu.style.top=(r.bottom+4)+'px'; menu.classList.remove('hidden');
+  menu.style.left=Math.min(r.left,window.innerWidth-260)+'px'; menu.style.top=(r.bottom+4)+'px'; menu.classList.remove('hidden');
+  const updCnt=()=>{ const c=$('#relCnt'); if(c)c.textContent=sel.size; };
+  const bindItems=()=>{ $$('#relList .mitem').forEach(m=>m.onclick=()=>{
+    const id=m.dataset.id;
+    if(sel.has(id)){ sel.delete(id); m.classList.remove('on'); }
+    else{ sel.add(id); m.classList.add('on'); }
+    updCnt();
+  }); };
+  const redraw=()=>{ $('#relList').innerHTML=listHTML(filter()); bindItems(); };
+  redraw();
+  const fs2=$('#relFilter');
+  if(fs2){ fs2.oninput=()=>redraw(); fs2.onkeydown=e=>{ if(e.key==='Escape')menu.classList.add('hidden'); }; }
+  $('#relAll').onclick=()=>{ chars.forEach(c=>sel.add(c.id)); redraw(); };
+  $('#relNone').onclick=()=>{ sel.clear(); redraw(); };
+  $('#relApply').onclick=()=>{
+    beginChange();
+    const R=f.rels; let add=0,rm=0;
+    chars.forEach(c=>{ if(sel.has(c.id)&&!R.chars.includes(c.id)){ R.chars.push(c.id); add++; } });
+    // 移出：原本在图中但本次取消勾选的（同时清掉相关连线）
+    R.chars.filter(id=>!sel.has(id)&&inSet.has(id)).forEach(id=>{
+      R.chars=R.chars.filter(x=>x!==id);
+      R.edges=R.edges.filter(e=>e.a!==id&&e.b!==id);
+      if(relSel&&relSel.id===id)relSel=null;
+      rm++;
+    });
+    touch(); renderRelmap(); renderContext(); renderOutline();
+    menu.classList.add('hidden');
+    toast(add||rm?`已更新：新加入 ${add} 个，移出 ${rm} 个`:'没有变化');
+  };
   const add=(name)=>{
     const R=f.rels; const c=quickNewChar(name);
     if(!R.chars.includes(c.id))R.chars.push(c.id);
+    sel.add(c.id); redraw();
     touch(); menu.classList.add('hidden'); selectRel({kind:'char',id:c.id});
     toast('已创建「'+c.name+'」并加入关系图，可在「角色」模块继续完善设定');
   };
   $('#relQuickAdd').onclick=()=>add($('#relQuickName').value);
   $('#relQuickName').onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); add($('#relQuickName').value); } };
-  $$('#impMenu .mitem').forEach(m=>m.onclick=()=>{
-    menu.classList.add('hidden');
-    const id=m.dataset.id, R=F().rels;
-    beginChange();
-    if(R.chars.includes(id)){
-      R.chars=R.chars.filter(x=>x!==id);
-      R.edges=R.edges.filter(e=>e.a!==id&&e.b!==id);
-      if(relSel&&relSel.id===id)relSel=null;
-      touch(); renderRelmap(); renderContext(); renderOutline(); toast('已从图中移除');
-    }else{
-      R.chars.push(id); touch(); selectRel({kind:'char',id}); toast('已加入关系图');
-    }
-  });
 }
 function openCharRef(id){
   for(const f of DB.files){
