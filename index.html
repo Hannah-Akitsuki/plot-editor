@@ -905,6 +905,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 .nvdot{width:8px; height:8px; border-radius:50%; background:var(--sub); flex:none;}
 .nvdot.done{background:#3fa76a;}
 .nvch .nvtitle{font-weight:600; font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.nvtitle[contenteditable="true"]{background:var(--accent-soft); outline:none; border-radius:4px; padding:0 3px; user-select:text; -webkit-user-select:text;}
 .nvw{margin-left:auto; color:var(--sub); font-size:10.5px; flex:none;}
 .nvchips{display:flex; flex-wrap:wrap; gap:4px; margin-top:5px;}
 .nvchip{display:inline-flex; align-items:center; gap:4px; font-size:10px; padding:1px 7px; border-radius:999px; background:var(--accent-soft); color:var(--accent); cursor:pointer; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -6237,7 +6238,7 @@ function nvChipsHTML(f,c){
 function nvListHTML(f){
   return f.novel.chapters.map(c=>`
   <div class="nvch ${c.id===nvSelId?'sel':''}" data-id="${c.id}">
-    <div class="nvrow1"><span class="nvdot ${c.status==='done'?'done':''}"></span><span class="nvtitle">${esc(c.title)}</span><span class="nvw">${c.words||0}字</span></div>
+    <div class="nvrow1"><span class="nvdot ${c.status==='done'?'done':''}"></span><span class="nvtitle" title="双击可改章节名（如：随笔、番外）">${esc(c.title)}</span><span class="nvw">${c.words||0}字</span></div>
     <div class="nvchips">${nvChipsHTML(f,c)}</div>
     <div class="nvops"><button data-op="up" title="上移">↑</button><button data-op="dn" title="下移">↓</button><button data-op="bind" title="绑定剧情页 / 便签 / 角色">绑</button><button data-op="del" class="danger" title="删除章节">删</button></div>
   </div>`).join('')||'<div class="nvempty">还没有章节，点右上「＋章节」开始</div>';
@@ -6299,7 +6300,7 @@ function nvUnbind(ch,cp){
 }
 function nvEditHTML(ch){
   return `<div class="nvedithead">
-    <div class="nvedit-title" id="nvEdTitle" contenteditable="true" spellcheck="false">${esc(ch.title)}</div>
+    <div class="nvedit-title" id="nvEdTitle" contenteditable="true" spellcheck="false" title="点击改章节名（不一定要「第N章」，随笔/番外都可以）">${esc(ch.title)}</div>
     <button class="nvst ${ch.status==='done'?'done':''}" id="nvChSt" title="切换本章 草稿/完本 状态">${ch.status==='done'?'完本':'草稿'}</button>
     <span id="nvChWords">本章 ${novelWords(ch.content)} 字</span>
   </div>
@@ -6348,6 +6349,7 @@ function renderNovel(){
       <span class="nvfield" style="flex:none">作者</span>
       <div class="nvfield" id="nvAuthor" contenteditable="true" spellcheck="false" style="min-width:80px">${esc(f.novel.author||'')}</div>
       <button class="nvst ${f.novel.status==='完本'?'done':''}" id="nvStatus" title="点击切换 连载状态">${esc(f.novel.status||'连载中')}</button>
+      <button class="nvst" id="nvNewBook" title="再建一本小说（生成新页签）">＋新建小说</button>
       <span class="nvtotal" id="nvTotal">全书 ${novelTotal()} 字</span>
     </div>
     <div class="nvintro" id="nvIntro" contenteditable="true" spellcheck="false" title="点击填写简介">${esc(f.novel.intro||'')||'简介：一句话介绍这本书（点击填写）'}</div>
@@ -6371,14 +6373,25 @@ function renderNovel(){
   it.onfocusout=()=>{ const v2=it.textContent.trim();
     if(v2!==(f.novel.intro||'')){ beginChange(); f.novel.intro=v2; touch(); } };
   $('#nvStatus').onclick=()=>{ beginChange(); f.novel.status=f.novel.status==='完本'?'连载中':'完本'; touch(); renderNovel(); };
+  $('#nvNewBook').onclick=()=>newFile('novel');
   if(ch)nvBindEditor(f,ch);
 }
 function nvBindList(f,list){
   if(!list)return;
   list.querySelectorAll('.nvch').forEach(el=>{
     const id=el.dataset.id;
-    el.onclick=e=>{ if(e.target.closest('button,.nvchip'))return;
+    el.onclick=e=>{ if(e.target.closest('button,.nvchip,.nvtitle'))return; // 标题区留给双击改名，不触发选中重建
       nvSelId=id; nvEditing=null; touch(true); renderNovel(); };
+    el.querySelectorAll('.nvtitle').forEach(tt=>{ // 双击列表标题直接改名
+      tt.ondblclick=e=>{ e.stopPropagation(); tt.contentEditable='true'; tt.focus();
+        try{document.getSelection().selectAllChildren(tt);}catch(_e){} };
+      tt.onfocusout=()=>{ tt.contentEditable='false';
+        const ch=novelCh(id); if(!ch)return;
+        const v2=tt.textContent.trim()||ch.title;
+        if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
+        renderNovel(); };
+      tt.onkeydown=e2=>{ e2.stopPropagation(); if(e2.key==='Enter'){ e2.preventDefault(); tt.blur(); } };
+    });
     el.querySelectorAll('.nvops button').forEach(btn=>btn.onclick=e=>{ e.stopPropagation();
       const op=btn.dataset.op, ch=novelCh(id);
       if(op==='up')moveChapter(id,-1);
