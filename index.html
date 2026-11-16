@@ -924,6 +924,9 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 .nvedit-body p{margin:0 0 .6em;}
 @media(max-width:900px){ .nvgrid{grid-template-columns:1fr;} .nvlist{max-height:40vh;} }
 /* ---- 小说模块三视图（2026-11-13）：书架 / 章节墙 / 阅读页 ---- */
+/* 编辑区强制可选可输入：body 全局 user-select:none 会影响 WebView2 里 contenteditable 的选字与输入 */
+.nvbook,.nvfield,.nvintro,.nvchapbody,.nvedit-title,.nvtitle,.nvbookcard{user-select:text; -webkit-user-select:text;}
+.nvchapbody{cursor:text;}
 .nvshelfhead,.nvbooktop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; max-width:1200px; margin:0 auto 12px; background:var(--panel); border:1px solid var(--pline); border-radius:12px; padding:12px 18px; box-shadow:var(--shadow-s);}
 .nvshelftitle{font-size:20px; font-weight:700;}
 .nvshelfsub{color:var(--sub); font-size:12px; margin-right:auto;}
@@ -6271,8 +6274,9 @@ function addChapter(){
   const f=F(); if(f.type!=='novel')return;
   beginChange();
   const ch={id:uid(),title:'第'+(f.novel.chapters.length+1)+'章',status:'draft',content:'',words:0,charIds:[]};
-  f.novel.chapters.push(ch); nvSelId=ch.id; nvEditing=ch.id; nvMode='edit'; touch();
+  f.novel.chapters.push(ch); nvSelId=ch.id; nvEditing=null; nvMode='edit'; touch(); // nvEditing 留空，否则 renderNovel 的编辑保护 guard 会误命中、编辑器渲染不出来
   nvRoute='chapter'; nvSaveRoute(); renderNovel();
+  setTimeout(()=>{ const b=$('#nvEdBody'); if(b)b.focus(); },60);
 }
 function delChapter(id){
   const f=F(); if(f.type!=='novel')return;
@@ -6433,14 +6437,24 @@ function renderNovelBook(f){
   $('#nvAddCh').onclick=addChapter;
   $('#nvNewBook').onclick=()=>newFile('novel');
   const bk=$('#nvBook');
-  bk.onfocusout=()=>{ const nm=bk.textContent.trim();
-    if(nm&&nm!==f.name){ beginChange(); f.name=nm; touch(); renderTabs(); } else bk.textContent=f.name; };
+  // 书名/作者/简介：输入即写数据（不只靠 focusout），任何中途重建都不会丢改动
+  bk.addEventListener('input',()=>{ const nm=bk.textContent.trim();
+    if(nm&&nm!==f.name){ beginChange(); f.name=nm; touch(); } });
+  bk.addEventListener('focusout',()=>{ const nm=bk.textContent.trim();
+    if(nm&&nm!==f.name){ beginChange(); f.name=nm; touch(); }
+    renderTabs(); if(nm!==bk.textContent.trim())bk.textContent=f.name; });
   const au=$('#nvAuthor');
-  au.onfocusout=()=>{ const v2=au.textContent.trim();
-    if(v2!==(f.novel.author||'')){ beginChange(); f.novel.author=v2; touch(); } };
+  au.addEventListener('input',()=>{ const v2=au.textContent.trim();
+    if(v2!==(f.novel.author||'')){ beginChange(); f.novel.author=v2; touch(); } });
+  au.addEventListener('focusout',()=>{ const v2=au.textContent.trim();
+    if(v2!==(f.novel.author||'')){ beginChange(); f.novel.author=v2; touch(); }
+    if(v2!==au.textContent.trim())au.textContent=f.novel.author||''; });
   const it=$('#nvIntro');
-  it.onfocusout=()=>{ const v2=it.textContent.trim();
-    if(v2!==(f.novel.intro||'')){ beginChange(); f.novel.intro=v2; touch(); } };
+  it.addEventListener('input',()=>{ const v2=it.textContent.trim();
+    if(v2!==(f.novel.intro||'')){ beginChange(); f.novel.intro=v2; touch(); } });
+  it.addEventListener('focusout',()=>{ const v2=it.textContent.trim();
+    if(v2!==(f.novel.intro||'')){ beginChange(); f.novel.intro=v2; touch(); }
+    if(v2!==it.textContent.trim())it.textContent=f.novel.intro||''; });
   $('#nvStatus').onclick=()=>{ beginChange(); f.novel.status=f.novel.status==='完本'?'连载中':'完本'; touch(); renderNovel(); };
   v.querySelectorAll('.nvchcard').forEach(el=>{
     const id=el.dataset.id;
@@ -6486,9 +6500,9 @@ function renderNovelChapter(f){
       <button class="pbtn" id="nvAddBind" title="绑定剧情页 / 便签 / 角色">＋绑定</button>
       <span class="nvchips" style="margin-left:8px">${nvChipRowHTML(f,ch)||'<span style="color:var(--sub);font-size:11px">未绑定剧情页</span>'}</span>
     </div>
-    ${bodyEditing
+    ${editing
       ?`<div class="nvchapbody edit" id="nvEdBody" contenteditable="true" spellcheck="false" data-ph="从这里开始写正文…">${ch.content}</div>`
-      :`<div class="nvchapbody ${editing?'edit':'read'}" id="nvBodyShow">${ch.content||'<span class="nvempty">本章还没有内容，点右上「✎ 编辑」开始写作</span>'}</div>`}
+      :`<div class="nvchapbody read" id="nvBodyShow">${ch.content||'<span class="nvempty">本章还没有内容，点右上「✎ 编辑」开始写作</span>'}</div>`}
   </div>`;
   $('#nvChBack').onclick=()=>{ nvEditing=null; nvRoute='book'; nvSaveRoute(); renderNovel(); };
   const goCh=c=>{ if(!c)return; nvSelId=c.id; nvEditing=null; nvMode='read'; nvSaveRoute(); renderNovel(); };
@@ -6500,10 +6514,15 @@ function renderNovelChapter(f){
     cp.oncontextmenu=e=>{ e.preventDefault(); nvUnbind(ch,cp); };
   });
   const t=$('#nvEdTitle');
-  if(t&&editing)t.onfocusout=()=>{ const v2=t.textContent.trim()||ch.title;
-    if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
-    setTimeout(()=>{ const ae=document.activeElement;
-      if(!(ae&&ae.closest&&ae.closest('.nvchapbody.edit')))renderNovel(); },200); };
+  if(t&&editing){
+    t.addEventListener('input',()=>{ const v2=t.textContent.trim()||ch.title;
+      if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); } }); // 输入即写，重建不丢
+    t.addEventListener('focusout',()=>{ const v2=t.textContent.trim()||ch.title;
+      if(v2!==ch.title){ beginChange(); ch.title=v2; touch(); }
+      setTimeout(()=>{ const ae=document.activeElement;
+        if(!(ae&&ae.closest&&ae.closest('.nvchapbody.edit,.nvchapter')))renderNovel(); },250); });
+    t.addEventListener('keydown',ev=>{ ev.stopPropagation(); if(ev.key==='Enter'){ ev.preventDefault(); t.blur(); } });
+  }
   const st=$('#nvChSt');
   if(st)st.onclick=()=>{ beginChange(); ch.status=ch.status==='done'?'draft':'done'; touch(); renderNovel(); };
   const sv=$('#nvSave');
@@ -6521,7 +6540,10 @@ function renderNovelChapter(f){
       nvWordsH=setTimeout(()=>{ ch.words=novelWords(ch.content);
         const w=$('#nvChWords'); if(w)w.textContent='本章 '+ch.words.toLocaleString()+' 字';
         touch(); },300); });
-    b.addEventListener('focusout',()=>{ ch.content=b.innerHTML; if(nvEditing===ch.id)nvEditing=null; touch(); });
+    b.addEventListener('focusout',()=>{ ch.content=b.innerHTML; touch();
+      // 延迟清编辑态：点「保存/绑定/标题」等临时失焦时焦点会回来，避免中途重建编辑器打断输入
+      setTimeout(()=>{ const ae=document.activeElement;
+        if(!(ae&&ae.closest&&ae.closest('.nvchapbody.edit'))&&nvEditing===ch.id)nvEditing=null; },300); });
     b.addEventListener('paste',ev=>{ const cd=ev.clipboardData||window.clipboardData;
       const txt=cd?cd.getData('text/plain'):''; if(txt){ ev.preventDefault(); document.execCommand('insertText',false,txt); } });
   }
