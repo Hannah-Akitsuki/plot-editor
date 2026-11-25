@@ -5974,20 +5974,41 @@ function deleteCP(id){
   if(selCP===id)selCP=null;
   touch(); renderCPView(); renderContext(); renderOutline(); toast('已删除CP');
 }
-function pickCPChar(c,side,anchor){ // 弹菜单选角色：候选=所有关系图中的角色（无则角色模块）
+function pickCPChar(c,side,anchor,chain){ // 弹菜单选角色：候选=所有关系图中的角色（无则角色模块）；带搜索+滚动；选完A自动接着选B
   const cands=cpCandidates();
   const menu=$('#noteMenu');
-  menu.innerHTML='<div class="mpgroup">从角色关系里选（'+cands.length+'人）</div>'
-    +(cands.length?cands.map(ch=>`<div class="mitem" data-id="${ch.id}"><span class="mico">${ch.img?`<span class="oava"><img src="${ch.img}" alt=""></span>`:ICO.chars}</span>${esc(ch.name||'未命名角色')}</div>`).join('')
-    :'<div class="mitem" data-id="">（还没有角色——先去「角色」或「关系」里添加）</div>');
+  const sideName=side==='a'?'角色A':'角色B';
+  menu.innerHTML=`<div class="mpgroup">${chain?'接着选':'从角色关系里选'}${sideName}（${cands.length}人）</div>`
+    +(cands.length?'<input class="mpsearch" id="cpSearch" placeholder="输入名字筛选（含别名括号里的字）…">':'')
+    +'<div class="mpscroll" id="cpList"></div>';
+  const other=side==='a'?c.b:c.a;
+  const rowHTML=q=>{
+    q=String(q||'').trim().toLowerCase();
+    const list=q?cands.filter(ch=>String(ch.name||'').toLowerCase().includes(q)):cands;
+    return list.length?list.map(ch=>`<div class="mitem" data-id="${ch.id}"><span class="mico">${ch.img?`<span class="oava"><img src="${ch.img}" alt=""></span>`:ICO.chars}</span>${esc(ch.name||'未命名角色')}`
+      +(ch.id===other?'<span style="color:var(--sub);font-size:11px">　另一位</span>':'')
+      +(ch.id===c[side]?'<span style="color:var(--accent);font-size:11px">　✓当前</span>':'')
+      +'</div>').join('')
+      :(cands.length?'<div class="phint" style="padding:6px 10px">没有匹配的角色</div>':'<div class="phint" style="padding:6px 10px">还没有角色——先去「角色」或「关系」里添加</div>');
+  };
+  const redraw=q=>{
+    $('#cpList').innerHTML=rowHTML(q);
+    $$('#cpList .mitem').forEach(m=>m.onclick=()=>{
+      if(!m.dataset.id)return;
+      beginChange(); c[side]=m.dataset.id; touch();
+      renderCPView(); renderContext(); renderOutline();
+      if(side==='a'&&!c.b){ pickCPChar(c,'b',anchor,true); } // 自动链选 B
+      else menu.classList.add('hidden');
+      toast(side==='a'&&!c.b?'已选 '+sideName+'，接着选角色B':'已选 '+sideName);
+    });
+  };
+  redraw('');
   const r=anchor.getBoundingClientRect();
-  menu.style.left=Math.max(6,Math.min(r.left,window.innerWidth-230))+'px';
-  menu.style.top=Math.min(r.bottom+4,Math.max(6,window.innerHeight-320))+'px';
+  menu.style.left=Math.max(6,Math.min(r.left,window.innerWidth-250))+'px';
+  menu.style.top=Math.max(6,Math.min(r.bottom+4,window.innerHeight-400))+'px';
   menu.classList.remove('hidden');
-  $$('#noteMenu .mitem').forEach(m=>m.onclick=()=>{
-    menu.classList.add('hidden');
-    if(m.dataset.id){ beginChange(); c[side]=m.dataset.id; touch(); renderCPView(); renderContext(); renderOutline(); }
-  });
+  const s=menu.querySelector('#cpSearch');
+  if(s){ s.oninput=()=>redraw(s.value); s.onkeydown=ev=>{ if(ev.key==='Escape')menu.classList.add('hidden'); }; setTimeout(()=>s.focus(),40); }
 }
 function renderCPView(){
   const f=F(),host=$('#cpsView');
