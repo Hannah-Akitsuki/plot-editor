@@ -504,7 +504,7 @@ body.picking, body.picking *{cursor:crosshair !important;}
 .rsnip{color:var(--sub); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .rsnip mark{background:var(--accent-soft); color:var(--accent); border-radius:2px; padding:0 1px;}
 .rfile{color:var(--sub); font-size:10px; margin-left:6px; font-weight:400;}
-#charView,#loreView,#novelView,#extraView,#cpsView{display:none; position:absolute; inset:0; overflow:auto; padding:22px; background:var(--bg);
+#charView,#loreView,#novelView,#extraView,#cpsView,#tmapView{display:none; position:absolute; inset:0; overflow:auto; padding:22px; background:var(--bg);
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; align-content:start;}
 .shead{padding:10px 14px; font-weight:600; font-size:14px; border-bottom:1px solid var(--pline); display:flex; justify-content:space-between;}
 #setClose{cursor:pointer; color:var(--sub); padding:0 4px;}
@@ -662,7 +662,7 @@ body.declutter .nrefbadge{opacity:.6;}
 .wcard label span{font-weight:400; color:var(--sub); font-size:11px; margin-left:7px;}
 .wcard textarea{width:100%; border:none; background:transparent; resize:vertical; min-height:64px; outline:none; font:inherit; line-height:1.75; color:var(--text);}
 /* ---------- 虚拟地图（随机地形 / 笔刷 / 图钉） ---------- */
-#tmapView{display:none;position:relative;width:100%;height:100%;overflow:hidden;background:#0e1520;}
+#tmapView{padding:0; overflow:hidden; background:#0e1520;}
 #tmapBar{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:3px;align-items:center;background:var(--panel);border:1px solid var(--pline);border-radius:9px;padding:4px 7px;box-shadow:var(--shadow-m);z-index:5;flex-wrap:wrap;max-width:calc(100% - 16px);justify-content:center;}
 .tmbtn{padding:3px 8px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;border:none;background:none;color:var(--text);}
 .tmbtn:hover{background:var(--accent-soft);color:var(--accent);}
@@ -9426,7 +9426,7 @@ $('#btnPlotOnly').onclick=()=>{
 /* ================= 画布事件 ================= */
 wrap.addEventListener('contextmenu',e=>e.preventDefault());
 wrap.addEventListener('wheel',e=>{
-  if(e.target.closest&&e.target.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#impMenu'))return;
+  if(e.target.closest&&e.target.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#extraView,#cpsView,#tmapView,#impMenu'))return;
   e.preventDefault();
   // Ctrl/⌘+滚轮：以指针为中心缩放（触控板捏合在 Windows/WebView 下也会合成 Ctrl+滚轮）
   if(e.ctrlKey||e.metaKey){ zoomAt(e.clientX,e.clientY,e.deltaY<0?1.12:1/1.12); return; }
@@ -9450,7 +9450,7 @@ document.addEventListener('wheel',e=>{
   const t=e.target;
   if(!t||!t.closest)return;
   if(t.closest('#mindStage'))return;
-  if(t.closest('#wrap')&&!t.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#impMenu'))return;
+  if(t.closest('#wrap')&&!t.closest('#charView,#tlView,#loreView,#worldView,#mapView,#relView,#novelView,#extraView,#cpsView,#tmapView,#impMenu'))return;
   const sc=closestScrollable(t);
   if(sc){ e.preventDefault();
     // Shift+滚轮 = 横向平移：部分内核（WebView2/pywebview）不自动把 deltaY 映射为 deltaX，需显式处理；
