@@ -1138,7 +1138,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
     <div class="snav" data-type="map" title="地图 · 地点合集"><span class="sicon" data-ico="map"></span><span>地图</span></div>
     <div class="snav" data-type="lore" title="名词设定库"><span class="sicon" data-ico="lore"></span><span>设定</span></div>
     <div class="snav" data-type="novel" title="小说 · 章节写作"><span class="sicon" data-ico="novel"></span><span>小说</span></div>
-    <div class="snav" id="snavExtra" title="额外模块：政权势力 / 历史纪年 / 货币系统 / CP系统（点击添加或进入）"><span class="sicon">▦</span><span>额外</span></div>
+    <div class="snav" id="snavExtra" title="扩展模块：点击添加或进入 政权势力 / 历史纪年 / 货币系统 / CP系统 / 虚拟地图"><span class="sicon">▦</span><span>扩展</span></div>
     <div id="snavExtraList"></div>
   </div>
   <div id="wrap">
@@ -10104,30 +10104,26 @@ document.addEventListener('mousedown',e=>{
 $('#btnNew').onclick=()=>openMenu($('#newMenu'),$('#btnNew'));
 $$('#newMenu .mitem').forEach(m=>m.onclick=()=>{ $('#newMenu').classList.add('hidden'); newFile(m.dataset.type); });
 $$('#sidenav .snav').forEach(el=>el.onclick=()=>gotoType(el.dataset.type));
-/* 左栏「额外」：点开菜单可添加/进入 政权势力 / 历史纪年 / 货币系统 / CP系统；已添加的模块固定显示在「额外」下方 */
-const EXTRA_TYPES=['power','history','currency','cps'];
-function renderSnavExtra(){
-  const host=$('#snavExtraList'); if(!host)return;
-  host.innerHTML=EXTRA_TYPES.map(t=>DB.files.filter(f=>f.type===t).map(f=>`
-    <div class="snav snavsub" data-type="${t}" data-file="${f.id}" title="${esc(TYPE_META[t].label+' · '+f.name)}"><span class="sicon">${TYPE_META[t].icon}</span><span>${esc((f.name||'').slice(0,4))}</span></div>`).join('')).join('');
-  host.querySelectorAll('.snav').forEach(el=>el.onclick=()=>switchTab(el.dataset.file));
-}
+/* 顶栏/左栏滚轮直达（捕获阶段优先处理，防止被画布兜底拦截） */
+$('#topbar').addEventListener('wheel',e=>{ if(e.ctrlKey)return; e.preventDefault(); e.stopPropagation(); $('#topbar').scrollLeft+=(e.deltaY||0)+(e.deltaX||0); },{passive:false});
+$('#sidenav').addEventListener('wheel',e=>{ if(e.ctrlKey)return; e.preventDefault(); e.stopPropagation(); $('#sidenav').scrollTop+=(e.deltaY||0); },{passive:false});
+/* 左栏「额外」（2026-11-26 简化）：不列已有文件，点开直接按类型添加（已有则进入该类型） */
+const EXTRA_TYPES=['power','history','currency','cps','tmap'];
+function renderSnavExtra(){ syncSidenav(); }
 $('#snavExtra').onclick=e=>{
   e.stopPropagation();
   const menu=$('#noteMenu');
-  menu.innerHTML='<div class="mpgroup">额外模块</div>'+EXTRA_TYPES.map(t=>{
-    const fs=DB.files.filter(f=>f.type===t);
-    return fs.map(f=>`<div class="mitem" data-open="${f.id}"><span class="mico">${TYPE_META[t].icon}</span>${esc(f.name||'未命名')}</div>`).join('')
-      +`<div class="mitem" data-new="${t}"><span class="mico">＋</span>${fs.length?'再来一个':'添加'}${TYPE_META[t].label}</div>`;
+  menu.innerHTML='<div class="mpgroup">添加扩展模块</div>'+EXTRA_TYPES.map(t=>{
+    const has=DB.files.some(f=>f.type===t);
+    return `<div class="mitem" data-add="${t}"><span class="mico">${TYPE_META[t].icon}</span>${has?'进入':'添加'}${TYPE_META[t].label}</div>`;
   }).join('');
   const r=$('#snavExtra').getBoundingClientRect();
   menu.style.left=Math.min(r.right+6,window.innerWidth-230)+'px';
-  menu.style.top=Math.max(6,Math.min(r.top-8,window.innerHeight-340))+'px';
+  menu.style.top=Math.max(6,Math.min(r.top-8,window.innerHeight-300))+'px';
   menu.classList.remove('hidden');
   $$('#noteMenu .mitem').forEach(m=>m.onclick=()=>{
     menu.classList.add('hidden');
-    if(m.dataset.open)switchTab(m.dataset.open);
-    else if(m.dataset.new)newFile(m.dataset.new);
+    if(m.dataset.add)gotoType(m.dataset.add);
   });
 };
 $('#btnPackage').onclick=()=>{
