@@ -669,6 +669,22 @@ body.declutter .nrefbadge{opacity:.6;}
 .tmbtn.on{background:var(--accent);color:#fff;}
 .tmbtn.on:hover{color:#fff;}
 #tmapCv{position:absolute;inset:0;cursor:grab;}
+/* ---------- UI 便捷化（2026-11-26）：顶栏/侧栏可滚、菜单限高、按键回弹 ---------- */
+#topbar{overflow-x:auto; overflow-y:hidden; scrollbar-width:none;}
+#topbar::-webkit-scrollbar{display:none;}
+#sidenav{overflow-y:auto; scrollbar-width:none;}
+#sidenav::-webkit-scrollbar{display:none;}
+.popmenu{max-height:min(72vh,560px); overflow-y:auto; scrollbar-width:thin;}
+.tab{transition:background .15s,color .15s,box-shadow .15s,transform .08s;}
+.tab:active{transform:scale(.94);}
+.tbtn,.mitem,.tool,.snav,.pbtn{transition:background .15s,color .15s,transform .08s;}
+.tbtn:active,.mitem:active,.tool:active,.snav:active,.pbtn:active{transform:scale(.94);}
+.tcount{font-size:10px; line-height:15px; padding:0 6px; border-radius:9px; background:var(--accent); color:#fff; flex:none;}
+.tfx{margin-left:auto; padding:0 7px; border-radius:6px; color:var(--sub); font-size:15px; flex:none; line-height:20px;}
+.tfx:hover{background:#e04848; color:#fff;}
+.mitem .tfin{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px;}
+.mitem.on{background:var(--accent-soft);}
+.mitem.on .tfin{color:var(--accent); font-weight:600;}
 /* ---------- 额外模块（政权势力/历史纪年/货币系统）与 CP 系统 ---------- */
 #snavExtraList{display:flex;flex-direction:column;gap:3px;margin-top:2px;}
 .snavsub{padding:5px 2px 4px;gap:2px;font-size:10px;}
@@ -1206,7 +1222,9 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
 <div id="syncBar"></div>
 <div id="uiMask" class="hidden"><div class="uiCard" id="uiCard"></div></div>
 <div id="noteMenu" class="popmenu hidden"></div>
+<div id="tabMenu" class="popmenu hidden"></div>
 <div id="newMenu" class="popmenu hidden">
+  <div class="mpgroup">基础模块</div>
   <div class="mitem" data-type="board"><span class="mico" data-ico="mind"></span>总览板（一块板装下全部）</div>
   <div class="mitem" data-type="story"><span class="mico" data-ico="story"></span>剧情画布</div>
   <div class="mitem" data-type="chars"><span class="mico" data-ico="chars"></span>角色设定</div>
@@ -1216,9 +1234,10 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="mitem" data-type="map"><span class="mico" data-ico="map"></span>地图 · 地点合集</div>
   <div class="mitem" data-type="lore"><span class="mico" data-ico="lore"></span>名词设定库</div>
   <div class="mitem" data-type="novel"><span class="mico" data-ico="novel"></span>小说（章节写作 + 绑定剧情/角色）</div>
-  <div class="mitem" data-type="power"><span class="mico" data-ico="power"></span>政权势力（额外模块）</div>
-  <div class="mitem" data-type="history"><span class="mico" data-ico="hist"></span>历史纪年（额外模块）</div>
-  <div class="mitem" data-type="currency"><span class="mico" data-ico="coin"></span>货币系统（额外模块）</div>
+  <div class="mpgroup">扩展模块</div>
+  <div class="mitem" data-type="power"><span class="mico" data-ico="power"></span>政权势力</div>
+  <div class="mitem" data-type="history"><span class="mico" data-ico="hist"></span>历史纪年</div>
+  <div class="mitem" data-type="currency"><span class="mico" data-ico="coin"></span>货币系统</div>
   <div class="mitem" data-type="cps"><span class="mico" data-ico="heart"></span>CP系统（选角色 + 六格剧情）</div>
   <div class="mitem" data-type="tmap"><span class="mico" data-ico="map"></span>虚拟地图（随机地形 + 手绘 + 图钉）</div>
 </div>
@@ -4920,29 +4939,55 @@ function renderTabs(){
   renderFoldChips();
   const t=$('#tabs'); t.innerHTML='';
   const list=DB.files.filter(f=>!folderFilter||f.folder===folderFilter||f.id===DB.active);
-  for(const f of list){
+  // 按模块分组：一个类型一个页签，点页签弹菜单选具体文件（2026-11-26）
+  const order=['board','story','chars','relmap','world','timeline','map','lore','novel','power','history','currency','cps','tmap'];
+  const groups={};
+  list.forEach(f=>{(groups[f.type]=groups[f.type]||[]).push(f);});
+  order.filter(ty=>groups[ty]).forEach(ty=>{
+    const fs=groups[ty],tm=TYPE_META[ty]||TYPE_META.story;
+    const act=fs.find(f=>f.id===DB.active);
     const el=document.createElement('div');
-    el.className='tab'+(f.id===DB.active?' active':'');
-    el.dataset.id=f.id;
-    const tm=TYPE_META[f.type]||TYPE_META.story;
-    const fo=f.folder?folderById(f.folder):null;
-    const dot=fo?`<span class="fdot" style="background:${folderColor(DB.folders.indexOf(fo))}"></span>`:'';
-    el.innerHTML=`<span class="ticon">${tm.icon}</span>${dot}<span class="tname">${esc(f.name)}</span><span class="tclose">×</span>`;
-    el.title=tm.label+' · '+f.name+'（双击重命名，右键归档到文件夹）';
-    el.querySelector('.tname').onclick=()=>switchTab(f.id);
-    el.querySelector('.tclose').onclick=async e=>{
-      e.stopPropagation();
-      if(!await uiConfirm(`关闭「${f.name}」？其内容将从列表移除（已保存的导出文件不受影响，可在回收站恢复）。`, '关闭'))return;
-      pushTrash('file',f.id,f.name,f.name,f);
-      DB.files=DB.files.filter(x=>x.id!==f.id);
-      if(DB.active===f.id)DB.active=DB.files.length?DB.files[0].id:null;
-      if(!DB.files.length){const nf=seedFile('文件1');DB.files.push(nf);DB.active=nf.id;}
-      touch(); switchTab(DB.active);
-    };
-    el.ondblclick=async()=>{ const name=await uiPrompt('重命名文件',f.name,'文件名'); if(name){f.name=name;touch();renderTabs();} };
-    el.oncontextmenu=e=>{ e.preventDefault(); openTabFolderMenu(f,e); };
+    el.className='tab'+(act?' active':'');
+    el.dataset.type=ty;
+    el.innerHTML=`<span class="ticon">${tm.icon}</span><span class="tname">${tm.label}</span>${fs.length>1?`<span class="tcount">${fs.length}</span>`:''}`;
+    el.title=tm.label+(act?' · 当前：'+act.name:'')+'（点击选择第几个文件）';
+    el.onclick=e=>{e.stopPropagation();openTabTypeMenu(ty,fs,el);};
     t.appendChild(el);
-  }
+  });
+}
+function openTabTypeMenu(ty,fs,anchor){
+  const menu=$('#tabMenu');
+  const tm=TYPE_META[ty]||TYPE_META.story;
+  menu.innerHTML=`<div class="mpgroup">${tm.label} · ${fs.length} 个文件</div>`+fs.map(f=>`
+    <div class="mitem${f.id===DB.active?' on':''}" data-open="${f.id}" title="点击进入 · 双击重命名 · 右键归档"><span class="mico">${tm.icon}</span><span class="tfin">${esc(f.name||'未命名')}</span><span class="tfx" data-del="${f.id}" title="删除（进回收站，可恢复）">×</span></div>`).join('')
+    +`<div class="mitem" data-new="${ty}"><span class="mico">＋</span>新建${tm.label}</div>`;
+  const r=anchor.getBoundingClientRect();
+  menu.style.left=Math.max(6,Math.min(r.left,window.innerWidth-280))+'px';
+  menu.style.top=Math.min(r.bottom+4,window.innerHeight-60)+'px';
+  menu.classList.remove('hidden');
+  menu.querySelectorAll('.tfx').forEach(x=>x.onclick=async e=>{
+    e.stopPropagation();
+    const f=DB.files.find(v=>v.id===x.dataset.del); if(!f)return;
+    if(!await uiConfirm(`删除「${f.name}」？内容移入回收站，可恢复。`,'删除'))return;
+    pushTrash('file',f.id,f.name,f.name,f);
+    DB.files=DB.files.filter(v=>v.id!==f.id);
+    if(DB.active===f.id)DB.active=DB.files.length?DB.files[0].id:null;
+    if(!DB.files.length){const nf=seedFile('文件1');DB.files.push(nf);DB.active=nf.id;}
+    touch(); menu.classList.add('hidden'); switchTab(DB.active); renderSnavExtra();
+  });
+  menu.querySelectorAll('.mitem').forEach(m=>{
+    const f=m.dataset.open?DB.files.find(v=>v.id===m.dataset.open):null;
+    m.onclick=e=>{
+      if(e.target.closest('.tfx'))return;
+      menu.classList.add('hidden');
+      if(m.dataset.open)switchTab(m.dataset.open);
+      else if(m.dataset.new)newFile(m.dataset.new);
+    };
+    if(f){
+      m.ondblclick=async()=>{ const name=await uiPrompt('重命名文件',f.name,'文件名'); if(name){f.name=name;touch();renderTabs();renderSnavExtra();menu.classList.add('hidden');} };
+      m.oncontextmenu=e=>{ e.preventDefault(); openTabFolderMenu(f,e); };
+    }
+  });
 }
 function switchTab(id){
   DB.active=id; touch(true); // 切换文件只是浏览导航，不算改动
@@ -9456,6 +9501,7 @@ document.addEventListener('wheel',e=>{
     // Shift+滚轮 = 横向平移：部分内核（WebView2/pywebview）不自动把 deltaY 映射为 deltaX，需显式处理；
     // 浏览器已转换时 deltaX>0，走正常分支结果一致
     if(e.shiftKey&&Math.abs(e.deltaX)<1&&sc.scrollWidth>sc.clientWidth+1){ sc.scrollLeft+=e.deltaY; }
+    else if(sc.scrollHeight<=sc.clientHeight+1&&sc.scrollWidth>sc.clientWidth+1){ sc.scrollLeft+=e.deltaY+(e.deltaX||0); } // 仅横向可滚（顶栏）：滚轮直接横移
     else { sc.scrollTop+=e.deltaY; sc.scrollLeft+=e.deltaX; }
   }
 },{passive:false});
@@ -10052,7 +10098,7 @@ function openMenu(menu,btn){
 document.addEventListener('mousedown',e=>{
   const noteMenu=$('#noteMenu');
   if(!e.target.closest('.popmenu')&&!e.target.closest('#btnNew')&&!e.target.closest('#btnPackage')&&!e.target.closest('#btnImportChars')&&!e.target.closest('#btnRelTidy')&&!e.target.closest('#btnTools')){
-    $('#newMenu').classList.add('hidden'); $('#pkgMenu').classList.add('hidden'); $('#impMenu').classList.add('hidden'); $('#relTidyMenu').classList.add('hidden'); $('#toolsMenu').classList.add('hidden'); noteMenu.classList.add('hidden');
+    $('#newMenu').classList.add('hidden'); $('#pkgMenu').classList.add('hidden'); $('#impMenu').classList.add('hidden'); $('#relTidyMenu').classList.add('hidden'); $('#toolsMenu').classList.add('hidden'); noteMenu.classList.add('hidden'); $('#tabMenu').classList.add('hidden');
   }
 },true);
 $('#btnNew').onclick=()=>openMenu($('#newMenu'),$('#btnNew'));
