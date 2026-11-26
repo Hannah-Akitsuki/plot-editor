@@ -661,7 +661,7 @@ body.declutter .nrefbadge{opacity:.6;}
 .wcard label{display:block; font-weight:700; margin-bottom:6px;}
 .wcard label span{font-weight:400; color:var(--sub); font-size:11px; margin-left:7px;}
 .wcard textarea{width:100%; border:none; background:transparent; resize:vertical; min-height:64px; outline:none; font:inherit; line-height:1.75; color:var(--text);}
-/* ---------- 额外模块（政权势力/历史纪念/货币系统）与 CP 系统 ---------- */
+/* ---------- 额外模块（政权势力/历史纪年/货币系统）与 CP 系统 ---------- */
 #snavExtraList{display:flex;flex-direction:column;gap:3px;margin-top:2px;}
 .snavsub{padding:5px 2px 4px;gap:2px;font-size:10px;}
 .snavsub .sicon{font-size:13px;line-height:1;}
@@ -1114,7 +1114,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
     <div class="snav" data-type="map" title="地图 · 地点合集"><span class="sicon" data-ico="map"></span><span>地图</span></div>
     <div class="snav" data-type="lore" title="名词设定库"><span class="sicon" data-ico="lore"></span><span>设定</span></div>
     <div class="snav" data-type="novel" title="小说 · 章节写作"><span class="sicon" data-ico="novel"></span><span>小说</span></div>
-    <div class="snav" id="snavExtra" title="额外模块：政权势力 / 历史纪念 / 货币系统 / CP系统（点击添加或进入）"><span class="sicon">▦</span><span>额外</span></div>
+    <div class="snav" id="snavExtra" title="额外模块：政权势力 / 历史纪年 / 货币系统 / CP系统（点击添加或进入）"><span class="sicon">▦</span><span>额外</span></div>
     <div id="snavExtraList"></div>
   </div>
   <div id="wrap">
@@ -1189,7 +1189,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
       <div class="ptitle">快捷键（点击后按新组合键；Esc 取消，Delete 清除）</div>
       <div id="hkList"></div>
       <button class="pbtn" id="hkReset">恢复默认快捷键</button>
-      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（横向 / 左右分列两种布局，可调全局字号、折叠分支、缩放平移、一键适配，可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点图上方工具条「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系；滚轮平移、Shift+滚轮横移、Ctrl+滚轮缩放，「整理 / 缩放」可自动排版并适配全图。左栏「额外」可添加政权势力 / 历史纪念 / 货币系统模块（已添加的会显示在「额外」下方）；CP系统里点「＋CP」从角色关系选两位角色组 CP，每对 CP 有六个剧情格直接写。</div>
+      <div class="phint" style="margin-top:8px">固定快捷键：Ctrl+Z 撤销 / Ctrl+Y 或 Ctrl+Shift+Z 重做 / Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴（截图图片优先）/ Delete 删除 / F2 重命名（便签、集合、角色、事件、地点均可，也可双击大纲名称）/ I 给文字块吸色（先点文字块，再点带颜色的对象）/ 空格或中键拖动平移 / 滚轮上下滚动（Shift+滚轮左右滚动，Ctrl+滚轮缩放）/ Home 或右下角「回到内容」按钮取景全部便签 / 左键点线选中（右侧可命名改色）/ 双击线条快速重命名 / 右键滑动删线 / 双击画布空白新建便签。剧情页顶部「导图」可把选中的便签生成思维导图（横向 / 左右分列两种布局，可调全局字号、折叠分支、缩放平移、一键适配，可导出 SVG / OPML，OPML 可直接导入 XMind、幕布）。打包会把剧情 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定一起导出为一个 .ocpkg 项目文件，图片与涂鸦随文件内置，对方导入后原样还原，无需单独导入图片。标签页右键可把文件归档进文件夹，打包菜单可按文件夹整包导出。关系图：点图上方工具条「＋添加角色」加入已有角色，选中角色拉关系线，点连线命名关系；滚轮平移、Shift+滚轮横移、Ctrl+滚轮缩放，「整理 / 缩放」可自动排版并适配全图。左栏「额外」可添加政权势力 / 历史纪年 / 货币系统模块（已添加的会显示在「额外」下方）；CP系统里点「＋CP」从角色关系选两位角色组 CP，每对 CP 有六个剧情格直接写。</div>
     </div>
   </div>
 </div>
@@ -1208,7 +1208,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
   <div class="mitem" data-type="lore"><span class="mico" data-ico="lore"></span>名词设定库</div>
   <div class="mitem" data-type="novel"><span class="mico" data-ico="novel"></span>小说（章节写作 + 绑定剧情/角色）</div>
   <div class="mitem" data-type="power"><span class="mico" data-ico="power"></span>政权势力（额外模块）</div>
-  <div class="mitem" data-type="history"><span class="mico" data-ico="hist"></span>历史纪念（额外模块）</div>
+  <div class="mitem" data-type="history"><span class="mico" data-ico="hist"></span>历史纪年（额外模块）</div>
   <div class="mitem" data-type="currency"><span class="mico" data-ico="coin"></span>货币系统（额外模块）</div>
   <div class="mitem" data-type="cps"><span class="mico" data-ico="heart"></span>CP系统（选角色 + 六格剧情）</div>
 </div>
@@ -1262,7 +1262,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
         <ul>
           <li><b>顶栏</b>：新建 / 保存 / 导入 / 搜索 / ＋便签 / ＋图片；右侧是「? 帮助」和「设置」。低频功能都收在「<b>更多 ▾</b>」里（见下）。</li>
           <li><b>文件标签栏</b>：当前打开的文件（剧情、角色库……），可多开，<kbd>Ctrl+Tab</kbd> 切换。<b>标签右键</b>可重命名、归档进文件夹、关闭；文件夹条可以整组打包导出。</li>
-          <li><b>左侧模块栏</b>：剧情 / 角色 / 关系 / 世界观 / 时间线 / 地图 / 设定，点击即进入对应模块；「额外」里可添加政权势力 / 历史纪念 / 货币系统 / CP系统。</li>
+          <li><b>左侧模块栏</b>：剧情 / 角色 / 关系 / 世界观 / 时间线 / 地图 / 设定，点击即进入对应模块；「额外」里可添加政权势力 / 历史纪年 / 货币系统 / CP系统。</li>
           <li><b>右侧面板</b>：上部是画笔色轮与吸管（画布类模块），中间是选中对象的属性，下方是<b>大纲图层面板</b>（合集=可折叠图层组、便签=叶子；可拖动排序、拖进 / 拖出集合、触屏长按拖动；顶部搜索框可筛便签标题 / 正文 / 合集名 / 轴名 / 轴点名，双击或 <kbd>F2</kbd> 改名）。<kbd>Tab</kbd> 或面板右缘的 <b>▶ / ◀</b> 小把手可显示 / 隐藏面板。</li>
           <li><b>右下角工具栏</b>（剧情画布内）：选择 / 涂鸦笔 / 橡皮 / 连线模式 / 轴模式 / 线色 / 只看剧情。</li>
         </ul>
@@ -1274,7 +1274,7 @@ details.dsec[open]>summary:before{transform:rotate(90deg);}
           <li>按模块变化的按钮：<b>导图</b>（剧情模块，选中便签后出现）、<b>设定MD</b>（角色 / 世界观 / 时间线 / 设定库）、<b>＋添加角色</b>（关系图）。</li>
         </ul>
         <h3>新建文件</h3>
-        <p>顶栏「新建」可选：总览板 / 剧情画布 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定库 / 政权势力 / 历史纪念 / 货币系统 / CP系统——同一部作品可开多个文件标签（剧情可分卷分集）。</p>
+        <p>顶栏「新建」可选：总览板 / 剧情画布 / 角色 / 关系图 / 世界观 / 时间线 / 地图 / 设定库 / 政权势力 / 历史纪年 / 货币系统 / CP系统——同一部作品可开多个文件标签（剧情可分卷分集）。</p>
         <div class="hnote">改动会自动保存，不必担心丢内容；「保存」按钮用于立即写盘。撤销 <kbd>Ctrl+Z</kbd>，重做 <kbd>Ctrl+Y</kbd>（约 80 步）。</div>
       </div>
 
@@ -1866,7 +1866,7 @@ const ICO={
   coin:_SVGP('<circle cx="12" cy="12" r="8.5"/><path d="M9 8l3 4 3-4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="13.5" x2="14.5" y2="13.5"/>'),
   heart:_SVGP('<path d="M12 20.5C6.2 15.7 3.5 12.6 3.5 9.5A4.5 4.5 0 0 1 12 7.6a4.5 4.5 0 0 1 8.5 1.9c0 3.1-2.7 6.2-8.5 11z"/>'),
 };
-const TYPE_META={story:{icon:ICO.story,label:'剧情'},chars:{icon:ICO.chars,label:'角色'},relmap:{icon:ICO.relmap,label:'关系图'},timeline:{icon:ICO.timeline,label:'时间线'},lore:{icon:ICO.lore,label:'设定'},world:{icon:ICO.world,label:'世界观'},map:{icon:ICO.map,label:'地图'},novel:{icon:ICO.novel,label:'小说'},power:{icon:ICO.power,label:'政权势力'},history:{icon:ICO.hist,label:'历史纪念'},currency:{icon:ICO.coin,label:'货币系统'},cps:{icon:ICO.heart,label:'CP系统'}};
+const TYPE_META={story:{icon:ICO.story,label:'剧情'},chars:{icon:ICO.chars,label:'角色'},relmap:{icon:ICO.relmap,label:'关系图'},timeline:{icon:ICO.timeline,label:'时间线'},lore:{icon:ICO.lore,label:'设定'},world:{icon:ICO.world,label:'世界观'},map:{icon:ICO.map,label:'地图'},novel:{icon:ICO.novel,label:'小说'},power:{icon:ICO.power,label:'政权势力'},history:{icon:ICO.hist,label:'历史纪年'},currency:{icon:ICO.coin,label:'货币系统'},cps:{icon:ICO.heart,label:'CP系统'}};
 const isCanvas=f=>f.type==='story';
 /* 伏笔状态（与手机版共用同一数据模型：n.foreshadow={state,note}） */
 const FS_STATES={planted:'已埋',resolved:'已回收',dropped:'弃坑'};
@@ -4996,7 +4996,7 @@ function renderView(){
   maybeShowTip(f.type);
 }
 /* ---------- 首次进入功能引导 ---------- */
-const TIP_NAMES={story:'剧情画布',chars:'角色设定',relmap:'关系图',world:'世界观',timeline:'时间线',map:'地图',lore:'设定库',novel:'小说',power:'政权势力',history:'历史纪念',currency:'货币系统',cps:'CP系统'};
+const TIP_NAMES={story:'剧情画布',chars:'角色设定',relmap:'关系图',world:'世界观',timeline:'时间线',map:'地图',lore:'设定库',novel:'小说',power:'政权势力',history:'历史纪年',currency:'货币系统',cps:'CP系统'};
 const TIPS={
   story:'拖动框选 / Shift+点击可多选便签，按 G 成组为集合；把选中的便签拖进集合框内松手即整批移入；双击集合名称（或点开后在右侧面板）改名；V 选择 B 涂鸦笔 E 橡皮 L 连线 A 轴模式，N 新便签，空格拖动平移画布，滚轮上下滚动（Shift+滚轮左右，Ctrl+滚轮缩放），Home 或右下角「回到内容」一键取景全部便签。轴模式：依次点两个便签生成轴（名字=头便签名），拖便签到轴上可挂载，直接拖轴上便签可调整位置（重叠会自动挤开），拖轴梁整体移动，双击轴可打点命名',
   chars:'点「＋角色」新建人物卡；点卡片编辑设定并查看六维雷达；点头像可上传或 Ctrl+V 粘贴头像图；顶部可按标签筛选角色；右上角「设定MD」可把角色设定整理导出为 Markdown；在剧情画布里右键便签可关联到角色',
@@ -5049,7 +5049,7 @@ function createBoard(){
 function newFile(type){
   if(type==='board'){ createBoard(); return; }
   type=TYPE_META[type]?type:'story';
-  const names={story:'剧情',relmap:'关系图',chars:'角色',timeline:'时间线',lore:'设定库',world:'世界观',map:'地图',novel:'小说',power:'政权势力',history:'历史纪念',currency:'货币系统',cps:'CP系统'};
+  const names={story:'剧情',relmap:'关系图',chars:'角色',timeline:'时间线',lore:'设定库',world:'世界观',map:'地图',novel:'小说',power:'政权势力',history:'历史纪年',currency:'货币系统',cps:'CP系统'};
   const nf=normFile({id:uid(),type,name:names[type]+(DB.files.filter(x=>x.type===type).length+1),camera:{x:200,y:160,z:1},folder:folderFilter||''});
   beginChange(); DB.files.push(nf); touch(); switchTab(nf.id);
   if(type==='story'){
@@ -5884,11 +5884,11 @@ function renderPlaceEditor(box){
   $('#pDel').onclick=()=>deletePlace(p.id);
 }
 
-/* ================= 额外模块（政权势力 / 历史纪念 / 货币系统） ================= */
+/* ================= 额外模块（政权势力 / 历史纪年 / 货币系统） ================= */
 const EXTRA_KINDS={
   power:{label:'政权势力',ph:'介绍这个势力的立场、结构、野心与规矩…',
     fields:[['kind','类型','王朝 / 帝国 / 教会 / 帮派…'],['leader','掌权者','统治者 / 首领'],['region','领地','控制的疆域']]},
-  history:{label:'历史纪念',ph:'这场事件的经过、影响与后续…',
+  history:{label:'历史纪年',ph:'这场事件的经过、影响与后续…',
     fields:[['era','纪年','如：历元 1024 年'],['people','相关人物','参与 / 主导者'],['place','地点','发生地点']]},
   currency:{label:'货币系统',ph:'货币的购买力、使用场景与背后的经济…',
     fields:[['unit','单位','金 / 银 / 铜…'],['rate','兑换','如：1金币 = 100银币'],['issuer','发行方','铸币的势力']]}
@@ -9854,7 +9854,7 @@ document.addEventListener('mousedown',e=>{
 $('#btnNew').onclick=()=>openMenu($('#newMenu'),$('#btnNew'));
 $$('#newMenu .mitem').forEach(m=>m.onclick=()=>{ $('#newMenu').classList.add('hidden'); newFile(m.dataset.type); });
 $$('#sidenav .snav').forEach(el=>el.onclick=()=>gotoType(el.dataset.type));
-/* 左栏「额外」：点开菜单可添加/进入 政权势力 / 历史纪念 / 货币系统 / CP系统；已添加的模块固定显示在「额外」下方 */
+/* 左栏「额外」：点开菜单可添加/进入 政权势力 / 历史纪年 / 货币系统 / CP系统；已添加的模块固定显示在「额外」下方 */
 const EXTRA_TYPES=['power','history','currency','cps'];
 function renderSnavExtra(){
   const host=$('#snavExtraList'); if(!host)return;
@@ -9885,7 +9885,7 @@ $('#btnPackage').onclick=()=>{
   let html='<div class="mitem" data-filter=""><span class="mico" data-ico="package"></span>打包全部</div>';
   DB.folders.forEach(fo=>{ html+=`<div class="mitem" data-folder="${fo.id}"><span class="mico" data-ico="map"></span>打包文件夹「${esc(fo.name)}」</div>`; });
   html+='<div class="mpgroup">按类型打包</div>';
-  [['story','仅剧情'],['chars','仅角色设定'],['relmap','仅关系图'],['timeline','仅时间线'],['world','仅世界观'],['map','仅地图'],['lore','仅设定库'],['power','仅政权势力'],['history','仅历史纪念'],['currency','仅货币系统'],['cps','仅CP系统']]
+  [['story','仅剧情'],['chars','仅角色设定'],['relmap','仅关系图'],['timeline','仅时间线'],['world','仅世界观'],['map','仅地图'],['lore','仅设定库'],['power','仅政权势力'],['history','仅历史纪年'],['currency','仅货币系统'],['cps','仅CP系统']]
     .forEach(x=>{ html+=`<div class="mitem" data-filter="${x[0]}"><span class="mico" data-ico="${x[0]}"></span>${x[1]}</div>`; });
   menu.innerHTML=html;
   [...menu.querySelectorAll('[data-ico]')].forEach(el=>{ const ic=ICO[{history:'hist',currency:'coin',cps:'heart'}[el.dataset.ico]||el.dataset.ico]; if(ic)el.innerHTML=ic; });
