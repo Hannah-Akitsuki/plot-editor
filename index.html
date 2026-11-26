@@ -10006,6 +10006,17 @@ document.addEventListener('keydown',e=>{
   if(combo===hk.ungroupWin){ ungroupSelected(); e.preventDefault(); return; }
   if(combo===hk.brushUp){ adjustBrush(1); e.preventDefault(); return; }
   if(combo===hk.brushDown){ adjustBrush(-1); e.preventDefault(); return; }
+  /* 方向键平移画布（无选中便签时）＋ +/- 键缩放（2026-11-26） */
+  if(e.code.startsWith('Arrow')&&sel.size===0&&!editing&&isCanvas(F())&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    const st=e.shiftKey?150:60;
+    panBy(e.code==='ArrowRight'?st:e.code==='ArrowLeft'?-st:0, e.code==='ArrowDown'?st:e.code==='ArrowUp'?-st:0);
+    e.preventDefault(); return;
+  }
+  if((e.key==='+'||e.key==='='||e.key==='-')&&!editing&&isCanvas(F())&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    const wr=wrapRect();
+    zoomAt(wr.left+wr.width/2,wr.top+wr.height/2,e.key==='-'?1/1.15:1.15);
+    e.preventDefault(); return;
+  }
   if(e.code.startsWith('Arrow')){
     const step=e.shiftKey?10:1;
     const dx=(e.code==='ArrowLeft'?-step:e.code==='ArrowRight'?step:0);
